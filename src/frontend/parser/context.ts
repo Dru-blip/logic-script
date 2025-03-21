@@ -34,9 +34,9 @@ export class ParserContext {
   consume(type: TokenType, message: string) {
     if (this.check(type)) {
       this.advance();
+    } else {
+      this.error(message);
     }
-
-    this.error(message);
   }
 
   error(message: string): void {

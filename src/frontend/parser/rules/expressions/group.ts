@@ -10,6 +10,7 @@ export const group: LogicParser<LogicNode> = (context) => {
   if (expr.error) {
     return expr;
   }
+
   context.consume(TokenType.RPAREN, "Expected ')' after expression");
   context.advance();
   return {

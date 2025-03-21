@@ -1,3 +1,4 @@
+import { compileCommand } from "./src/cli/commands/compile";
 import { createProject } from "./src/cli/commands/create";
 import { LogicCli } from "./src/cli/logic-cli";
 
@@ -7,6 +8,6 @@ const cli = new LogicCli({
   description: "Logic CLI",
 });
 
-cli.addCommand(createProject);
+cli.addCommand(createProject).addCommand(compileCommand);
 
 cli.program.parse(process.argv);
