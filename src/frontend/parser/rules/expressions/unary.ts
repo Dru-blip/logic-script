@@ -1,0 +1,17 @@
+import { TokenType } from "../../../lexer";
+import { type LogicNode, UnaryExpression } from "../../ast";
+import { type LogicParser } from "../../types";
+import { primary } from "./primary";
+
+export const unary: LogicParser<LogicNode> = (context) => {
+  const token = context.peek();
+  if (context.match([TokenType.BANG, TokenType.MINUS])) {
+    context.advance();
+    const right = unary(context);
+    if (right.isOk) {
+      return { value: new UnaryExpression(token, right.value!), isOk: true };
+    }
+    return right;
+  }
+  return primary(context);
+};

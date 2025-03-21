@@ -1,0 +1,101 @@
+// Program Structure
+Program → StatementList
+
+// Statements
+StatementList → Statement | Statement StatementList
+Statement → VariableDeclaration
+            | FunctionDeclaration
+            | ClassDeclaration
+            | ExpressionStatement
+            | ImportStatement
+            | ReturnStatement
+            | IterationStatement
+
+ExpressionStatement → Expression
+
+// Variable Declarations
+VariableDeclaration → "let" Identifier "=" Expression
+VariableAssignment → Identifier "=" Expression
+
+// Function Declarations
+FunctionDeclaration → "fn" Identifier "(" ParameterList ")" "=" Expression
+ParameterList → Identifier | Identifier "," ParameterList | ""
+
+// Class Declarations
+ClassDeclaration → "class" Identifier "{" ClassBody "}"
+ClassBody → ClassMember | ClassMember ClassBody
+ClassMember → FunctionDeclaration | VariableDeclaration
+
+// Expressions
+Expression → <LogicOr>
+
+LogicOr       → <LogicAnd> ( "or" <LogicAnd> )* ;
+LogicAnd      → EqualityExpression ( "and" EqualityExpression )* ;
+
+EqualityExpression → ComparisonExpression ("=="|"!=" EqualityExpression)*
+
+ComparisonExpression → AdditiveExpression ( ( ">" | ">=" | "<" | "<=" ) AdditiveExpression )* ;
+
+AdditiveExpression → MultiplicativeExpression ("+"|"-") AdditiveExpression
+
+MultiplicativeExpression → UnaryExpression ("*"|"/" MultiplicativeExpression)*
+
+UnaryExpression → ("+"|"-"|"!") <UnaryExpression>
+                | <PrimaryExpression>
+
+PrimaryExpression → <Literal>
+                    | <Identifier>
+                    | "(" <Expression> ")"
+                    | <FunctionCall>
+                    | <ConditionalExpression>
+                    | <MemberAccess>
+                    | <ArrayAccess>
+                    | <ObjectCreation>
+
+// Conditional Expression
+ConditionalExpression → "If" "<" <Expression> "," <Expression> "," <Expression> ">"
+
+// Function Calls
+FunctionCall → Identifier "(" ArgumentList ")"
+ArgumentList → Expression | Expression "," ArgumentList
+
+// Object Access
+MemberAccess → PrimaryExpression "." Identifier
+ArrayAccess → Identifier "[" Expression "]"
+
+// Object and Array Creation
+ObjectCreation → Identifier "{" "}"
+ArrayLiteral → "[" ElementList "]"
+ElementList → Expression | Expression "," ElementList | ""
+ObjectLiteral → "{" PropertyList "}"
+PropertyList → Property | Property "," PropertyList | ""
+Property → Identifier ":" Expression
+
+// Iteration
+IterationStatement → "Range" "<" Expression "," Expression ">" "{" StatementList "}"
+
+// Import Statement
+ImportStatement → "import" <StringLiteral>
+
+// Return Statement
+ReturnStatement → "return" <Expression>
+
+// Literals
+Literal → <NumberLiteral>
+            | <StringLiteral>
+            | <BooleanLiteral>
+            | <ArrayLiteral>
+            | <ObjectLiteral>
+
+NumberLiteral → Digit | Digit NumberLiteral
+Digit → "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+StringLiteral → "\"" Characters "\""
+Characters → Character | Character Characters
+Character → Letter | Digit | Symbol
+BooleanLiteral → "true" | "false"
+
+// Identifiers
+Identifier → Letter | Letter AlphaNumeric
+AlphaNumeric → Letter | Digit | "_" | Letter AlphaNumeric | Digit AlphaNumeric | "_" AlphaNumeric
+Letter → "a" | "b" | ... | "z" | "A" | "B" | ... | "Z"
+Symbol → "!" | "@" | "#" | "$" | "%" | "^" | "&" | "*" | "(" | ")" | "-" | "+" | "=" | "{" | "}" | "[" | "]" | ":" | ";" | "," | "." | "<" | ">" | "/" | "?" | "|" | "\"" | "'" | "`" | "~"
