@@ -3,6 +3,7 @@ import type { LogicConfig } from "../../types";
 import { parser } from "../parser";
 import { CompilerContext } from "./context";
 import type { Program } from "../parser/ast";
+import { compileNode } from "./functions";
 
 export const compile = async (filePath: string, context: CompilerContext) => {
   const file = Bun.file(filePath);
@@ -15,5 +16,8 @@ export const compile = async (filePath: string, context: CompilerContext) => {
     console.error(ast.error);
     process.exit(1);
   }
-  context.ast = <Program>ast.value!;
+
+  return {
+    run: () => compileNode(ast.value!, context),
+  };
 };

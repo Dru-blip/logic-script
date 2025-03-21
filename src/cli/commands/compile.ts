@@ -1,7 +1,7 @@
 import { parseTOML } from "confbox";
 import { compile } from "../../frontend/compiler";
 import type { LogicCommand } from "../types";
-import { readdir } from "node:fs/promises";
+import { readdir, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import type { LogicConfig } from "../../types";
 import { CompilerContext } from "../../frontend/compiler/context";
@@ -33,16 +33,20 @@ export const compileCommand: LogicCommand = {
       }
       const srcFiles = await readdir(srcPath);
       const targetPath = `${projectPath}/${projectConfig.build.output}`;
+      await mkdir(targetPath, { recursive: true });
+
       for (const fileName of srcFiles) {
         console.log(`Compiling ${fileName} ...`);
-        const file = Bun.file(`${targetPath}/${fileName}`);
-        const writer = file.writer();
-        const context = new CompilerContext(projectConfig, writer, {
+        const file = Bun.file(`${targetPath}/${fileName.split(".")[0]}.pvm`);
+        // const writer = file.writer();
+        const context = new CompilerContext(projectConfig, {
           src: srcPath,
           output: targetPath,
           root: projectPath,
         });
-        await compile(`${srcPath}/${fileName}`, context);
+        const compiler = await compile(`${srcPath}/${fileName}`, context);
+        compiler.run();
+        // writer.end();
       }
     } catch (error) {
       throw error;
