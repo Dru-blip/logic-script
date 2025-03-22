@@ -5,6 +5,8 @@ export class CompiledUnit {
   /** Total number of bytes used by constants in the constant table. */
   public totalConstantBytes: number;
 
+  public totalConstants: number;
+
   /** Byte array representing the constant table. */
   public constantTable: Uint8Array;
 
@@ -19,6 +21,7 @@ export class CompiledUnit {
    */
   constructor() {
     this.totalConstantBytes = 0;
+    this.totalConstants = 0;
     this.constantTable = new Uint8Array(1024);
     this.globalInstructions = new Uint8Array(1024);
     this.totalGlobalBytes = 0;

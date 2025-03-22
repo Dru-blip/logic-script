@@ -6,11 +6,16 @@ export const literal: CompilerFunction<LogicLiteral> = (
   node: LogicLiteral,
   context: CompilerContext,
 ) => {
+  const { unit } = context;
   if (node.literalType === "string") {
     const value = <string>node.value;
-    const buffer = new Uint8Array(value.length);
-    const { written } = new TextEncoder().encodeInto(value, buffer);
-    context.unit.constantTable.set(buffer);
+    unit.totalConstants += 1;
+    const valueBuffer = new TextEncoder().encode(value);
+    const buffer = new Uint8Array(3 + value.length);
+    buffer.set([unit.totalConstants, 0x01, value.length], 0);
+    buffer.set(valueBuffer, 3);
+    unit.constantTable.set(buffer, unit.totalConstantBytes);
+    unit.totalConstantBytes += buffer.byteLength;
   }
 
   if (node.literalType === "number") {

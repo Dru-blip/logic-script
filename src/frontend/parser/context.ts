@@ -12,6 +12,7 @@ export class ParserContext {
 
   advance() {
     this.currentToken = this.lexer.nextToken();
+    // console.log(this.currentToken);
   }
 
   peek(): Token {
