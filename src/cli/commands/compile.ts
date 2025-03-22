@@ -2,7 +2,7 @@ import { parseTOML } from "confbox";
 import { compile } from "../../frontend/compiler";
 import type { LogicCommand } from "../types";
 import { readdir, mkdir } from "node:fs/promises";
-import { existsSync } from "node:fs";
+import { existsSync, rmdirSync } from "node:fs";
 import type { LogicConfig } from "../../types";
 import { CompilerContext } from "../../frontend/compiler/context";
 import { Transformer } from "../../frontend/compiler/transformer";
@@ -55,6 +55,11 @@ export const compileCommand: LogicCommand = {
       // Read source files
       const srcFiles = await readdir(srcPath);
       const targetPath = `${projectPath}/${projectConfig.build.output}`;
+
+      if (exists(targetPath)) {
+        rmdirSync(targetPath, { recursive: true });
+      }
+
       await mkdir(targetPath, { recursive: true });
 
       // Compile each source file

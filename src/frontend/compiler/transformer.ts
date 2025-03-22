@@ -5,9 +5,10 @@ export class Transformer {
   static write(fileWriter: FileSink, unit: CompiledUnit) {
     const header = Transformer.writeHeader(unit);
 
-    const constants = unit.constantTable.subarray(0, unit.totalConstantBytes);
+    const constants = unit.constantTable.toBuffer();
     fileWriter.write(header);
     fileWriter.write(constants);
+    fileWriter.write(unit.globalInstructions.slice(0, unit.totalGlobalBytes));
     fileWriter.write(new Uint8Array([0x79]));
     fileWriter.end();
   }
