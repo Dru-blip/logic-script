@@ -7,7 +7,10 @@ export const literal: CompilerFunction<LogicLiteral> = (
   context: CompilerContext,
 ) => {
   if (node.literalType === "string") {
-    console.log(`String(${node.value})`);
+    const value = <string>node.value;
+    const buffer = new Uint8Array(value.length);
+    const { written } = new TextEncoder().encodeInto(value, buffer);
+    context.unit.constantTable.set(buffer);
   }
 
   if (node.literalType === "number") {

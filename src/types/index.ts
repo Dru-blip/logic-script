@@ -7,7 +7,9 @@ export interface LogicConfig {
     version: string;
     description: string;
   };
-
+  types: {
+    max_str_size: 128;
+  };
   build: {
     entry: string;
     output: string;
