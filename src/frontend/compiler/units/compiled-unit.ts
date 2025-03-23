@@ -22,9 +22,9 @@ export class CompiledUnit {
    * Creates a new CompiledUnit instance with default buffer sizes.
    */
   constructor() {
-    this.totalConstantBytes = 0;
-    this.totalConstants = 0;
     this.constantTable = new ConstantTable();
+    this.totalConstantBytes = this.constantTable.getBufferLength();
+    this.totalConstants = this.constantTable.getSize();
     this.globalInstructions = new Uint8Array(1024);
     this.totalGlobalBytes = 0;
   }

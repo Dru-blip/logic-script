@@ -19,7 +19,7 @@ VariableAssignment → Identifier "=" Expression
 
 // Function Declarations
 FunctionDeclaration → "fn" Identifier "(" ParameterList ")" "=" Expression
-ParameterList → Identifier | Identifier "," ParameterList | ""
+ParameterList → Identifier | Identifier "," ParameterList
 
 // Class Declarations
 ClassDeclaration → "class" Identifier "{" ClassBody "}"
@@ -66,9 +66,9 @@ ArrayAccess → Identifier "[" Expression "]"
 // Object and Array Creation
 ObjectCreation → Identifier "{" "}"
 ArrayLiteral → "[" ElementList "]"
-ElementList → Expression | Expression "," ElementList | ""
+ElementList → Expression | Expression "," ElementList
 ObjectLiteral → "{" PropertyList "}"
-PropertyList → Property | Property "," PropertyList | ""
+PropertyList → Property | Property "," PropertyList
 Property → Identifier ":" Expression
 
 // Iteration
