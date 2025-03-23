@@ -7,6 +7,7 @@ export class CompiledUnit {
   /** Total number of bytes used by constants in the constant table. */
   public totalConstantBytes: number;
 
+  /** Total number of constants in the constant table. */
   public totalConstants: number;
 
   /** Byte array representing the constant table. */

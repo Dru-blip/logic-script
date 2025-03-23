@@ -1,0 +1,85 @@
+<Type> ::= "Int" | "Float" | "Bool" | "String" | <Identifier> | <ArrayType>
+<ArrayType> ::= "[" <Type> "]"
+
+
+<Program> ::= <ExpressionList>
+<ExpressionList> ::= <Expression> | <Expression> <ExpressionList>
+
+
+<Expression> ::= <VariableDeclaration>
+               | <AssignmentExpression>
+               | <FunctionDeclaration>
+               | <StructDeclaration>
+               | <ImportExpression>
+               | <ReturnExpression>
+               | <IterationExpression>
+               | <LogicOr>
+
+<VariableDeclaration> ::= "let" <Identifier> ":" <Type> "=" <Expression>
+<AssignmentExpression> ::= <Identifier> "=" <Expression>
+<FunctionCall> ::= <Identifier> "(" <ArgumentList> ")"
+<ArgumentList> ::= <Expression> | <Expression> "," <ArgumentList>
+
+<ObjectCreation> ::= <Identifier> "{" <PropertyAssignments> "}"
+<PropertyAssignments> ::= <Property> | <Property> "," <PropertyAssignments>
+<Property> ::= <Identifier> "=" <Expression>
+
+<ArrayLiteral> ::= "[" <ElementList> "]"
+<ElementList> ::= <Expression> | <Expression> "," <ElementList>
+
+
+<ReturnExpression> ::= "return" <Expression>
+<ImportExpression> ::= "import" <StringLiteral>
+
+
+<IterationExpression> ::= "Range" "<" <Expression> "," <Expression> ">" "{" <ExpressionList> "}"
+<ConditionalExpression> ::= "If" "<" <Expression> "," <Expression> "," <Expression> ">"
+
+
+<FunctionDeclaration> ::= "fn" "(" <ParameterList> ")" "->" <Type> "=" <Expression>
+<ParameterList> ::= <Identifier> ":" <Type> | <Identifier> ":" <Type> "," <ParameterList>
+
+
+<StructDeclaration> ::= "struct" "{" <StructBody> "}"
+<StructBody> ::= <StructMember> | <StructMember> <StructBody>
+<StructMember> ::= <FunctionDeclaration> | <VariableDeclaration>
+
+
+<LogicOr> ::= <LogicAnd> ( "or" <LogicAnd> )*
+<LogicAnd> ::= <EqualityExpression> ( "and" <EqualityExpression> )*
+<EqualityExpression> ::= <ComparisonExpression> ( ("==" | "!=") <ComparisonExpression> )*
+<ComparisonExpression> ::= <AdditiveExpression> ( (">" | ">=" | "<" | "<=") <AdditiveExpression> )*
+<AdditiveExpression> ::= <MultiplicativeExpression> ( ("+" | "-") <MultiplicativeExpression> )*
+<MultiplicativeExpression> ::= <UnaryExpression> ( ("*" | "/") <UnaryExpression> )*
+<UnaryExpression> ::= ( "+" | "-" | "!" ) <UnaryExpression> | <PrimaryExpression>
+
+
+<PrimaryExpression> ::= <Literal>
+                      | <Identifier>
+                      | "(" <Expression> ")"
+                      | <FunctionCall>
+                      | <ConditionalExpression>
+                      | <MemberAccess>
+                      | <ArrayAccess>
+                      | <ObjectCreation>
+
+<MemberAccess> ::= <PrimaryExpression> "." <Identifier>
+<ArrayAccess> ::= <Identifier> "[" <Expression> "]"
+
+
+<Literal> ::= <NumberLiteral> | <StringLiteral> | <BooleanLiteral> | <ArrayLiteral> | <ObjectCreation>
+<NumberLiteral> ::= <Digit> | <Digit> <NumberLiteral>
+<Digit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+<StringLiteral> ::= "\"" <Characters> "\""
+<Characters> ::= <Character> | <Character> <Characters>
+<Character> ::= <Letter> | <Digit> | <Symbol>
+<BooleanLiteral> ::= "true" | "false"
+
+<Identifier> ::= <Letter> | <Letter> <AlphaNumeric>
+<AlphaNumeric> ::= <Letter> | <Digit> | "_" | <AlphaNumeric> <Letter> | <AlphaNumeric> <Digit> | <AlphaNumeric> "_"
+<Letter> ::= "a" | "b" | ... | "z" | "A" | "B" | ... | "Z"
+
+
+<Symbol> ::= "!" | "@" | "#" | "$" | "%" | "^" | "&" | "*" | "(" | ")"
+           | "-" | "+" | "=" | "{" | "}" | "[" | "]" | ":" | ";" | ","
+           | "." | "<" | ">" | "/" | "?" | "|" | "\"" | "'" | "`" | "~"

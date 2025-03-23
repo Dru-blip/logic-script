@@ -1,101 +1,90 @@
-// Program Structure
-Program → StatementList
+<program> ::= <statement_list>
 
-// Statements
-StatementList → Statement | Statement StatementList
-Statement → VariableDeclaration
-            | FunctionDeclaration
-            | ClassDeclaration
-            | ExpressionStatement
-            | ImportStatement
-            | ReturnStatement
-            | IterationStatement
+<statement_list> ::= <statement>*
 
-ExpressionStatement → Expression
+<statement> ::= <variable_declaration>
+              | <function_declaration>
+              | <struct_declaration>
+              | <expression_statement>
+              | <import_statement>
+              | <return_statement>
+              | <iteration_statement>
 
-// Variable Declarations
-VariableDeclaration → "let" Identifier "=" Expression
-VariableAssignment → Identifier "=" Expression
+<expression_statement> ::= <expression>
 
-// Function Declarations
-FunctionDeclaration → "fn" Identifier "(" ParameterList ")" "=" Expression
-ParameterList → Identifier | Identifier "," ParameterList
+<variable_declaration> ::= "let" <identifier> "=" <expression>
+<variable_assignment> ::= <identifier> "=" <expression>
 
-// Class Declarations
-ClassDeclaration → "class" Identifier "{" ClassBody "}"
-ClassBody → ClassMember | ClassMember ClassBody
-ClassMember → FunctionDeclaration | VariableDeclaration
+<function_declaration> ::= "fn" <identifier> "(" <parameter_list>? ")" "=" <expression>
+<parameter_list> ::= <identifier> ("," <identifier>)*
 
-// Expressions
-Expression → <LogicOr>
+<struct_declaration> ::= "struct" <identifier> "{" <struct_body>? "}"
+<struct_body> ::= <struct_member>*
+<struct_member> ::= <function_declaration> | <variable_declaration>
 
-LogicOr       → <LogicAnd> ( "or" <LogicAnd> )* ;
-LogicAnd      → EqualityExpression ( "and" EqualityExpression )* ;
+<expression> ::= <logic_or>
 
-EqualityExpression → ComparisonExpression ("=="|"!=" EqualityExpression)*
+<logic_or> ::= <logic_and> ("or" <logic_and>)*
+<logic_and> ::= <equality_expression> ("and" <equality_expression>)*
+<equality_expression> ::= <comparison_expression> (("==" | "!=") <comparison_expression>)*
+<comparison_expression> ::= <additive_expression> ((">" | ">=" | "<" | "<=") <additive_expression>)*
+<additive_expression> ::= <multiplicative_expression> (("+" | "-") <multiplicative_expression>)*
+<multiplicative_expression> ::= <unary_expression> (("*" | "/") <unary_expression>)*
 
-ComparisonExpression → AdditiveExpression ( ( ">" | ">=" | "<" | "<=" ) AdditiveExpression )* ;
+<unary_expression> ::= ("+" | "-" | "!") <unary_expression> | <primary_expression>
 
-AdditiveExpression → MultiplicativeExpression ("+"|"-") AdditiveExpression
+<primary_expression> ::= <literal>
+                       | <identifier>
+                       | "(" <expression> ")"
+                       | <function_call>
+                       | <conditional_expression>
+                       | <member_access>
+                       | <array_access>
+                       | <object_creation>
 
-MultiplicativeExpression → UnaryExpression ("*"|"/" MultiplicativeExpression)*
+<conditional_expression> ::= "If" "<" <expression> "," <expression> "," <expression> ">"
 
-UnaryExpression → ("+"|"-"|"!") <UnaryExpression>
-                | <PrimaryExpression>
+<function_call> ::= <identifier> "(" <argument_list>? ")"
+<argument_list> ::= <expression> ("," <expression>)*
 
-PrimaryExpression → <Literal>
-                    | <Identifier>
-                    | "(" <Expression> ")"
-                    | <FunctionCall>
-                    | <ConditionalExpression>
-                    | <MemberAccess>
-                    | <ArrayAccess>
-                    | <ObjectCreation>
+<member_access> ::= <primary_expression> "." <identifier>
+<array_access> ::= <identifier> "[" <expression> "]"
 
-// Conditional Expression
-ConditionalExpression → "If" "<" <Expression> "," <Expression> "," <Expression> ">"
+<object_creation> ::= <identifier> "{" "}"
+<array_literal> ::= "[" <element_list>? "]"
+<element_list> ::= <expression> ("," <expression>)*
 
-// Function Calls
-FunctionCall → Identifier "(" ArgumentList ")"
-ArgumentList → Expression | Expression "," ArgumentList
+<object_literal> ::= "{" <property_list>? "}"
+<property_list> ::= <property> ("," <property>)*
+<property> ::= <identifier> ":" <expression>
 
-// Object Access
-MemberAccess → PrimaryExpression "." Identifier
-ArrayAccess → Identifier "[" Expression "]"
+<iteration_statement> ::= "Range" "<" <expression> "," <expression> ">" "{" <statement_list> "}"
 
-// Object and Array Creation
-ObjectCreation → Identifier "{" "}"
-ArrayLiteral → "[" ElementList "]"
-ElementList → Expression | Expression "," ElementList
-ObjectLiteral → "{" PropertyList "}"
-PropertyList → Property | Property "," PropertyList
-Property → Identifier ":" Expression
+<import_statement> ::= "import" <string_literal>
 
-// Iteration
-IterationStatement → "Range" "<" Expression "," Expression ">" "{" StatementList "}"
+<return_statement> ::= "return" <expression>
 
-// Import Statement
-ImportStatement → "import" <StringLiteral>
+<literal> ::= <number_literal>
+           | <string_literal>
+           | <boolean_literal>
+           | <array_literal>
+           | <object_literal>
 
-// Return Statement
-ReturnStatement → "return" <Expression>
+<number_literal> ::= "-"? <digit>+
+<digit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
 
-// Literals
-Literal → <NumberLiteral>
-            | <StringLiteral>
-            | <BooleanLiteral>
-            | <ArrayLiteral>
-            | <ObjectLiteral>
+<string_literal> ::= '"' <characters>* '"'
+<characters> ::= <character>*
+<character> ::= <letter> | <digit> | <symbol>
 
-NumberLiteral → Digit | Digit NumberLiteral
-Digit → "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
-StringLiteral → "\"" Characters "\""
-Characters → Character | Character Characters
-Character → Letter | Digit | Symbol
-BooleanLiteral → "true" | "false"
+<boolean_literal> ::= "true" | "false"
 
-// Identifiers
-Identifier → Letter | Letter AlphaNumeric
-AlphaNumeric → Letter | Digit | "_" | Letter AlphaNumeric | Digit AlphaNumeric | "_" AlphaNumeric
-Letter → "a" | "b" | ... | "z" | "A" | "B" | ... | "Z"
-Symbol → "!" | "@" | "#" | "$" | "%" | "^" | "&" | "*" | "(" | ")" | "-" | "+" | "=" | "{" | "}" | "[" | "]" | ":" | ";" | "," | "." | "<" | ">" | "/" | "?" | "|" | "\"" | "'" | "`" | "~"
+<identifier> ::= <letter> (<alphanumeric>)*
+<alphanumeric> ::= <letter> | <digit> | "_"
+
+<letter> ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z"
+           | "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z"
+
+<symbol> ::= "!" | "@" | "#" | "$" | "%" | "^" | "&" | "*" | "(" | ")" | "-" | "+" | "="
+          | "{" | "}" | "[" | "]" | ":" | ";" | "," | "." | "<" | ">" | "/" | "?" | "|"
+          | "'" | "`" | "~"
