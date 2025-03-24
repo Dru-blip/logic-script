@@ -4,7 +4,7 @@ import type { LogicParser } from "../types";
 import { expression } from "./expressions";
 
 export const program: LogicParser<Program> = (context) => {
-  const statements = [];
+  const expressions = [];
   while (context.currentToken.type !== TokenType.EOF) {
     const expr = expression(context);
     if (expr.error) {
@@ -13,8 +13,8 @@ export const program: LogicParser<Program> = (context) => {
         error: expr.error,
       };
     }
-    statements.push(expr.value!);
+    expressions.push(expr.value!);
   }
 
-  return { isOk: true, value: new Program(statements) };
+  return { isOk: true, value: new Program(expressions) };
 };

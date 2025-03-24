@@ -31,4 +31,3 @@ export interface LogicNode {
 }
 
 export interface LogicExpression extends LogicNode {}
-export interface LogicStatement extends LogicNode {}
