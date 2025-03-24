@@ -1,3 +1,4 @@
+import assert from "node:assert";
 import { Token, TokenType } from "./token";
 
 export { Token, TokenType };
@@ -58,6 +59,9 @@ export class Lexer {
     this.keywords.set("Let", TokenType.LET);
     this.keywords.set("and", TokenType.AND);
     this.keywords.set("or", TokenType.OR);
+    this.keywords.set("Int", TokenType.INT);
+    this.keywords.set("Bool", TokenType.BOOL);
+    this.keywords.set("Str", TokenType.STR);
 
     this.position = 0;
     this.line = 1;
@@ -73,6 +77,11 @@ export class Lexer {
     this.currentChar = this.nextChar;
     this.nextChar = this.source.at(this.position++);
     this.col++;
+
+    assert(
+      this.position <= this.source.length,
+      `Lexer advance(): position ${this.position} exceeded source length ${this.source.length}`,
+    );
   }
 
   /**
@@ -321,6 +330,7 @@ export class Lexer {
             this.position,
           );
         }
+        assert(false, `Unexpected character: ${this.currentChar}`);
         const errorToken = this.makeToken(TokenType.ERROR, "invalid character");
         this.advance();
         return errorToken;
