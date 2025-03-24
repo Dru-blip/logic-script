@@ -1,17 +1,15 @@
 import { TokenType } from "../../lexer";
 import { Program } from "../ast";
 import type { LogicParser } from "../types";
-import { expression } from "./expressions";
+import { expression } from ".";
 
 export const program: LogicParser<Program> = (context) => {
   const statements = [];
   while (context.currentToken.type !== TokenType.EOF) {
     const expr = expression(context);
-    if (expr.error) {
-      return {
-        isOk: false,
-        error: expr.error,
-      };
+    if (expr.isOk) {
+      statements.push(expr.value!);
+    } else {
     }
     statements.push(expr.value!);
   }

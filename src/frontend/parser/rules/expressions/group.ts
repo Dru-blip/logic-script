@@ -1,4 +1,4 @@
-import { expression } from ".";
+import { expression } from "../index";
 import { TokenType } from "../../../lexer";
 import type { LogicNode } from "../../ast";
 import { GroupingExpression } from "../../ast/expressions/group";

@@ -77,11 +77,6 @@ export class Lexer {
     this.currentChar = this.nextChar;
     this.nextChar = this.source.at(this.position++);
     this.col++;
-
-    assert(
-      this.position <= this.source.length,
-      `Lexer advance(): position ${this.position} exceeded source length ${this.source.length}`,
-    );
   }
 
   /**
@@ -290,6 +285,9 @@ export class Lexer {
       case ">": {
         return this.scanOperators();
       }
+      case ":": {
+        return this.makeToken(TokenType.COLON, ":");
+      }
       case '"': {
         let literal = "";
         this.advance();
@@ -330,7 +328,7 @@ export class Lexer {
             this.position,
           );
         }
-        assert(false, `Unexpected character: ${this.currentChar}`);
+        // assert(false, `Unexpected character: ${this.currentChar}`);
         const errorToken = this.makeToken(TokenType.ERROR, "invalid character");
         this.advance();
         return errorToken;

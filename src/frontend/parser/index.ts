@@ -1,7 +1,7 @@
 import { Lexer } from "../lexer";
 import { Program, type LogicNode } from "./ast";
 import { ParserContext } from "./context";
-import { expression } from "./rules/expressions";
+import { expression } from "./rules";
 import { program } from "./rules/program";
 import type { ParseResult } from "./types";
 

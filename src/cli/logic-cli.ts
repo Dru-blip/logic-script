@@ -10,10 +10,15 @@ export class LogicCli {
   }
 
   addCommand(lc: LogicCommand) {
-    this.program
+    const cmd = this.program
       .command(lc.command)
       .description(lc.description)
       .action(lc.action);
+
+    for (const option of lc.options ?? []) {
+      cmd.addOption(option);
+    }
+
     return this;
   }
 }

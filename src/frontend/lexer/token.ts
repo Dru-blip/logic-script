@@ -13,6 +13,7 @@ export enum TokenType {
   GREATER_THAN_EQUAL = ">=",
   BANG = "!",
   NOT_EQUAL = "!=",
+  COLON = ":",
 
   //PUNCTUATION
   HASH = "#",
