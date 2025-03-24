@@ -1,9 +1,4 @@
-export {
-  NodeType,
-  type LogicNode,
-  type LogicStatement,
-  type LogicExpression,
-} from "./node";
+export { NodeType, type LogicNode, type LogicExpression } from "./node";
 export { Program } from "./program";
 export { LogicLiteral } from "./literal";
 export {
