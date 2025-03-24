@@ -1,26 +1,34 @@
 import { TokenType } from "../../lexer";
 import { LogicLiteral } from "../ast";
 import { ParserContext } from "../context";
-import { type LogicParser } from "../types";
+import { PrimitiveType, type LogicParser } from "../types";
 
-export const literal: LogicParser<LogicLiteral> = (context: ParserContext) => {
+export const literal: LogicParser<LogicLiteral<any, PrimitiveType>> = (
+  context: ParserContext,
+) => {
   const { currentToken } = context;
   if (currentToken.type === TokenType.NUMBER) {
     return {
       isOk: true,
-      value: new LogicLiteral<number>(Number(currentToken.literal), "number", {
-        line: currentToken.line,
-        col: currentToken.col,
-        offset: currentToken.offset,
-      }),
+      value: new LogicLiteral<number, PrimitiveType.INT>(
+        Number(currentToken.literal),
+        PrimitiveType.INT,
+        "number",
+        {
+          line: currentToken.line,
+          col: currentToken.col,
+          offset: currentToken.offset,
+        },
+      ),
     };
   }
 
   if (currentToken.type === TokenType.BOOLEAN) {
     return {
       isOk: true,
-      value: new LogicLiteral<boolean>(
+      value: new LogicLiteral<boolean, PrimitiveType.BOOLEAN>(
         currentToken.literal === "true",
+        PrimitiveType.BOOLEAN,
         "boolean",
         {
           line: currentToken.line,
@@ -34,11 +42,16 @@ export const literal: LogicParser<LogicLiteral> = (context: ParserContext) => {
   if (currentToken.type === TokenType.STRING) {
     return {
       isOk: true,
-      value: new LogicLiteral<string>(currentToken.literal, "string", {
-        line: currentToken.line,
-        col: currentToken.col,
-        offset: currentToken.offset,
-      }),
+      value: new LogicLiteral<string, PrimitiveType.STR>(
+        currentToken.literal,
+        PrimitiveType.STR,
+        "string",
+        {
+          line: currentToken.line,
+          col: currentToken.col,
+          offset: currentToken.offset,
+        },
+      ),
     };
   }
 

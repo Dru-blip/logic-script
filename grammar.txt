@@ -1,4 +1,4 @@
-<Type> ::= "Int" | "Float" | "Bool" | "String" | <Identifier> | <ArrayType>
+<Type> ::= "Int" | "Float" | "Bool" | "Str" | <Identifier> | <ArrayType>
 <ArrayType> ::= "[" <Type> "]"
 
 
@@ -15,7 +15,7 @@
                | <IterationExpression>
                | <LogicOr>
 
-<VariableDeclaration> ::= "let" <Identifier> ":" <Type> "=" <Expression>
+<VariableDeclaration> ::= "let" <Identifier> ":" <Type>  ("=" <Expression>)?
 <AssignmentExpression> ::= <Identifier> "=" <Expression>
 <FunctionCall> ::= <Identifier> "(" <ArgumentList> ")"
 <ArgumentList> ::= <Expression> | <Expression> "," <ArgumentList>

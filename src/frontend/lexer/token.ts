@@ -13,6 +13,7 @@ export enum TokenType {
   GREATER_THAN_EQUAL = ">=",
   BANG = "!",
   NOT_EQUAL = "!=",
+  COLON = ":",
 
   //PUNCTUATION
   HASH = "#",
@@ -44,6 +45,10 @@ export enum TokenType {
   BOOLEAN = "boolean",
   TRUE = "true",
   FALSE = "false",
+
+  INT = "Int",
+  BOOL = "Bool",
+  STR = "Str",
   EOF = "EOF",
 }
 

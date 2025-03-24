@@ -14,11 +14,11 @@ export interface LogicConfig {
     entry: string;
     output: string;
   };
-
   target: {
     byte_order: string;
   };
   paths: {
     src_dir: string;
+    debug_dir: string;
   };
 }

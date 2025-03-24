@@ -1,4 +1,5 @@
-import { type TokenLocation } from "../../types";
+import type { Optional } from "../../../optional";
+import { type LogicType, type TokenLocation } from "../../types";
 import { type LogicNode, NodeType, type LogicExpression } from "../node";
 
 export class Identifier implements LogicNode {
@@ -12,8 +13,16 @@ export class Identifier implements LogicNode {
 export class VariableDeclaration implements LogicNode {
   readonly type = NodeType.VariableDeclaration;
   constructor(
-    public name: string,
+    public name: Identifier,
     public initializer: LogicNode | null,
-    public isMutable: boolean,
+    public declType: LogicType,
   ) {}
+
+  // public static make(
+  //   name: Identifier,
+  //   initializer: LogicNode | null,
+  //   declType: LogicType,
+  // ): VariableDeclaration {
+  //   return new VariableDeclaration(name, initializer, declType);
+  // }
 }

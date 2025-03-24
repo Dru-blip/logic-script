@@ -13,3 +13,12 @@ export type TokenLocation = {
   col: number;
   offset: number;
 };
+
+export enum PrimitiveType {
+  STR = "Str",
+  INT = "Int",
+  BOOLEAN = "Bool",
+  UNKNOWN = "Unknown",
+}
+
+export type LogicType = PrimitiveType;
