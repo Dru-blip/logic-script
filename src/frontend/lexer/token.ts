@@ -51,6 +51,8 @@ export enum TokenType {
   INT = "Int",
   BOOL = "Bool",
   STR = "Str",
+  ANY = "any",
+  VOID = "void",
   EOF = "EOF",
 }
 

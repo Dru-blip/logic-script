@@ -1,4 +1,4 @@
-import { PrimitiveType } from "../../types";
+import { PrimitiveType, SpecialType } from "../../types";
 import { TokenType } from "../lexer";
 
 export const tokenToType = (token: TokenType) => {
@@ -6,9 +6,11 @@ export const tokenToType = (token: TokenType) => {
     return PrimitiveType.INT;
   } else if (token === TokenType.STR) {
     return PrimitiveType.STR;
-  } else if(token===TokenType.BOOL) {
+  } else if (token === TokenType.BOOL) {
     return PrimitiveType.BOOLEAN;
-  }else{
-    return null
+  } else if (token === TokenType.ANY) {
+    return SpecialType.ANY;
+  } else {
+    return null;
   }
 };

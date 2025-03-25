@@ -14,8 +14,6 @@ import { LgErrorCode, makeSyntaxError } from "../../../errors";
 export const variableDeclaration: LogicParser<VariableDeclaration> = (
   context,
 ) => {
-  // console.log("parsing variable declaration");
-
   if (!context.check(TokenType.LET)) {
     return {
       isOk: false,
@@ -54,7 +52,20 @@ export const variableDeclaration: LogicParser<VariableDeclaration> = (
         ),
       };
     }
+    decltype = ty;
     context.advance();
+  } else {
+    return {
+      isOk: false,
+      error: makeSyntaxError(
+        context.lexer.filename,
+        context.currentToken.location,
+        LgErrorCode.MISSING_TYPE,
+        "expected type",
+        "expected type after ':'",
+        context.currentToken.type,
+      ),
+    };
   }
 
   let expr: LogicNode | undefined;
@@ -63,7 +74,14 @@ export const variableDeclaration: LogicParser<VariableDeclaration> = (
     const result = expression(context);
     if (result.error) {
       return {
-        error: result.error,
+        error: makeSyntaxError(
+          context.lexer.filename,
+          context.currentToken.location,
+          LgErrorCode.MISSING_ASSIGNMENT,
+          "expected expression",
+          "expected expression after '='",
+          context.currentToken.type,
+        ),
         isOk: false,
       };
     }
@@ -86,17 +104,6 @@ export const variableDeclaration: LogicParser<VariableDeclaration> = (
     return {
       isOk: true,
       value: new VariableDeclaration(<Identifier>ident.value, null, decltype),
-    };
-  }
-
-  if (!decltype && expr) {
-    return {
-      isOk: true,
-      value: new VariableDeclaration(
-        <Identifier>ident.value,
-        <LogicNode>expr,
-        PrimitiveType.UNKNOWN,
-      ),
     };
   }
 

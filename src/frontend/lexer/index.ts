@@ -63,6 +63,8 @@ export class Lexer {
     this.keywords.set("Int", TokenType.INT);
     this.keywords.set("Bool", TokenType.BOOL);
     this.keywords.set("Str", TokenType.STR);
+    this.keywords.set("any", TokenType.ANY);
+    this.keywords.set("void", TokenType.VOID);
 
     this.position = 0;
     this.line = 0;
@@ -294,7 +296,7 @@ export class Lexer {
         return this.makeToken(type, type, location);
       }
       case ":": {
-        this.advance()
+        this.advance();
         return this.makeToken(TokenType.COLON, ":", location);
       }
       case '"': {

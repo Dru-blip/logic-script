@@ -46,4 +46,8 @@ export enum PrimitiveType {
   UNKNOWN = "Unknown",
 }
 
-export type LogicType = PrimitiveType;
+export enum SpecialType {
+  ANY = "any",
+}
+
+export type LogicType = PrimitiveType | SpecialType;

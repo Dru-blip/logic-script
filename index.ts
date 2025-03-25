@@ -18,9 +18,3 @@ cli
   .addCommand(validateCommand);
 
 cli.program.parse(process.argv);
-
-// const lexer = new Lexer(await Bun.file("/home/gojo/Desktop/workspaces/logic script/sandbox/hello/src/main.lgs").text(), "main.lgs");
-
-// const tokens=lexer.getTokens()
-
-// console.log(tokens)
