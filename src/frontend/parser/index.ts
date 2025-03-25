@@ -1,9 +1,10 @@
+import type { ParseResult } from "../../types";
+import { printError } from "../errors";
 import { Lexer } from "../lexer";
 import { Program, type LogicNode } from "./ast";
 import { ParserContext } from "./context";
 import { expression } from "./rules";
 import { program } from "./rules/program";
-import type { ParseResult } from "./types";
 
 /**
  * Parses the given source code and returns a program node.
@@ -12,11 +13,30 @@ import type { ParseResult } from "./types";
  * @param filename The filename of the source code.
  * @returns The parsed program node.
  */
-export const parse = (source: string, filename: string) => {
+export const parse: (
+  source: string,
+  filename: string,
+) => {
+  parse: () => ParseResult<Program>;
+} = (source: string, filename: string) => {
   const lexer = new Lexer(source, filename);
   const context = new ParserContext(lexer);
 
   return {
-    parse: () => program(context),
+    parse: () => {
+      const programNode = program(context);
+      if (context.errors.length > 0) {
+        for (const error of context.errors) {
+          printError(error, source);
+        }
+
+        return {
+          isOk: false,
+          error: context.errors[0],
+          value: null,
+        };
+      }
+      return programNode;
+    },
   };
 };

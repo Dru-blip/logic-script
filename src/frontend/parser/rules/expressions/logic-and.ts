@@ -1,6 +1,7 @@
+import type { LogicParser } from "../../../../types";
 import { TokenType } from "../../../lexer";
 import { BinaryExpression, type LogicNode } from "../../ast";
-import { type LogicParser } from "../../types";
+// import { type LogicParser } from "../../types";
 import { equality } from "./equality";
 
 export const logicAnd: LogicParser<LogicNode> = (context) => {

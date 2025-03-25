@@ -1,10 +1,15 @@
 import { expression } from "..";
 import { Token, TokenType } from "../../../lexer";
-import { Optional } from "../../../optional";
+
 import { Identifier, VariableDeclaration, type LogicNode } from "../../ast";
-import { PrimitiveType, type LogicParser, type LogicType } from "../../types";
+import {
+  PrimitiveType,
+  type LogicParser,
+  type LogicType,
+} from "../../../../types";
 import { tokenToType } from "../../utils";
 import { primary } from "../expressions/primary";
+import { makeSyntaxError } from "../../../errors";
 
 export const variableDeclaration: LogicParser<VariableDeclaration> = (
   context,
@@ -43,7 +48,11 @@ export const variableDeclaration: LogicParser<VariableDeclaration> = (
     if (!decltype && !expr) {
       return {
         isOk: false,
-        error: "Expected variable type or expression",
+        error: makeSyntaxError(
+          context.lexer.filename,
+          context.currentToken.location,
+          "Expected variable type or expression",
+        ),
       };
     }
 
@@ -76,6 +85,10 @@ export const variableDeclaration: LogicParser<VariableDeclaration> = (
   }
   return {
     isOk: false,
-    error: "Expected 'let' keyword",
+    error: makeSyntaxError(
+      context.lexer.filename,
+      context.currentToken.location,
+      "Expected 'let' keyword",
+    ),
   };
 };

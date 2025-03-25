@@ -1,6 +1,7 @@
+import type { LogicParser } from "../../../../types";
 import { TokenType } from "../../../lexer";
 import { BinaryExpression, type LogicNode } from "../../ast";
-import { type LogicParser } from "../../types";
+// import { type LogicParser } from "../../types";
 import { logicAnd } from "./logic-and";
 
 export const logicOr: LogicParser<LogicNode> = (context) => {
@@ -13,6 +14,7 @@ export const logicOr: LogicParser<LogicNode> = (context) => {
       const operator = currentToken;
       const right = logicAnd(context);
       if (!right.isOk) {
+        console.log(right);
         return right;
       }
       left = {

@@ -23,8 +23,8 @@ export const compile = async (
   const source = await file.text();
   const par = parse(source, filePath);
   const ast = par.parse();
-  if (ast.error) {
-    console.error(ast.error);
+  if (!ast.isOk) {
+    // console.log(ast.error);
     process.exit(1);
   }
 

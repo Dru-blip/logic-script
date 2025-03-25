@@ -1,18 +1,20 @@
+import { makeSyntaxError, type LogicError } from "../errors";
 import { Lexer } from "../lexer";
 import { Token, TokenType } from "../lexer/token";
 
 export class ParserContext {
   lexer: Lexer;
   currentToken!: Token;
+  errors: LogicError[];
 
   constructor(lexer: Lexer) {
     this.lexer = lexer;
+    this.errors = [];
     this.advance();
   }
 
   advance() {
     this.currentToken = this.lexer.nextToken();
-    // console.log(this.currentToken);
   }
 
   peek(): Token {
@@ -41,9 +43,8 @@ export class ParserContext {
   }
 
   error(message: string): void {
-    console.error(
-      `[line ${this.currentToken.line}, col ${this.currentToken.col}] Error: ${message}`,
+    this.errors.push(
+      makeSyntaxError(this.lexer.filename, this.currentToken.location, message),
     );
-    throw new Error(message);
   }
 }

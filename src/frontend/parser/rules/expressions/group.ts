@@ -2,7 +2,8 @@ import { expression } from "../index";
 import { TokenType } from "../../../lexer";
 import type { LogicNode } from "../../ast";
 import { GroupingExpression } from "../../ast/expressions/group";
-import type { LogicParser } from "../../types";
+import type { LogicParser } from "../../../../types";
+// import type { LogicParser } from "../../types";
 
 export const group: LogicParser<LogicNode> = (context) => {
   context.advance();

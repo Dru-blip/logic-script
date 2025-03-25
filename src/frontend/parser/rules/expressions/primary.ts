@@ -1,7 +1,9 @@
+import type { LogicParser } from "../../../../types";
+import { makeSyntaxError } from "../../../errors";
 import { TokenType } from "../../../lexer";
 import { Identifier, type LogicNode } from "../../ast";
 import { type ParserContext } from "../../context";
-import { type LogicParser, type ParseResult } from "../../types";
+// import { type LogicParser, type ParseResult } from "../../types";
 import { literal } from "../literal";
 import { group } from "./group";
 
@@ -15,10 +17,10 @@ export const primary: LogicParser<LogicNode> = (context: ParserContext) => {
       return result;
     }
     case TokenType.IDENTIFIER: {
-      const { literal, line, col, offset } = context.currentToken;
+      const { literal, location } = context.currentToken;
       const result = {
         isOk: true,
-        value: new Identifier(literal, { line, col, offset }),
+        value: new Identifier(literal, location),
       };
       context.advance();
       return result;
@@ -31,7 +33,11 @@ export const primary: LogicParser<LogicNode> = (context: ParserContext) => {
     default: {
       return {
         isOk: false,
-        message: `Unexpected token ${context.currentToken.type}`,
+        error: makeSyntaxError(
+          context.lexer.filename,
+          context.currentToken.location,
+          `Unexpected token ${context.currentToken.type}`,
+        ),
       };
     }
   }

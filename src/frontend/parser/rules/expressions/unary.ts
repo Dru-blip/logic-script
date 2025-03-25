@@ -1,6 +1,7 @@
+import type { LogicParser } from "../../../../types";
 import { TokenType } from "../../../lexer";
 import { type LogicNode, UnaryExpression } from "../../ast";
-import { type LogicParser } from "../../types";
+// import { type LogicParser } from "../../types";
 import { primary } from "./primary";
 
 export const unary: LogicParser<LogicNode> = (context) => {
@@ -11,6 +12,12 @@ export const unary: LogicParser<LogicNode> = (context) => {
     if (right.isOk) {
       return { value: new UnaryExpression(token, right.value!), isOk: true };
     }
+
+    if (right.error) {
+      right.error.expected = "Expected expression";
+      right.error.unexpected = context.currentToken.literal;
+    }
+
     return right;
   }
   return primary(context);

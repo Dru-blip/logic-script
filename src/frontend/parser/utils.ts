@@ -1,5 +1,5 @@
+import { PrimitiveType } from "../../types";
 import { TokenType } from "../lexer";
-import { PrimitiveType } from "./types";
 
 export const tokenToType = (token: TokenType) => {
   if (token === TokenType.INT) {

@@ -1,6 +1,7 @@
+import type { LogicParser } from "../../../types";
 import { TokenType } from "../../lexer";
 import { type LogicNode } from "../ast";
-import { type LogicParser } from "../types";
+// import { type LogicParser } from "../types";
 import { variableDeclaration } from "./declarations/variable";
 import { logicOr } from "./expressions/logic-or";
 

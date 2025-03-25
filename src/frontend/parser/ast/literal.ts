@@ -1,4 +1,5 @@
-import { PrimitiveType, type TokenLocation } from "../types";
+// import { PrimitiveType, type TokenLocation } from "../types";
+import type { PrimitiveType, TokenLocation } from "../../../types";
 import { type LogicNode, NodeType } from "./node";
 
 export class LogicLiteral<T = any, Ty extends PrimitiveType>

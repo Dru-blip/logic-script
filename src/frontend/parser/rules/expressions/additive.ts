@@ -1,6 +1,7 @@
+import type { LogicParser } from "../../../../types";
 import { TokenType } from "../../../lexer";
 import { BinaryExpression, type LogicNode } from "../../ast";
-import { type LogicParser } from "../../types";
+// import { type LogicParser } from "../../types";
 import { multiplicative } from "./multiplicative";
 import { primary } from "./primary";
 

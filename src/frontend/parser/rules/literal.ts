@@ -1,7 +1,9 @@
+import { PrimitiveType, type LogicParser } from "../../../types";
+import { makeSyntaxError } from "../../errors";
 import { TokenType } from "../../lexer";
 import { LogicLiteral } from "../ast";
 import { ParserContext } from "../context";
-import { PrimitiveType, type LogicParser } from "../types";
+// import { PrimitiveType, type LogicParser } from "../types";
 
 export const literal: LogicParser<LogicLiteral<any, PrimitiveType>> = (
   context: ParserContext,
@@ -14,11 +16,7 @@ export const literal: LogicParser<LogicLiteral<any, PrimitiveType>> = (
         Number(currentToken.literal),
         PrimitiveType.INT,
         "number",
-        {
-          line: currentToken.line,
-          col: currentToken.col,
-          offset: currentToken.offset,
-        },
+        context.currentToken.location,
       ),
     };
   }
@@ -30,11 +28,7 @@ export const literal: LogicParser<LogicLiteral<any, PrimitiveType>> = (
         currentToken.literal === "true",
         PrimitiveType.BOOLEAN,
         "boolean",
-        {
-          line: currentToken.line,
-          col: currentToken.col,
-          offset: currentToken.offset,
-        },
+        context.currentToken.location,
       ),
     };
   }
@@ -46,17 +40,39 @@ export const literal: LogicParser<LogicLiteral<any, PrimitiveType>> = (
         currentToken.literal,
         PrimitiveType.STR,
         "string",
-        {
-          line: currentToken.line,
-          col: currentToken.col,
-          offset: currentToken.offset,
-        },
+        context.currentToken.location,
       ),
     };
   }
 
+  if (currentToken.type === TokenType.ERROR) {
+    return {
+      isOk: false,
+      error: makeSyntaxError(
+        context.lexer.filename,
+        context.currentToken.location,
+        "Unexpected token",
+      ),
+    };
+  }
+
+  if (currentToken.type === TokenType.EOF) {
+    // console.log(context.currentToken);
+    return {
+      isOk: false,
+      error: makeSyntaxError(
+        context.lexer.filename,
+        context.currentToken.location,
+        "Unexpected end of file",
+      ),
+    };
+  }
   return {
     isOk: false,
-    error: `Unexpected token ${currentToken.type} at ${currentToken.line}:${currentToken.col}`,
+    error: makeSyntaxError(
+      context.lexer.filename,
+      context.currentToken.location,
+      "",
+    ),
   };
 };
