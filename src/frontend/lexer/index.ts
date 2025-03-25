@@ -47,7 +47,7 @@ export class Lexer {
     public readonly source: string,
     public readonly filename: string,
   ) {
-    console.log(source);
+    // console.log(source);
     this.keywords.set("fn", TokenType.FN);
     this.keywords.set("For", TokenType.FOR);
     this.keywords.set("If", TokenType.IF);
@@ -103,18 +103,20 @@ export class Lexer {
     return this.nextChar;
   }
 
-
-  private makeToken(type: TokenType, literal: string, location:{line:number,col:number,offset:number}) {
-    console.log("making token: ", {
-      type,
-      literal,
-      offset: location.offset,
-      line: location.line,
-      col: location.offset,
-    });
+  private makeToken(
+    type: TokenType,
+    literal: string,
+    location: { line: number; col: number; offset: number },
+  ) {
+    // console.log("making token: ", {
+    //   type,
+    //   literal,
+    //   offset: location.offset,
+    //   line: location.line,
+    //   col: location.offset,
+    // });
     return new Token(literal, type, location);
   }
-
 
   /**
    * Skips whitespace characters (spaces, tabs, and newlines).
@@ -268,14 +270,11 @@ export class Lexer {
   nextToken() {
     this.skipWhiteSpaces();
 
-
-
-
-    const location={
-      line:this.line,
-      col:this.col,
-      offset:this.position
-    }
+    const location = {
+      line: this.line,
+      col: this.col,
+      offset: this.position,
+    };
 
     switch (this.currentChar) {
       case "+":
@@ -291,11 +290,11 @@ export class Lexer {
       case ")":
       case "<":
       case ">": {
-        const type = this.scanOperators()
-        return this.makeToken(type, type,location)
+        const type = this.scanOperators();
+        return this.makeToken(type, type, location);
       }
       case ":": {
-        return this.makeToken(TokenType.COLON, ":",location);
+        return this.makeToken(TokenType.COLON, ":", location);
       }
       case '"': {
         let literal = "";
@@ -305,7 +304,7 @@ export class Lexer {
           this.advance();
         }
         this.advance();
-        return this.makeToken(TokenType.STRING, literal,location);
+        return this.makeToken(TokenType.STRING, literal, location);
       }
       default: {
         if (this.isDigit(this.currentChar)) {
@@ -315,7 +314,7 @@ export class Lexer {
             this.advance();
           }
 
-          return this.makeToken(TokenType.NUMBER, literal,location);
+          return this.makeToken(TokenType.NUMBER, literal, location);
         } else if (this.isAlpha(this.currentChar)) {
           let literal = "";
           while (this.isAlphaNumeric(this.currentChar)) {
@@ -324,15 +323,23 @@ export class Lexer {
           }
 
           if (this.keywords.has(literal)) {
-            return this.makeToken(this.keywords.get(literal)!, literal,location);
+            return this.makeToken(
+              this.keywords.get(literal)!,
+              literal,
+              location,
+            );
           }
-          return this.makeToken(TokenType.IDENTIFIER, literal,location);
+          return this.makeToken(TokenType.IDENTIFIER, literal, location);
         }
         if (this.currentChar === undefined) {
-          return this.makeToken(TokenType.EOF, "",location);
+          return this.makeToken(TokenType.EOF, "", location);
         }
         // assert(false, `Unexpected character: ${this.currentChar}`);
-        const errorToken = this.makeToken(TokenType.ERROR, "invalid character",location);
+        const errorToken = this.makeToken(
+          TokenType.ERROR,
+          "invalid character",
+          location,
+        );
         this.advance();
         return errorToken;
       }

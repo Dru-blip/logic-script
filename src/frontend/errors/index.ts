@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import type { TokenLocation } from "../../types";
 
 export interface LogicError {
@@ -29,7 +30,7 @@ export const makeSyntaxError = (
 export const printError = (error: LogicError, source: string): void => {
   const { filename, location, message, expected, unexpected } = error;
   const sourceLines = source.split("\n");
-  const errorLine = sourceLines[location.line - 2] || "";
+  const errorLine = sourceLines[location.line] || "";
 
   let details = message;
   if (expected && unexpected) {
@@ -40,14 +41,13 @@ export const printError = (error: LogicError, source: string): void => {
     details += ` (unexpected '${unexpected}')`;
   }
 
-  console.log(location);
-  console.log(errorLine);
-
-  console.error(
-    `error: ${details}\n` +
-      ` --> ${filename}:${location.line}:${location.col}\n` +
-      `  |\n` +
-      `${String(location.line).padStart(2)} | ${errorLine}\n` +
-      `  | ${" ".repeat(location.col)}^`,
+  const fileInfo = chalk.blue(
+    `${filename}:${location.line + 1}:${location.col}`,
   );
+  console.log(`error: ${chalk.red(details)}`);
+  console.log(` --> ${fileInfo}`);
+  console.log(`${" ".repeat(2)} |`);
+  console.log(`${String(location.line + 1)} ${" "}| ${errorLine}`);
+  console.log(`${" ".repeat(2)} | ${" ".repeat(location.col)}^`);
+  console.log();
 };

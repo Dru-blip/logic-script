@@ -14,7 +14,7 @@ export const logicOr: LogicParser<LogicNode> = (context) => {
       const operator = currentToken;
       const right = logicAnd(context);
       if (!right.isOk) {
-        console.log(right);
+        // console.log(right);
         return right;
       }
       left = {
