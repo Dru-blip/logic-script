@@ -1,4 +1,4 @@
-<Type> ::= "Int" | "Float" | "Bool" | "Str" | <Identifier> | <ArrayType>
+<Type> ::= "Int" | "Float" | "Bool" | "Str" | <Identifier> | any <ArrayType>
 <ArrayType> ::= "[" <Type> "]"
 
 

@@ -1,5 +1,5 @@
-import type { Optional } from "../../../optional";
-import { type LogicType, type TokenLocation } from "../../types";
+// import { type LogicType, type TokenLocation } from "";
+import type { LogicType, TokenLocation } from "../../../../types";
 import { type LogicNode, NodeType, type LogicExpression } from "../node";
 
 export class Identifier implements LogicNode {
