@@ -37,14 +37,15 @@ export class ParserContext {
   consume(type: TokenType, message: string) {
     if (this.check(type)) {
       this.advance();
+      return true
     } else {
-      this.error(message);
+      return false
     }
   }
 
-  error(message: string): void {
-    this.errors.push(
-      makeSyntaxError(this.lexer.filename, this.currentToken.location, message),
-    );
-  }
+  // error(message: string): void {
+  //   this.errors.push(
+  //     makeSyntaxError(this.lexer.filename, this.currentToken.location, message),
+  //   );
+  // }
 }

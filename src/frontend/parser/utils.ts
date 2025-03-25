@@ -6,7 +6,9 @@ export const tokenToType = (token: TokenType) => {
     return PrimitiveType.INT;
   } else if (token === TokenType.STR) {
     return PrimitiveType.STR;
-  } else {
+  } else if(token===TokenType.BOOL) {
     return PrimitiveType.BOOLEAN;
+  }else{
+    return null
   }
 };

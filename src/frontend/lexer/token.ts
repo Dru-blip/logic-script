@@ -32,7 +32,7 @@ export enum TokenType {
   RANGE = "Range",
   FOR = "For",
   RETURN = "return",
-  LET = "Let",
+  LET = "let",
   MUT = "mut",
   AND = "and",
   OR = "or",

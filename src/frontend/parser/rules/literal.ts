@@ -1,5 +1,5 @@
 import { PrimitiveType, type LogicParser } from "../../../types";
-import { makeSyntaxError } from "../../errors";
+import { LgErrorCode, makeSyntaxError } from "../../errors";
 import { TokenType } from "../../lexer";
 import { LogicLiteral } from "../ast";
 import { ParserContext } from "../context";
@@ -51,7 +51,8 @@ export const literal: LogicParser<LogicLiteral<any, PrimitiveType>> = (
       error: makeSyntaxError(
         context.lexer.filename,
         context.currentToken.location,
-        "Unexpected token",
+        LgErrorCode.UNKNOWN_KEYWORD,
+        "Unknown token",
       ),
     };
   }
@@ -63,6 +64,7 @@ export const literal: LogicParser<LogicLiteral<any, PrimitiveType>> = (
       error: makeSyntaxError(
         context.lexer.filename,
         context.currentToken.location,
+        LgErrorCode.UNEXPECTED_EOF,
         "Unexpected end of file",
       ),
     };
@@ -72,6 +74,7 @@ export const literal: LogicParser<LogicLiteral<any, PrimitiveType>> = (
     error: makeSyntaxError(
       context.lexer.filename,
       context.currentToken.location,
+      LgErrorCode.UNEXPECTED_TOKEN,
       "",
     ),
   };

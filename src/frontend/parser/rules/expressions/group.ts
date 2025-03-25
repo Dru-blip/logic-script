@@ -3,6 +3,7 @@ import { TokenType } from "../../../lexer";
 import type { LogicNode } from "../../ast";
 import { GroupingExpression } from "../../ast/expressions/group";
 import type { LogicParser } from "../../../../types";
+import { LgErrorCode, makeSyntaxError } from "../../../errors";
 // import type { LogicParser } from "../../types";
 
 export const group: LogicParser<LogicNode> = (context) => {
@@ -12,7 +13,23 @@ export const group: LogicParser<LogicNode> = (context) => {
     return expr;
   }
 
-  context.consume(TokenType.RPAREN, "Expected ')' after expression");
+  const consumed = context.consume(
+    TokenType.RPAREN,
+    "Expected ')' after expression"
+  );
+  if (!consumed) {
+    return {
+      isOk: false,
+      error: makeSyntaxError(
+        context.lexer.filename,
+        context.currentToken.location,
+        LgErrorCode.UNCLOSED_PARENTHESIS,
+        "expected ')'",
+        "')'",
+        `found ${context.currentToken}`
+      ),
+    };
+  }
   context.advance();
   return {
     isOk: true,
