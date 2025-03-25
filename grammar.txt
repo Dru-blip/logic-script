@@ -3,7 +3,7 @@
 
 
 <Program> ::= <ExpressionList>
-<ExpressionList> ::= <Expression> | <Expression> <ExpressionList>
+<ExpressionList> ::= <Expression>*
 
 
 <Expression> ::= <VariableDeclaration>
@@ -12,6 +12,7 @@
                | <StructDeclaration>
                | <ImportExpression>
                | <ReturnExpression>
+               | <ConditionalExpression>
                | <IterationExpression>
                | <LogicOr>
 
@@ -58,7 +59,6 @@
                       | <Identifier>
                       | "(" <Expression> ")"
                       | <FunctionCall>
-                      | <ConditionalExpression>
                       | <MemberAccess>
                       | <ArrayAccess>
                       | <ObjectCreation>

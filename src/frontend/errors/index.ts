@@ -74,7 +74,7 @@ export const printError = (error: LogicError, source: string): void => {
   console.log(`${" ".repeat(2)} |`);
   console.log(`${String(location.line + 1)} ${" "}| ${errorLine}`);
   console.log(
-    `${" ".repeat(2)} | ${" ".repeat(location.col - 1)}${chalk.red("^")} ${chalk.dim(`unexpected '${unexpected}', expected ${expected}`)}`,
+    `${" ".repeat(2)} | ${" ".repeat(location.col)}${chalk.red("^")} ${chalk.dim(`unexpected '${unexpected}', expected ${expected}`)}`,
   );
   console.log(`\n  ${chalk.green("= help:")} ${chalk.yellow(hint)}`);
   console.log();
