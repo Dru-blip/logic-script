@@ -47,6 +47,7 @@ export class Lexer {
     public readonly source: string,
     public readonly filename: string,
   ) {
+    console.log(source);
     this.keywords.set("fn", TokenType.FN);
     this.keywords.set("For", TokenType.FOR);
     this.keywords.set("If", TokenType.IF);
@@ -64,10 +65,10 @@ export class Lexer {
     this.keywords.set("Str", TokenType.STR);
 
     this.position = 0;
-    this.line = 1;
-    this.col = 1;
+    this.line = 0;
     this.advance();
     this.advance();
+    this.col = 0;
   }
 
   /**
@@ -76,7 +77,12 @@ export class Lexer {
   private advance() {
     this.currentChar = this.nextChar;
     this.nextChar = this.source.at(this.position++);
-    this.col++;
+    if (this.currentChar === "\n") {
+      this.line++;
+      this.col = 1;
+    } else {
+      this.col++;
+    }
   }
 
   /**
@@ -97,22 +103,18 @@ export class Lexer {
     return this.nextChar;
   }
 
-  /**
-   * Creates a new Token instance.
-   *
-   * @param type The token type.
-   * @param literal The token literal.
-   * @returns A new Token instance.
-   */
-  private makeToken(type: TokenType, literal: string) {
-    return new Token(
-      literal,
+
+  private makeToken(type: TokenType, literal: string, location:{line:number,col:number,offset:number}) {
+    console.log("making token: ", {
       type,
-      this.line,
-      this.col,
-      this.position - literal.length,
-    );
+      literal,
+      offset: location.offset,
+      line: location.line,
+      col: location.offset,
+    });
+    return new Token(literal, type, location);
   }
+
 
   /**
    * Skips whitespace characters (spaces, tabs, and newlines).
@@ -126,6 +128,7 @@ export class Lexer {
       ) {
         this.col++;
       } else if (this.currentChar === "\n") {
+        console.log(this.position);
         this.line++;
         this.col = 1;
       } else {
@@ -136,97 +139,93 @@ export class Lexer {
   }
 
   /**
-   * Scans and returns an operator token.
+   * Scans and returns an operator token type.
    *
-   * @returns An operator token.
+   * @returns A TokenType corresponding to the scanned operator.
    */
-  private scanOperators() {
-    let token;
+  private scanOperators(): TokenType {
+    let tokenType: TokenType;
+
     switch (this.currentChar) {
       case "+": {
-        token = this.makeToken(TokenType.PLUS, "+");
+        tokenType = TokenType.PLUS;
         break;
       }
       case "-": {
-        token = this.makeToken(TokenType.MINUS, "-");
+        tokenType = TokenType.MINUS;
         break;
       }
       case "*": {
-        token = this.makeToken(TokenType.ASTERISK, "*");
+        tokenType = TokenType.ASTERISK;
         break;
       }
       case "/": {
-        token = this.makeToken(TokenType.SLASH, "/");
+        tokenType = TokenType.SLASH;
         break;
       }
       case "=": {
         if (this.nextChar === "=") {
           this.advance();
-          token = this.makeToken(TokenType.EQUALS, "==");
+          tokenType = TokenType.EQUALS;
         } else {
-          token = this.makeToken(TokenType.ASSIGN, "=");
+          tokenType = TokenType.ASSIGN;
         }
         break;
       }
       case "}": {
-        token = this.makeToken(TokenType.RBRACE, "}");
+        tokenType = TokenType.RBRACE;
         break;
       }
       case "{": {
-        token = this.makeToken(TokenType.LBRACE, "{");
+        tokenType = TokenType.LBRACE;
         break;
       }
       case "(": {
-        token = this.makeToken(TokenType.LPAREN, "(");
+        tokenType = TokenType.LPAREN;
         break;
       }
       case ")": {
-        token = this.makeToken(TokenType.RPAREN, ")");
+        tokenType = TokenType.RPAREN;
         break;
       }
       case "!": {
         if (this.nextChar === "=") {
           this.advance();
-          token = this.makeToken(TokenType.NOT_EQUAL, "!=");
+          tokenType = TokenType.NOT_EQUAL;
         } else {
-          token = this.makeToken(TokenType.BANG, "!");
+          tokenType = TokenType.BANG;
         }
         break;
       }
       case ",": {
-        token = this.makeToken(TokenType.COMMA, ",");
+        tokenType = TokenType.COMMA;
         break;
       }
       case "<": {
         if (this.nextChar === "=") {
           this.advance();
-          token = this.makeToken(TokenType.LESS_THAN_EQUAL, "<=");
+          tokenType = TokenType.LESS_THAN_EQUAL;
         } else {
-          token = this.makeToken(TokenType.LESS_THAN, "<");
+          tokenType = TokenType.LESS_THAN;
         }
         break;
       }
       case ">": {
         if (this.nextChar === "=") {
           this.advance();
-          token = this.makeToken(TokenType.GREATER_THAN_EQUAL, ">=");
+          tokenType = TokenType.GREATER_THAN_EQUAL;
         } else {
-          token = this.makeToken(TokenType.GREATER_THAN, ">");
+          tokenType = TokenType.GREATER_THAN;
         }
         break;
       }
       default: {
-        token = new Token(
-          "eof",
-          TokenType.EOF,
-          this.line,
-          this.col,
-          this.position,
-        );
+        tokenType = TokenType.EOF;
       }
     }
+
     this.advance();
-    return token;
+    return tokenType;
   }
 
   /**
@@ -269,6 +268,15 @@ export class Lexer {
   nextToken() {
     this.skipWhiteSpaces();
 
+
+
+
+    const location={
+      line:this.line,
+      col:this.col,
+      offset:this.position
+    }
+
     switch (this.currentChar) {
       case "+":
       case "-":
@@ -283,10 +291,11 @@ export class Lexer {
       case ")":
       case "<":
       case ">": {
-        return this.scanOperators();
+        const type = this.scanOperators()
+        return this.makeToken(type, type,location)
       }
       case ":": {
-        return this.makeToken(TokenType.COLON, ":");
+        return this.makeToken(TokenType.COLON, ":",location);
       }
       case '"': {
         let literal = "";
@@ -296,7 +305,7 @@ export class Lexer {
           this.advance();
         }
         this.advance();
-        return this.makeToken(TokenType.STRING, literal);
+        return this.makeToken(TokenType.STRING, literal,location);
       }
       default: {
         if (this.isDigit(this.currentChar)) {
@@ -306,7 +315,7 @@ export class Lexer {
             this.advance();
           }
 
-          return this.makeToken(TokenType.NUMBER, literal);
+          return this.makeToken(TokenType.NUMBER, literal,location);
         } else if (this.isAlpha(this.currentChar)) {
           let literal = "";
           while (this.isAlphaNumeric(this.currentChar)) {
@@ -315,21 +324,15 @@ export class Lexer {
           }
 
           if (this.keywords.has(literal)) {
-            return this.makeToken(this.keywords.get(literal)!, literal);
+            return this.makeToken(this.keywords.get(literal)!, literal,location);
           }
-          return this.makeToken(TokenType.IDENTIFIER, literal);
+          return this.makeToken(TokenType.IDENTIFIER, literal,location);
         }
         if (this.currentChar === undefined) {
-          return new Token(
-            "eof",
-            TokenType.EOF,
-            this.line,
-            this.col,
-            this.position,
-          );
+          return this.makeToken(TokenType.EOF, "",location);
         }
         // assert(false, `Unexpected character: ${this.currentChar}`);
-        const errorToken = this.makeToken(TokenType.ERROR, "invalid character");
+        const errorToken = this.makeToken(TokenType.ERROR, "invalid character",location);
         this.advance();
         return errorToken;
       }

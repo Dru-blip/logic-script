@@ -1,5 +1,7 @@
 import type { Node } from "typescript";
 import type { Program } from "../frontend/parser/ast";
+import type { ParserContext } from "../frontend/parser/context";
+import type { LogicError } from "../frontend/errors";
 
 export interface LogicConfig {
   project: {
@@ -22,3 +24,26 @@ export interface LogicConfig {
     debug_dir: string;
   };
 }
+
+export interface ParseResult<T> {
+  isOk: boolean;
+  value?: T;
+  error?: LogicError;
+}
+
+export type LogicParser<T> = (context: ParserContext) => ParseResult<T>;
+
+export type TokenLocation = {
+  line: number;
+  col: number;
+  offset: number;
+};
+
+export enum PrimitiveType {
+  STR = "Str",
+  INT = "Int",
+  BOOLEAN = "Bool",
+  UNKNOWN = "Unknown",
+}
+
+export type LogicType = PrimitiveType;

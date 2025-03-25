@@ -1,3 +1,5 @@
+import type { TokenLocation } from "../../types";
+
 export enum TokenType {
   //Operators
   PLUS = "+",
@@ -56,8 +58,6 @@ export class Token {
   constructor(
     public literal: string,
     public type: TokenType,
-    public line: number,
-    public col: number,
-    public offset: number,
+    public location: TokenLocation,
   ) {}
 }
