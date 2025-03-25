@@ -5,6 +5,7 @@ import { BinaryExpression, type LogicNode } from "../../ast";
 import { equality } from "./equality";
 
 export const logicAnd: LogicParser<LogicNode> = (context) => {
+  // console.log("parsing logic and expression");
   let left = equality(context);
 
   if (left.isOk) {

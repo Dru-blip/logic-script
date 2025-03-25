@@ -51,14 +51,14 @@ export const printError = (error: LogicError, source: string): void => {
   const hint = ERROR_HINTS.get(code) || "Check syntax.";
 
   const fileInfo = chalk.blue(
-    `${filename}:${location.line + 1}:${location.col + 1}`
+    `${filename}:${location.line + 1}:${location.col+1}`
   );
 
   console.log(`${chalk.red(`error[${code}]:`)} ${message}`);
   console.log(` --> ${fileInfo}`);
   console.log(`${" ".repeat(2)} |`);
   console.log(`${String(location.line + 1)} ${" "}| ${errorLine}`);
-  console.log(`${" ".repeat(2)} | ${" ".repeat(location.col)}${chalk.red("^")} ${chalk.dim(`unexpected '${unexpected}', expected ${expected}`)}`);
+  console.log(`${" ".repeat(2)} | ${" ".repeat(location.col-1)}${chalk.red("^")} ${chalk.dim(`unexpected '${unexpected}', expected ${expected}`)}`);
   console.log(`\n  ${chalk.green("= help:")} ${chalk.yellow(hint)}`);
   console.log();
 };

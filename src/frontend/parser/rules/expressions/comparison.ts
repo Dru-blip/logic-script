@@ -5,6 +5,8 @@ import { BinaryExpression, type LogicNode } from "../../ast";
 import { additive } from "./additive";
 
 export const comparison: LogicParser<LogicNode> = (context) => {
+  // console.log("parsing comparison expression");
+
   let left = additive(context);
 
   if (left.isOk) {

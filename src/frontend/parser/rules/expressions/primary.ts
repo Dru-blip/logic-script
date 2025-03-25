@@ -8,7 +8,9 @@ import { literal } from "../literal";
 import { group } from "./group";
 
 export const primary: LogicParser<LogicNode> = (context: ParserContext) => {
-  switch (context.currentToken.type) {
+  // console.log("parsing primary");
+  const { currentToken } = context;
+  switch (currentToken.type) {
     case TokenType.NUMBER:
     case TokenType.STRING:
     case TokenType.BOOLEAN: {
@@ -17,7 +19,7 @@ export const primary: LogicParser<LogicNode> = (context: ParserContext) => {
       return result;
     }
     case TokenType.IDENTIFIER: {
-      const { literal, location } = context.currentToken;
+      const { literal, location } = currentToken;
       const result = {
         isOk: true,
         value: new Identifier(literal, location),
@@ -31,17 +33,25 @@ export const primary: LogicParser<LogicNode> = (context: ParserContext) => {
     }
 
     default: {
-      if(context.check(TokenType.EOF)){
+      context.advance();
+      if (context.check(TokenType.EOF)) {
         return {
-          isOk:false,
-          error:makeSyntaxError(context.lexer.filename,context.currentToken.location,LgErrorCode.UNEXPECTED_EOF,"end of file","expession","eof")
-        }
+          isOk: false,
+          error: makeSyntaxError(
+            context.lexer.filename,
+            currentToken.location,
+            LgErrorCode.UNEXPECTED_EOF,
+            "end of file",
+            "expession",
+            "eof",
+          ),
+        };
       }
       return {
         isOk: false,
         error: makeSyntaxError(
           context.lexer.filename,
-          context.currentToken.location,
+          currentToken.location,
           LgErrorCode.UNEXPECTED_EOF,
           `expected expression`,
         ),

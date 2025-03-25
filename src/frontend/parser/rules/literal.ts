@@ -8,6 +8,7 @@ import { ParserContext } from "../context";
 export const literal: LogicParser<LogicLiteral<any, PrimitiveType>> = (
   context: ParserContext,
 ) => {
+  // console.log("parsing literals");
   const { currentToken } = context;
   if (currentToken.type === TokenType.NUMBER) {
     return {

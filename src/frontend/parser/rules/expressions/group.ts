@@ -7,6 +7,7 @@ import { LgErrorCode, makeSyntaxError } from "../../../errors";
 // import type { LogicParser } from "../../types";
 
 export const group: LogicParser<LogicNode> = (context) => {
+  // console.log("parsing grouping expression");
   context.advance();
   const expr = expression(context);
   if (expr.error) {
@@ -15,7 +16,7 @@ export const group: LogicParser<LogicNode> = (context) => {
 
   const consumed = context.consume(
     TokenType.RPAREN,
-    "Expected ')' after expression"
+    "Expected ')' after expression",
   );
   if (!consumed) {
     return {
@@ -26,7 +27,7 @@ export const group: LogicParser<LogicNode> = (context) => {
         LgErrorCode.UNCLOSED_PARENTHESIS,
         "expected ')'",
         "')'",
-        `found ${context.currentToken}`
+        `found ${context.currentToken}`,
       ),
     };
   }

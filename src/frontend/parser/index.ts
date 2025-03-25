@@ -33,7 +33,6 @@ export const parse: (
         return {
           isOk: false,
           error: context.errors[0],
-          
         };
       }
       return programNode;

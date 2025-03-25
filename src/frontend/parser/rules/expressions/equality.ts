@@ -5,6 +5,8 @@ import { BinaryExpression, type LogicNode } from "../../ast";
 import { comparison } from "./comparison";
 
 export const equality: LogicParser<LogicNode> = (context) => {
+  // console.log("parsing equality expression");
+
   let left = comparison(context);
 
   if (left.isOk) {

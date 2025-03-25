@@ -14,6 +14,8 @@ import { LgErrorCode, makeSyntaxError } from "../../../errors";
 export const variableDeclaration: LogicParser<VariableDeclaration> = (
   context,
 ) => {
+  // console.log("parsing variable declaration");
+
   if (!context.check(TokenType.LET)) {
     return {
       isOk: false,
@@ -39,11 +41,18 @@ export const variableDeclaration: LogicParser<VariableDeclaration> = (
   if (context.check(TokenType.COLON)) {
     context.advance();
     const ty = tokenToType(context.currentToken.type);
-    if(ty===null){
+    if (ty === null) {
       return {
-        isOk:false,
-        error:makeSyntaxError(context.lexer.filename,context.currentToken.location,LgErrorCode.MISSING_TYPE,"expected type","expected type after ':'",context.currentToken.type)
-      }
+        isOk: false,
+        error: makeSyntaxError(
+          context.lexer.filename,
+          context.currentToken.location,
+          LgErrorCode.MISSING_TYPE,
+          "expected type",
+          "expected type after ':'",
+          context.currentToken.type,
+        ),
+      };
     }
     context.advance();
   }

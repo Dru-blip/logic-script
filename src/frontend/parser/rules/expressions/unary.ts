@@ -5,6 +5,7 @@ import { type LogicNode, UnaryExpression } from "../../ast";
 import { primary } from "./primary";
 
 export const unary: LogicParser<LogicNode> = (context) => {
+  // console.log("parsing unary");
   const token = context.peek();
   if (context.match([TokenType.BANG, TokenType.MINUS])) {
     context.advance();

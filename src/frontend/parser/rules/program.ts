@@ -6,6 +6,7 @@ import type { LogicParser } from "../../../types";
 import type { LogicError } from "../../errors";
 
 export const program: LogicParser<Program> = (context) => {
+  // console.log("parsing program");
   const expressions = [];
   while (context.currentToken.type !== TokenType.EOF) {
     const expr = expression(context);

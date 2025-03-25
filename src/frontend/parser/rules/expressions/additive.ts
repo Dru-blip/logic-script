@@ -6,6 +6,8 @@ import { multiplicative } from "./multiplicative";
 import { primary } from "./primary";
 
 export const additive: LogicParser<LogicNode> = (context) => {
+  // console.log("parsing additive expression");
+
   let left = multiplicative(context);
 
   if (left.isOk) {

@@ -1,6 +1,7 @@
 import { astCommand } from "./src/cli/commands/ast";
 import { compileCommand } from "./src/cli/commands/compile";
 import { createProject } from "./src/cli/commands/create";
+import { validateCommand } from "./src/cli/commands/validate";
 import { LogicCli } from "./src/cli/logic-cli";
 import { Lexer } from "./src/frontend/lexer";
 
@@ -10,7 +11,11 @@ const cli = new LogicCli({
   description: "Logic CLI",
 });
 
-cli.addCommand(createProject).addCommand(compileCommand).addCommand(astCommand);
+cli
+  .addCommand(createProject)
+  .addCommand(compileCommand)
+  .addCommand(astCommand)
+  .addCommand(validateCommand);
 
 cli.program.parse(process.argv);
 
