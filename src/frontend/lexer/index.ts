@@ -299,6 +299,10 @@ export class Lexer {
         this.advance();
         return this.makeToken(TokenType.COLON, ":", location);
       }
+      case ";":{
+        this.advance()
+        return this.makeToken(TokenType.SEMICOLON,";",location)
+      }
       case '"': {
         let literal = "";
         this.advance();

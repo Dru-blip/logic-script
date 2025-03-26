@@ -7,7 +7,9 @@ import { additive } from "./additive";
 export const comparison: LogicParser<LogicNode> = (context) => {
   // console.log("parsing comparison expression");
 
+  const initialInsidebracket=context.isInsideAngleBrackets
   let left = additive(context);
+
 
   if (left.isOk) {
     while (
@@ -19,6 +21,14 @@ export const comparison: LogicParser<LogicNode> = (context) => {
       ])
     ) {
       const { currentToken } = context;
+
+      if(currentToken.type===TokenType.GREATER_THAN){
+        if(context.isInsideAngleBrackets && context.rightbracketDepth.length>1){
+          break
+        }
+       
+      }
+
       context.advance();
       const operator = currentToken;
       const right = additive(context);

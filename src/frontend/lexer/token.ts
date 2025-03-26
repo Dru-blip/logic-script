@@ -16,6 +16,7 @@ export enum TokenType {
   BANG = "!",
   NOT_EQUAL = "!=",
   COLON = ":",
+  SEMICOLON=";",
 
   //PUNCTUATION
   HASH = "#",

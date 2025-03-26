@@ -30,6 +30,7 @@ export const ifExpresion: LogicParser<IfExpression> = (context) => {
       ),
     };
   }
+
   context.advance();
   const condition = expression(context);
 
@@ -98,8 +99,13 @@ export const ifExpresion: LogicParser<IfExpression> = (context) => {
     };
   }
 
-  context.advance();
 
+  context.advance();
+  context.rightbracketDepth.pop()
+  // console.log(context.isInsideAngleBrackets)
+  // context.isInsideAngleBrackets=context.rightbracketDepth.length>0
+  
+  
   return {
     isOk: true,
     value: new IfExpression(

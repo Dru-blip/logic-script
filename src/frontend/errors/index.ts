@@ -8,6 +8,7 @@ export enum LgErrorCode {
   UNCLOSED_PARENTHESIS = "E1004",
   UNKNOWN_KEYWORD = "E1005",
   UNEXPECTED_EOF = "E1008",
+  MISSING_SEMICOLON = "E1009",
 }
 
 const ERROR_HINTS: Map<LgErrorCode, string> = new Map([
@@ -31,6 +32,10 @@ const ERROR_HINTS: Map<LgErrorCode, string> = new Map([
   [
     LgErrorCode.UNEXPECTED_EOF,
     "Your code seems to end abruptly. Did you forget to close a block, add a semicolon, or complete an expression?",
+  ],
+  [
+    LgErrorCode.MISSING_SEMICOLON,
+    "Statements must end with `;`. Did you forget to add one?",
   ],
 ]);
 

@@ -5,16 +5,33 @@ import { Token, TokenType } from "../lexer/token";
 export class ParserContext {
   lexer: Lexer;
   currentToken!: Token;
+  nextToken!:Token;
   errors: LogicError[];
+
+  public isInsideAngleBrackets = false;
+  public leftbracketDepth: string[] = [];
+  public rightbracketDepth:string[]=[]
 
   constructor(lexer: Lexer) {
     this.lexer = lexer;
     this.errors = [];
     this.advance();
+    this.advance()
   }
 
   advance() {
-    this.currentToken = this.lexer.nextToken();
+    const prevToken=this.currentToken;
+    this.currentToken=this.nextToken
+    this.nextToken = this.lexer.nextToken();
+
+    if (this.currentToken&& this.currentToken.type === TokenType.LESS_THAN) {
+      if(prevToken && prevToken.type===TokenType.IF){
+        this.isInsideAngleBrackets = true;        
+      }
+    }
+    if (this.currentToken && this.currentToken.type === TokenType.GREATER_THAN) {
+      this.rightbracketDepth.push('<')
+    }
   }
 
   peek(): Token {

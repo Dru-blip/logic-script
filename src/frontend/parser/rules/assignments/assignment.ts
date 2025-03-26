@@ -4,9 +4,10 @@ import { LgErrorCode, makeSyntaxError } from "../../../errors";
 import { TokenType } from "../../../lexer";
 import type { Identifier, LogicNode } from "../../ast";
 import { AssignmentExpression } from "../../ast/assignments/variable-assignment";
+import { logicOr } from "../expressions/logic-or";
 import { primary } from "../expressions/primary";
 
-export const assignment: LogicParser<AssignmentExpression> = (context) => {
+export const assignment: LogicParser<AssignmentExpression|LogicNode> = (context) => {
   const { currentToken, lexer } = context;
   if (!context.check(TokenType.IDENTIFIER)) {
     return {
@@ -19,6 +20,11 @@ export const assignment: LogicParser<AssignmentExpression> = (context) => {
       ),
     };
   }
+
+  if(context.nextToken.type!==TokenType.ASSIGN){
+    return logicOr(context)
+  }
+  
 
   const identifier = primary(context);
 
@@ -34,17 +40,7 @@ export const assignment: LogicParser<AssignmentExpression> = (context) => {
     };
   }
 
-  if (!context.check(TokenType.ASSIGN)) {
-    return {
-      isOk: false,
-      error: makeSyntaxError(
-        lexer.filename,
-        currentToken.location,
-        LgErrorCode.MISSING_ASSIGNMENT,
-        "expected '='",
-      ),
-    };
-  }
+  
   context.advance();
   const expr = expression(context);
   if (!expr.isOk) {

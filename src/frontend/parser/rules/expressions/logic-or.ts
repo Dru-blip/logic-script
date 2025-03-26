@@ -1,4 +1,5 @@
 import type { LogicParser } from "../../../../types";
+import { LgErrorCode, makeSyntaxError } from "../../../errors";
 import { TokenType } from "../../../lexer";
 import { BinaryExpression, type LogicNode } from "../../ast";
 // import { type LogicParser } from "../../types";
@@ -22,6 +23,13 @@ export const logicOr: LogicParser<LogicNode> = (context) => {
         value: new BinaryExpression(operator, left.value!, right.value!),
         isOk: true,
       };
+    }
+    
+  }
+  if(!context.check(TokenType.SEMICOLON)){
+    return {
+      isOk:false,
+      error:makeSyntaxError(context.lexer.filename,context.currentToken.location,LgErrorCode.MISSING_SEMICOLON,"expected ';'")
     }
   }
   return left;
