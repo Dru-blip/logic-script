@@ -17,7 +17,8 @@ export enum TokenType {
   NOT_EQUAL = "!=",
   COLON = ":",
   SEMICOLON=";",
-
+  RANGE = "..",
+  
   //PUNCTUATION
   HASH = "#",
   COMMA = ",",
@@ -30,7 +31,6 @@ export enum TokenType {
   FN = "fn",
   IF = "if",
   ELSE = "else",
-  RANGE = "range",
   FOR = "for",
   RETURN = "return",
   LET = "let",

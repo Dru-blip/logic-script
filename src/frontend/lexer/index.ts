@@ -55,7 +55,7 @@ export class Lexer {
     this.keywords.set("true", TokenType.BOOLEAN);
     this.keywords.set("false", TokenType.BOOLEAN);
     this.keywords.set("mut", TokenType.MUT);
-    this.keywords.set("range", TokenType.RANGE);
+    this.keywords.set("..", TokenType.RANGE);
     this.keywords.set("let", TokenType.LET);
     this.keywords.set("and", TokenType.AND);
     this.keywords.set("or", TokenType.OR);

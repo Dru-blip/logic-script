@@ -22,7 +22,8 @@
 <ImportStatement> ::= "import" <StringLiteral> ";";
 
 <IterationStatement> ::= "for" <Identifier> "in" <Iterable> "{" <StatementList> "}";
-<Iterable> ::= <Expression> (".." <Expression>)?   // Range-based and Iterable iteration
+<Iterable> ::= <Expression> (".." <Expression>)?
+<RangeExpression> ::= <Expression> ".." <Expression>;
 
 <ConditionalStatement> ::= "if" <Expression> "{" <StatementList> "}" ("elif" <Expression> "{" <StatementList> "}")* ("else" "{" <StatementList> "}")?;
 
