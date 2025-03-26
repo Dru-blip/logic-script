@@ -1,7 +1,7 @@
 import type {LogicParser} from "../../../../types";
 import {LgSyntaxError} from "../../../errors";
 import {TokenType} from "../../../lexer";
-import type {LogicNode} from "../../ast";
+import {BlockStatement, type LogicNode} from "../../ast";
 import {IfStatement} from "../../ast/control-flow/if";
 import {block} from "../statements/block";
 import {expression} from "../expressions";
@@ -38,7 +38,7 @@ export const ifStatement: LogicParser<IfStatement | LogicNode> = (context) => {
         isOk: true,
         value: new IfStatement(
             <LogicNode>condition.value,
-            <LogicNode>thenBlock.value,
+            <BlockStatement>thenBlock.value,
             elseBlock?.value??undefined
         ),
     };

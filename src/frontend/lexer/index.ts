@@ -1,5 +1,4 @@
-import assert from "node:assert";
-import { Token, TokenType } from "./token";
+import {Token, TokenType} from "./token";
 
 export { Token, TokenType };
 
@@ -65,6 +64,7 @@ export class Lexer {
     this.keywords.set("Str", TokenType.STR);
     this.keywords.set("any", TokenType.ANY);
     this.keywords.set("void", TokenType.VOID);
+    this.keywords.set("in",TokenType.IN)
 
     this.position = 0;
     this.line = 0;

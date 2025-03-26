@@ -3,7 +3,6 @@ import type { LogicParser } from "../../../../types"
 import { LgSyntaxError } from "../../../errors"
 import { TokenType } from "../../../lexer"
 import { BlockStatement, type LogicNode } from "../../ast"
-import { expressionStatement } from "../expressions"
 
 
 

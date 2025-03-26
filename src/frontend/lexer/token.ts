@@ -37,6 +37,7 @@ export enum TokenType {
   MUT = "mut",
   AND = "and",
   OR = "or",
+  IN="in",
 
   IDENTIFIER = "IDENTIFIER",
 
