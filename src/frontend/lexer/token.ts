@@ -28,10 +28,10 @@ export enum TokenType {
 
   // Keywords
   FN = "fn",
-  IF = "If",
-  ELSE = "Else",
-  RANGE = "Range",
-  FOR = "For",
+  IF = "if",
+  ELSE = "else",
+  RANGE = "range",
+  FOR = "for",
   RETURN = "return",
   LET = "let",
   MUT = "mut",

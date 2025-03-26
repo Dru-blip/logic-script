@@ -49,14 +49,14 @@ export class Lexer {
   ) {
     // console.log(source);
     this.keywords.set("fn", TokenType.FN);
-    this.keywords.set("For", TokenType.FOR);
-    this.keywords.set("If", TokenType.IF);
-    this.keywords.set("Else", TokenType.ELSE);
+    this.keywords.set("for", TokenType.FOR);
+    this.keywords.set("if", TokenType.IF);
+    this.keywords.set("else", TokenType.ELSE);
     this.keywords.set("return", TokenType.RETURN);
     this.keywords.set("true", TokenType.BOOLEAN);
     this.keywords.set("false", TokenType.BOOLEAN);
     this.keywords.set("mut", TokenType.MUT);
-    this.keywords.set("Range", TokenType.RANGE);
+    this.keywords.set("range", TokenType.RANGE);
     this.keywords.set("let", TokenType.LET);
     this.keywords.set("and", TokenType.AND);
     this.keywords.set("or", TokenType.OR);

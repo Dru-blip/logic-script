@@ -1,9 +1,10 @@
-import { expression } from "..";
+
 import type { LogicParser } from "../../../../types";
 import { LgSyntaxError } from "../../../errors";
 import { TokenType } from "../../../lexer";
 import type { Identifier, LogicNode } from "../../ast";
 import { AssignmentExpression } from "../../ast/assignments/variable-assignment";
+import { expression } from "../expressions";
 import { logicOr } from "../expressions/logic-or";
 import { primary } from "../expressions/primary";
 

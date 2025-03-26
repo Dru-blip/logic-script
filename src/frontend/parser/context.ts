@@ -24,14 +24,14 @@ export class ParserContext {
     this.currentToken=this.nextToken
     this.nextToken = this.lexer.nextToken();
 
-    if (this.currentToken&& this.currentToken.type === TokenType.LESS_THAN) {
-      if(prevToken && prevToken.type===TokenType.IF){
-        this.isInsideAngleBrackets = true;        
-      }
-    }
-    if (this.currentToken && this.currentToken.type === TokenType.GREATER_THAN) {
-      this.rightbracketDepth.push('<')
-    }
+    // if (this.currentToken&& this.currentToken.type === TokenType.LESS_THAN) {
+    //   if(prevToken && prevToken.type===TokenType.IF){
+    //     this.isInsideAngleBrackets = true;        
+    //   }
+    // }
+    // if (this.currentToken && this.currentToken.type === TokenType.GREATER_THAN) {
+    //   this.rightbracketDepth.push('<')
+    // }
   }
 
   peek(): Token {

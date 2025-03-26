@@ -1,7 +1,7 @@
 import { NodeType, type LogicNode } from "../node";
 
-export class IfExpression implements LogicNode {
-  type: NodeType = NodeType.IfExpression;
+export class IfStatement implements LogicNode {
+  type: NodeType = NodeType.IfStatement;
 
   constructor(
     public condition: LogicNode,

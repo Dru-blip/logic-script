@@ -6,7 +6,7 @@ export enum NodeType {
   BlockStatement = "BlockStatement",
   VariableDeclaration = "VariableDeclaration",
   ReturnExpression = "ReturnStatement",
-  IfExpression = "IfExpression",
+  IfStatement = "IfStatement",
   ForStatement = "ForStatement",
   RangeStatement = "RangeStatement",
   BinaryExpression = "BinaryExpression",
@@ -24,6 +24,7 @@ export enum NodeType {
   ArrayLiteral = "ArrayLiteral",
   ObjectLiteral = "ObjectLiteral",
   RangeExpression = "RangeExpression",
+  ExpressionStatement = "ExpressionStatement",
 }
 
 export interface LogicNode {

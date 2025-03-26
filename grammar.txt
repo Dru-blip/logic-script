@@ -1,47 +1,40 @@
-<Type> ::= "Int" | "Float" | "Bool" | "Str" | <Identifier> | <ArrayType>
-<ArrayType> ::= "[" <Type> "]"
+<Type> ::= "Int" | "Bool" | "Str" | <Identifier> | <ArrayType>;
+<ArrayType> ::= "[" <Type> "]";
 
-<Program> ::= <ExpressionList>
-<ExpressionList> ::= (<Expression> ";")*
+<Program> ::= <StatementList>;
 
-<Expression> ::= <VariableDeclaration>
-               | <AssignmentExpression>
-               | <FunctionDeclaration>
-               | <StructDeclaration>
-               | <ImportExpression>
-               | <ReturnExpression>
-               | <ConditionalExpression>
-               | <IterationExpression>
-               | <LogicOr>;
+<StatementList> ::= (<Statement>)*;
+
+<Statement> ::= <VariableDeclaration>
+              | <AssignmentStatement>
+              | <FunctionDeclaration>
+              | <StructDeclaration>
+              | <ReturnStatement>
+              | <ImportStatement>
+              | <IterationStatement>
+              | <ConditionalStatement>
+              | <ExpressionStatement>
+
+<ExpressionStatement> ::= <Expression> ";";
 
 <VariableDeclaration> ::= "let" <Identifier> ":" <Type> ("=" <Expression>)? ";";
-<AssignmentExpression> ::= <Identifier> "=" <Expression> ";";
+<AssignmentStatement> ::= <Identifier> "=" <Expression> ";";
 
-<FunctionCall> ::= <Identifier> "(" <ArgumentList> ")" ;
+<ReturnStatement> ::= "return" <Expression> ";";
+<ImportStatement> ::= "import" <StringLiteral> ";";
 
-<ArgumentList> ::= <Expression> | <Expression> "," <ArgumentList>;
+<IterationStatement> ::= "for" <Identifier> "in" <Expression> ".." <Expression> "{" <StatementList> "}";
 
-<ObjectCreation> ::= <Identifier> "{" <PropertyAssignments> "}";
+<ConditionalStatement> ::= "if" <Expression> "{" <StatementList> "}" ("elif" <Expression> "{" <StatementList> "}")* ("else" "{" <StatementList> "}")?;
 
-<PropertyAssignments> ::= <Property> | <Property> "," <PropertyAssignments>;
-<Property> ::= <Identifier> "=" <Expression>;
-
-<ArrayLiteral> ::= "[" <ElementList> "]";
-<ElementList> ::= <Expression> | <Expression> "," <ElementList>;
-
-<ReturnExpression> ::= "return" <Expression> ";";
-<ImportExpression> ::= "import" <StringLiteral> ";";
-
-<IterationExpression> ::= "Range" "<" <Expression> "," <Expression> ">" "{" <ExpressionList> "}";
-
-<ConditionalExpression> ::= "If" "<" <Expression> "," <Expression> "," <Expression> ">";
-
-<FunctionDeclaration> ::= "fn" <Identifier> "(" <ParameterList> ")" "->" <Type> "=" <Expression> ";";
-<ParameterList> ::= <Identifier> ":" <Type> | <Identifier> ":" <Type> "," <ParameterList>;
+<FunctionDeclaration> ::= "fn" <Identifier> "(" <ParameterList> ")" "->" <Type> "{" <StatementList> "}";
+<ParameterList> ::= <Identifier> ":" <Type> ("," <Identifier> ":" <Type>)*;
 
 <StructDeclaration> ::= "struct" <Identifier> "{" <StructBody> "}" ";";
-<StructBody> ::= <StructMember> | <StructMember> <StructBody>;
+<StructBody> ::= (<StructMember>)*;
 <StructMember> ::= <FunctionDeclaration> | <VariableDeclaration>;
+
+<Expression> ::= <LogicOr>;
 
 <LogicOr> ::= <LogicAnd> ( "or" <LogicAnd> )*;
 <LogicAnd> ::= <EqualityExpression> ( "and" <EqualityExpression> )*;
@@ -59,21 +52,24 @@
                       | <ArrayAccess>
                       | <ObjectCreation>;
 
+<FunctionCall> ::= <Identifier> "(" <ArgumentList> ")" ;
+<ArgumentList> ::= <Expression> ("," <Expression>)*;
+
 <MemberAccess> ::= <PrimaryExpression> "." <Identifier>;
 <ArrayAccess> ::= <Identifier> "[" <Expression> "]";
+<ObjectCreation> ::= <Identifier> "{" <PropertyAssignments> "}";
+<PropertyAssignments> ::= <Property> ("," <Property>)*;
+<Property> ::= <Identifier> "=" <Expression>;
+
+<ArrayLiteral> ::= "[" <ElementList> "]";
+<ElementList> ::= <Expression> ("," <Expression>)*;
 
 <Literal> ::= <NumberLiteral> | <StringLiteral> | <BooleanLiteral> | <ArrayLiteral> | <ObjectCreation>;
-<NumberLiteral> ::= <Digit> | <Digit> <NumberLiteral>;
-<Digit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
-<StringLiteral> ::= "\"" <Characters> "\"";
-<Characters> ::= <Character> | <Character> <Characters>;
-<Character> ::= <Letter> | <Digit> | <Symbol>;
+<NumberLiteral> ::= <Digit>+;
 <BooleanLiteral> ::= "true" | "false";
+<StringLiteral> ::= "\"" <Characters> "\"";
 
-<Identifier> ::= <Letter> | <Letter> <AlphaNumeric>;
-<AlphaNumeric> ::= <Letter> | <Digit> | "_" | <AlphaNumeric> <Letter> | <AlphaNumeric> <Digit> | <AlphaNumeric> "_";
+<Identifier> ::= <Letter> (<AlphaNumeric>)*;
+<AlphaNumeric> ::= <Letter> | <Digit> | "_";
 <Letter> ::= "a" | "b" | ... | "z" | "A" | "B" | ... | "Z";
-
-<Symbol> ::= "!" | "@" | "#" | "$" | "%" | "^" | "&" | "*" | "(" | ")"
-           | "-" | "+" | "=" | "{" | "}" | "[" | "]" | ":" | ";" | ","
-           | "." | "<" | ">" | "/" | "?" | "|" | "\"" | "'" | "`" | "~";
+<Digit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";

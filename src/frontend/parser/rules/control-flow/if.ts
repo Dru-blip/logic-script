@@ -1,75 +1,42 @@
-import { expression } from "..";
 import type { LogicParser } from "../../../../types";
-import { LgErrorCode, LgSyntaxError } from "../../../errors";
+import { LgSyntaxError } from "../../../errors";
 import { TokenType } from "../../../lexer";
 import type { LogicNode } from "../../ast";
-import { IfExpression } from "../../ast/control-flow/if";
+import { IfStatement} from "../../ast/control-flow/if";
+import { block } from "../statements/block";
+import { logicAnd } from "../expressions/logic-and";
 
-export const ifExpresion: LogicParser<IfExpression> = (context) => {
+export const ifExpresion: LogicParser<IfStatement|LogicNode> = (context) => {
   if (!context.check(TokenType.IF)) {
     return LgSyntaxError.unexpected(context, "Expected 'if'");
   }
 
-  context.advance();
-  if (!context.check(TokenType.LESS_THAN)) {
-    return LgSyntaxError.unexpected(context, "Expected '<'");
+  context.advance()
+
+  const condition=logicAnd(context)
+
+  if(!condition.isOk){
+    return condition
+  }
+  
+  const thenBlock=block(context)
+
+  if(!thenBlock.isOk){
+    return thenBlock
   }
 
-  context.advance();
-  const condition = expression(context);
-
-  if (condition.error) {
-    return {
-      isOk: false,
-      error: condition.error,
-    };
+  const elseBlock=block(context)
+  
+  if(!elseBlock.isOk){
+    return elseBlock
   }
-
-  if (!context.check(TokenType.COMMA)) {
-    return LgSyntaxError.unexpected(context, "Expected ','");
-  }
-
-  context.advance();
-
-  const thenBranch = expression(context);
-
-  if (thenBranch.error) {
-    return {
-      isOk: false,
-      error: thenBranch.error,
-    };
-  }
-
-  if (!context.check(TokenType.COMMA)) {
-    return LgSyntaxError.unexpected(context, "Expected ','");
-  }
-
-  context.advance();
-
-  const elseBranch = expression(context);
-
-  if (elseBranch.error) {
-    return {
-      isOk: false,
-      error: elseBranch.error,
-    };
-  }
-
-  if (!context.check(TokenType.GREATER_THAN)) {
-    return LgSyntaxError.unexpected(context, "Expected '>'");
-  }
-
-  context.advance();
-  context.rightbracketDepth.pop();
-  // console.log(context.isInsideAngleBrackets)
-  // context.isInsideAngleBrackets=context.rightbracketDepth.length>0
 
   return {
     isOk: true,
-    value: new IfExpression(
+    value: new IfStatement(
       <LogicNode>condition.value,
-      <LogicNode>thenBranch.value,
-      <LogicNode>elseBranch.value
+      <LogicNode>thenBlock.value,
+      <LogicNode>elseBlock.value
     ),
   };
 };

@@ -1,4 +1,5 @@
 import type { LogicParser } from "../../../../types";
+import { LgSyntaxError } from "../../../errors";
 import { TokenType } from "../../../lexer";
 import { BinaryExpression, type LogicNode } from "../../ast";
 import { logicAnd } from "./logic-and";
@@ -21,6 +22,7 @@ export const logicOr: LogicParser<LogicNode> = (context) => {
       };
     } 
   }
+
 
   return left;
 };

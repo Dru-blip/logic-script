@@ -1,31 +1,24 @@
 import type { LogicParser } from "../../../types";
-import { LgErrorCode } from "../../errors";
 import { TokenType } from "../../lexer";
 import { type LogicNode } from "../ast";
 import { assignment } from "./assignments/assignment";
 import { ifExpresion } from "./control-flow/if";
 import { variableDeclaration } from "./declarations/variable";
-import { logicOr } from "./expressions/logic-or";
+import { expressionStatement } from "./expressions";
 
-export const expression: LogicParser<LogicNode> = (context) => {
-  let result;
+export const statement: LogicParser<LogicNode> = (context) => {
   switch (context.currentToken.type) {
     case TokenType.LET: {
-      result=variableDeclaration(context);
-      break
+      return variableDeclaration(context);
     }
     case TokenType.IDENTIFIER: {
-      result=assignment(context);
-      break
+      return assignment(context);
     }
     case TokenType.IF: {
-      result= ifExpresion(context);
-      break
+      return ifExpresion(context);
     }
     default: {
-      result=logicOr(context);
+      return expressionStatement(context);
     }
   }
-
-  return result;
 };

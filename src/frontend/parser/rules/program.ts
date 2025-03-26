@@ -1,20 +1,19 @@
-import { TokenType } from "../../lexer";
-import { Program } from "../ast";
-import { expression } from ".";
+import { statement } from ".";
 import type { LogicParser } from "../../../types";
 import type { LogicError } from "../../errors";
+import { TokenType } from "../../lexer";
+import { Program } from "../ast";
 
 export const program: LogicParser<Program> = (context) => {
-  const expressions = [];
+  const statements = [];
   while (context.currentToken.type !== TokenType.EOF) {
-    const expr = expression(context);
-    if (expr.isOk) {
-      expressions.push(expr.value!);
+    const stmt = statement(context);
+    if (stmt.isOk) {
+      statements.push(stmt.value!);
     } else {
-      context.errors.push(<LogicError>expr.error);
+      context.errors.push(<LogicError>stmt.error);
     }
   }
 
-  console.log(context.rightbracketDepth)
-  return { isOk: context.errors.length > 0, value: new Program(expressions) };
+  return { isOk: context.errors.length > 0, value: new Program(statements) };
 };

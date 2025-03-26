@@ -4,7 +4,6 @@ import { BinaryExpression, type LogicNode } from "../../ast";
 import { additive } from "./additive";
 
 export const comparison: LogicParser<LogicNode> = (context) => {
-  const initialInsidebracket = context.isInsideAngleBrackets;
   let left = additive(context);
 
   if (left.isOk) {
@@ -17,15 +16,6 @@ export const comparison: LogicParser<LogicNode> = (context) => {
       ])
     ) {
       const { currentToken } = context;
-
-      if (currentToken.type === TokenType.GREATER_THAN) {
-        if (
-          context.isInsideAngleBrackets &&
-          context.rightbracketDepth.length > 1
-        ) {
-          break;
-        }
-      }
 
       context.advance();
       const operator = currentToken;

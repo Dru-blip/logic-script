@@ -1,10 +1,9 @@
+import { expression } from ".";
 import type { LogicParser } from "../../../../types";
-import { LgErrorCode, LgSyntaxError} from "../../../errors";
+import { LgErrorCode, LgSyntaxError } from "../../../errors";
 import { TokenType } from "../../../lexer";
 import type { LogicNode } from "../../ast";
 import { GroupingExpression } from "../../ast/expressions/group";
-import { expression } from "../index";
-// import type { LogicParser } from "../../types";
 
 export const group: LogicParser<LogicNode> = (context) => {
   // console.log("parsing grouping expression");

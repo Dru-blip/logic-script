@@ -3,7 +3,7 @@ import { compileCommand } from "./src/cli/commands/compile";
 import { createProject } from "./src/cli/commands/create";
 import { validateCommand } from "./src/cli/commands/validate";
 import { LogicCli } from "./src/cli/logic-cli";
-import { Lexer } from "./src/frontend/lexer";
+
 
 const cli = new LogicCli({
   version: "1.0.0",

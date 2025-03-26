@@ -155,6 +155,22 @@ export class LgSyntaxError implements LogicError {
     };
   }
 
+  static missingSemicolon(context: ParserContext): ParseResult<never> {
+
+    context.advance()
+    return {
+      isOk: false,
+      error: LgSyntaxError.makeSyntaxError(
+        context.lexer.filename,
+        context.currentToken.location,
+        LgErrorCode.MISSING_SEMICOLON,
+        "expected ';'",
+        '";"',
+        context.currentToken.type
+      ),
+    };
+  }
+
   static makeSyntaxError = (
     filename: string,
     location: TokenLocation,

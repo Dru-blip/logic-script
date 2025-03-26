@@ -1,4 +1,4 @@
-import { expression } from "..";
+// import { expression } from "..";
 import { TokenType } from "../../../lexer";
 
 import { type LogicParser, type LogicType } from "../../../../types";
@@ -6,6 +6,7 @@ import { LgSyntaxError } from "../../../errors";
 import { Identifier, VariableDeclaration, type LogicNode } from "../../ast";
 import { tokenToType } from "../../utils";
 import { primary } from "../expressions/primary";
+import { expression } from "../expressions";
 
 export const variableDeclaration: LogicParser<VariableDeclaration> = (
   context
