@@ -1,11 +1,9 @@
 import type { LogicParser } from "../../../../types";
 import { TokenType } from "../../../lexer";
 import { BinaryExpression, type LogicNode } from "../../ast";
-// import { type LogicParser } from "../../types";
 import { comparison } from "./comparison";
 
 export const equality: LogicParser<LogicNode> = (context) => {
-  // console.log("parsing equality expression");
 
   let left = comparison(context);
 

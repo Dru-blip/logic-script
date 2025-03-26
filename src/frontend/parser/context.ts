@@ -1,4 +1,4 @@
-import { makeSyntaxError, type LogicError } from "../errors";
+import { LgErrorCode, LgSyntaxError, type LogicError } from "../errors";
 import { Lexer } from "../lexer";
 import { Token, TokenType } from "../lexer/token";
 
@@ -51,14 +51,23 @@ export class ParserContext {
     return this.currentToken.type === tokenType;
   }
 
-  consume(type: TokenType, message: string) {
+  consume(type: TokenType, message: string,code:LgErrorCode) {
     if (this.check(type)) {
       this.advance();
       return true
-    } else {
-      return false
+    } 
+    return false
+  }
+
+  expect(type:TokenType,message:string){
+    if(!this.check(type)){
+      return {
+        isOk:false,
+        error:LgSyntaxError.unexpected(this,message)
+      }
     }
   }
+
 
   // error(message: string): void {
   //   this.errors.push(

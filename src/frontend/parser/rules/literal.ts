@@ -1,14 +1,12 @@
 import { PrimitiveType, type LogicParser } from "../../../types";
-import { LgErrorCode, makeSyntaxError } from "../../errors";
+import { LgErrorCode, LgSyntaxError } from "../../errors";
 import { TokenType } from "../../lexer";
 import { LogicLiteral } from "../ast";
 import { ParserContext } from "../context";
-// import { PrimitiveType, type LogicParser } from "../types";
 
 export const literal: LogicParser<LogicLiteral<any, PrimitiveType>> = (
-  context: ParserContext,
+  context: ParserContext
 ) => {
-  // console.log("parsing literals");
   const { currentToken } = context;
   if (currentToken.type === TokenType.NUMBER) {
     return {
@@ -17,7 +15,7 @@ export const literal: LogicParser<LogicLiteral<any, PrimitiveType>> = (
         Number(currentToken.literal),
         PrimitiveType.INT,
         "number",
-        context.currentToken.location,
+        context.currentToken.location
       ),
     };
   }
@@ -29,7 +27,7 @@ export const literal: LogicParser<LogicLiteral<any, PrimitiveType>> = (
         currentToken.literal === "true",
         PrimitiveType.BOOLEAN,
         "boolean",
-        context.currentToken.location,
+        context.currentToken.location
       ),
     };
   }
@@ -41,42 +39,26 @@ export const literal: LogicParser<LogicLiteral<any, PrimitiveType>> = (
         currentToken.literal,
         PrimitiveType.STR,
         "string",
-        context.currentToken.location,
+        context.currentToken.location
       ),
     };
   }
 
   if (currentToken.type === TokenType.ERROR) {
-    return {
-      isOk: false,
-      error: makeSyntaxError(
-        context.lexer.filename,
-        context.currentToken.location,
-        LgErrorCode.UNKNOWN_KEYWORD,
-        "Unknown token",
-      ),
-    };
+    return LgSyntaxError.unexpected(
+      context,
+      "Unknown token",
+      LgErrorCode.UNKNOWN_KEYWORD
+    );
   }
 
   if (currentToken.type === TokenType.EOF) {
     // console.log(context.currentToken);
-    return {
-      isOk: false,
-      error: makeSyntaxError(
-        context.lexer.filename,
-        context.currentToken.location,
-        LgErrorCode.UNEXPECTED_EOF,
-        "Unexpected end of file",
-      ),
-    };
+    return LgSyntaxError.unexpected(
+      context,
+      "Unexpected end of file",
+      LgErrorCode.UNEXPECTED_EOF
+    );
   }
-  return {
-    isOk: false,
-    error: makeSyntaxError(
-      context.lexer.filename,
-      context.currentToken.location,
-      LgErrorCode.UNEXPECTED_TOKEN,
-      "",
-    ),
-  };
+  return LgSyntaxError.unexpected(context, "");
 };

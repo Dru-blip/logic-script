@@ -1,5 +1,6 @@
 import chalk from "chalk";
-import type { TokenLocation } from "../../types";
+import type { ParseResult, TokenLocation } from "../../types";
+import type { ParserContext } from "../parser/context";
 
 export enum LgErrorCode {
   MISSING_TYPE = "E1001",
@@ -46,41 +47,121 @@ export interface LogicError {
   code: LgErrorCode;
   expected?: string;
   unexpected?: string;
+
+  printError: (source: string) => void;
 }
 
-export const makeSyntaxError = (
-  filename: string,
-  location: TokenLocation,
-  code: LgErrorCode,
-  message: string,
-  expected?: string,
-  unexpected?: string,
-): LogicError => ({
-  filename,
-  location,
-  code,
-  message,
-  expected: expected ?? "",
-  unexpected: unexpected ?? "",
-});
+export class LgSyntaxError implements LogicError {
+  constructor(
+    public filename: string,
+    public location: TokenLocation,
+    public message: string,
+    public code: LgErrorCode,
+    public expected?: string,
+    public unexpected?: string
+  ) {}
 
-export const printError = (error: LogicError, source: string): void => {
-  const { filename, location, message, code, expected, unexpected } = error;
-  const sourceLines = source.split("\n");
-  const errorLine = sourceLines[location.line] || "";
-  const hint = ERROR_HINTS.get(code) || "Check syntax.";
+  printError(source: string) {
+    const { filename, location, message, code, expected, unexpected } = this;
+    const sourceLines = source.split("\n");
+    const errorLine = sourceLines[location.line] || "";
+    const hint = ERROR_HINTS.get(code) || "Check syntax.";
 
-  const fileInfo = chalk.blue(
-    `${filename}:${location.line + 1}:${location.col + 1}`,
-  );
+    const fileInfo = chalk.blue(
+      `${filename}:${location.line + 1}:${location.col + 1}`
+    );
 
-  console.log(`${chalk.red(`error[${code}]:`)} ${message}`);
-  console.log(` --> ${fileInfo}`);
-  console.log(`${" ".repeat(2)} |`);
-  console.log(`${String(location.line + 1)} ${" "}| ${errorLine}`);
-  console.log(
-    `${" ".repeat(2)} | ${" ".repeat(location.col)}${chalk.red("^")} ${chalk.dim(`unexpected '${unexpected}', expected ${expected}`)}`,
-  );
-  console.log(`\n  ${chalk.green("= help:")} ${chalk.yellow(hint)}`);
-  console.log();
-};
+    console.log(`${chalk.red(`error[${code}]:`)} ${message}`);
+    console.log(` --> ${fileInfo}`);
+    console.log(`${" ".repeat(2)} |`);
+    console.log(`${String(location.line + 1)} ${" "}| ${errorLine}`);
+    console.log(
+      `${" ".repeat(2)} | ${" ".repeat(location.col)}${chalk.red(
+        "^"
+      )} ${chalk.dim(`unexpected '${unexpected}', expected ${expected}`)}`
+    );
+    console.log(`\n  ${chalk.green("= help:")} ${chalk.yellow(hint)}`);
+    console.log();
+  }
+
+  static unexpected(
+    context: ParserContext,
+    expected: string,
+    code: LgErrorCode = LgErrorCode.UNEXPECTED_TOKEN
+  ): ParseResult<never> {
+    return {
+      isOk: false,
+      error: LgSyntaxError.makeSyntaxError(
+        context.lexer.filename,
+        context.currentToken.location,
+        code,
+        `Expected ${expected}`,
+        `Unexpected token: ${context.currentToken.type}`
+      ),
+    };
+  }
+
+  static missingType(
+    context: ParserContext,
+    expected: string,
+    unexpected?: string
+  ): ParseResult<never> {
+    return {
+      isOk: false,
+      error: LgSyntaxError.makeSyntaxError(
+        context.lexer.filename,
+        context.currentToken.location,
+        LgErrorCode.MISSING_TYPE,
+        expected,
+        expected,
+        unexpected
+      ),
+    };
+  }
+
+  static missingParanthesis(
+    context: ParserContext,
+    message: string,
+    unexpected: string
+  ): ParseResult<never> {
+    return {
+      isOk: false,
+      error: LgSyntaxError.makeSyntaxError(
+        context.lexer.filename,
+        context.currentToken.location,
+        LgErrorCode.UNCLOSED_PARENTHESIS,
+        message,
+        "')'",
+        unexpected
+      ),
+    };
+  }
+
+  static missingAssignment(
+    context: ParserContext,
+    expected: string,
+    unexpected?: string
+  ): ParseResult<never> {
+    return {
+      isOk: false,
+      error: LgSyntaxError.makeSyntaxError(
+        context.lexer.filename,
+        context.currentToken.location,
+        LgErrorCode.MISSING_ASSIGNMENT,
+        expected,
+        expected,
+        unexpected
+      ),
+    };
+  }
+
+  static makeSyntaxError = (
+    filename: string,
+    location: TokenLocation,
+    code: LgErrorCode,
+    message: string,
+    expected?: string,
+    unexpected?: string
+  ): LogicError =>
+    new LgSyntaxError(filename, location, message, code, expected, unexpected);
+}

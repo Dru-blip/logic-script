@@ -1,9 +1,9 @@
-import { expression } from "../index";
+import type { LogicParser } from "../../../../types";
+import { LgErrorCode, LgSyntaxError} from "../../../errors";
 import { TokenType } from "../../../lexer";
 import type { LogicNode } from "../../ast";
 import { GroupingExpression } from "../../ast/expressions/group";
-import type { LogicParser } from "../../../../types";
-import { LgErrorCode, makeSyntaxError } from "../../../errors";
+import { expression } from "../index";
 // import type { LogicParser } from "../../types";
 
 export const group: LogicParser<LogicNode> = (context) => {
@@ -17,19 +17,14 @@ export const group: LogicParser<LogicNode> = (context) => {
   const consumed = context.consume(
     TokenType.RPAREN,
     "Expected ')' after expression",
+    LgErrorCode.UNCLOSED_PARENTHESIS
   );
   if (!consumed) {
-    return {
-      isOk: false,
-      error: makeSyntaxError(
-        context.lexer.filename,
-        context.currentToken.location,
-        LgErrorCode.UNCLOSED_PARENTHESIS,
+    return LgSyntaxError.missingParanthesis(
+        context,
         "expected ')'",
-        "')'",
         `found ${context.currentToken}`,
-      ),
-    };
+      )
   }
   context.advance();
   return {

@@ -1,5 +1,5 @@
 import type { LogicParser } from "../../../../types";
-import { LgErrorCode, makeSyntaxError } from "../../../errors";
+import { LgErrorCode, LgSyntaxError } from "../../../errors";
 import { TokenType } from "../../../lexer";
 import { Identifier, type LogicNode } from "../../ast";
 import { type ParserContext } from "../../context";
@@ -35,27 +35,16 @@ export const primary: LogicParser<LogicNode> = (context: ParserContext) => {
     default: {
       context.advance();
       if (context.check(TokenType.EOF)) {
-        return {
-          isOk: false,
-          error: makeSyntaxError(
-            context.lexer.filename,
-            currentToken.location,
-            LgErrorCode.UNEXPECTED_EOF,
-            "end of file",
-            "expession",
-            "eof",
-          ),
-        };
+        return LgSyntaxError.unexpected(
+            context,
+            "expected expression",
+            LgErrorCode.UNEXPECTED_EOF
+          )
       }
-      return {
-        isOk: false,
-        error: makeSyntaxError(
-          context.lexer.filename,
-          currentToken.location,
-          LgErrorCode.UNEXPECTED_EOF,
+      return  LgSyntaxError.unexpected(
+          context,
           `expected expression`,
-        ),
-      };
+        )
     }
   }
 };

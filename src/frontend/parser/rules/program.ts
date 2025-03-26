@@ -1,6 +1,5 @@
 import { TokenType } from "../../lexer";
 import { Program } from "../ast";
-// import type { LogicParser } from "../types";
 import { expression } from ".";
 import type { LogicParser } from "../../../types";
 import type { LogicError } from "../../errors";

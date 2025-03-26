@@ -1,9 +1,7 @@
 import type { ParseResult } from "../../types";
-import { printError } from "../errors";
 import { Lexer } from "../lexer";
-import { Program, type LogicNode } from "./ast";
+import { Program } from "./ast";
 import { ParserContext } from "./context";
-import { expression } from "./rules";
 import { program } from "./rules/program";
 
 /**
@@ -15,7 +13,7 @@ import { program } from "./rules/program";
  */
 export const parse: (
   source: string,
-  filename: string,
+  filename: string
 ) => {
   parse: () => ParseResult<Program>;
 } = (source: string, filename: string) => {
@@ -27,7 +25,7 @@ export const parse: (
       const programNode = program(context);
       if (context.errors.length > 0) {
         for (const error of context.errors) {
-          printError(error, source);
+          error.printError(source);
         }
 
         return {

@@ -1,29 +1,17 @@
 import { expression } from "..";
-import { Token, TokenType } from "../../../lexer";
+import { TokenType } from "../../../lexer";
 
+import { type LogicParser, type LogicType } from "../../../../types";
+import { LgSyntaxError } from "../../../errors";
 import { Identifier, VariableDeclaration, type LogicNode } from "../../ast";
-import {
-  PrimitiveType,
-  type LogicParser,
-  type LogicType,
-} from "../../../../types";
 import { tokenToType } from "../../utils";
 import { primary } from "../expressions/primary";
-import { LgErrorCode, makeSyntaxError } from "../../../errors";
 
 export const variableDeclaration: LogicParser<VariableDeclaration> = (
-  context,
+  context
 ) => {
   if (!context.check(TokenType.LET)) {
-    return {
-      isOk: false,
-      error: makeSyntaxError(
-        context.lexer.filename,
-        context.currentToken.location,
-        LgErrorCode.UNEXPECTED_TOKEN,
-        "Expected 'let' keyword",
-      ),
-    };
+    return LgSyntaxError.unexpected(context, "Expected 'let' keyword");
   }
   context.advance();
   const ident = primary(context);
@@ -40,32 +28,20 @@ export const variableDeclaration: LogicParser<VariableDeclaration> = (
     context.advance();
     const ty = tokenToType(context.currentToken.type);
     if (ty === null) {
-      return {
-        isOk: false,
-        error: makeSyntaxError(
-          context.lexer.filename,
-          context.currentToken.location,
-          LgErrorCode.MISSING_TYPE,
-          "expected type",
-          "expected type after ':'",
-          context.currentToken.type,
-        ),
-      };
+      return LgSyntaxError.missingType(
+        context,
+        "expected type after ':'",
+        context.currentToken.type
+      );
     }
     decltype = ty;
     context.advance();
   } else {
-    return {
-      isOk: false,
-      error: makeSyntaxError(
-        context.lexer.filename,
-        context.currentToken.location,
-        LgErrorCode.MISSING_TYPE,
-        "expected type",
-        "expected type after ':'",
-        context.currentToken.type,
-      ),
-    };
+    return LgSyntaxError.missingType(
+      context,
+      "expected type after ':'",
+      context.currentToken.type
+    );
   }
 
   let expr: LogicNode | undefined;
@@ -73,31 +49,21 @@ export const variableDeclaration: LogicParser<VariableDeclaration> = (
     context.advance();
     const result = expression(context);
     if (result.error) {
-      return {
-        error: makeSyntaxError(
-          context.lexer.filename,
-          context.currentToken.location,
-          LgErrorCode.MISSING_ASSIGNMENT,
-          "expected expression",
-          "expected expression after '='",
-          context.currentToken.type,
-        ),
-        isOk: false,
-      };
+      return LgSyntaxError.missingAssignment(
+        context,
+        "expected expression",
+        "expected expression after '='"
+      );
     }
     expr = result.value;
   }
 
   if (!decltype && !expr) {
-    return {
-      isOk: false,
-      error: makeSyntaxError(
-        context.lexer.filename,
-        context.currentToken.location,
-        LgErrorCode.MISSING_ASSIGNMENT,
-        "Expected variable type or expression",
-      ),
-    };
+    return LgSyntaxError.missingAssignment(
+      context,
+      "expected expression",
+      "expected expression after '='"
+    );
   }
 
   if (decltype && !expr) {
@@ -112,7 +78,7 @@ export const variableDeclaration: LogicParser<VariableDeclaration> = (
     value: new VariableDeclaration(
       <Identifier>ident.value,
       <LogicNode>expr,
-      decltype!,
+      decltype!
     ),
   };
 };
