@@ -6,6 +6,6 @@ export class IfStatement implements LogicNode {
   constructor(
     public condition: LogicNode,
     public then: LogicNode,
-    public or: LogicNode,
+    public or?: LogicNode,
   ) {}
 }
