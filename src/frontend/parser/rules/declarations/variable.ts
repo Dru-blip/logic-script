@@ -1,12 +1,11 @@
-// import { expression } from "..";
-import { TokenType } from "../../../lexer";
+import {TokenType} from "../../../lexer";
 
-import { type LogicParser, type LogicType } from "../../../../types";
-import { LgSyntaxError } from "../../../errors";
-import { Identifier, VariableDeclaration, type LogicNode } from "../../ast";
-import { tokenToType } from "../../utils";
-import { primary } from "../expressions/primary";
-import { expression } from "../expressions";
+import {type LogicParser, type LogicType} from "../../../../types";
+import {LgSyntaxError} from "../../../errors";
+import {Identifier, type LogicNode, VariableDeclaration} from "../../ast";
+import {tokenToType} from "../../utils";
+import {primary} from "../expressions/primary";
+import {expression} from "../expressions";
 
 export const variableDeclaration: LogicParser<VariableDeclaration> = (
   context
@@ -52,18 +51,23 @@ export const variableDeclaration: LogicParser<VariableDeclaration> = (
     if (result.error) {
       return LgSyntaxError.missingAssignment(
         context,
-        "expected expression",
-        "expected expression after '='"
+        "expression",
+        "expression after '='"
       );
     }
     expr = result.value;
   }
 
+  if(!context.check(TokenType.SEMICOLON)){
+    return LgSyntaxError.unexpected(context, "';'");
+  }
+
+  context.advance();
   if (!decltype && !expr) {
     return LgSyntaxError.missingAssignment(
       context,
-      "expected expression",
-      "expected expression after '='"
+      "expression",
+      "expression after '='"
     );
   }
 

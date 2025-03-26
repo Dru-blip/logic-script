@@ -82,9 +82,10 @@ export class Lexer {
     if (this.currentChar === "\n") {
       this.line++;
       this.col = 1;
-    } else {
+    } else if (this.currentChar) {
       this.col++;
     }
+    // console.log(`line: ${this.line},col: ${this.col},offset: ${this.position} char:${this.currentChar}`)
   }
 
   /**
@@ -127,14 +128,11 @@ export class Lexer {
     while (true) {
       if (
         this.currentChar === " " ||
-        this.currentChar === "\t" ||
+        this.currentChar === "\t" || this.currentChar==="" ||
         this.currentChar === "\r"
       ) {
-        this.col++;
       } else if (this.currentChar === "\n") {
-        console.log(this.position);
-        this.line++;
-        this.col = 1;
+        // console.log(this.position)
       } else {
         break;
       }

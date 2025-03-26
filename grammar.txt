@@ -6,7 +6,6 @@
 <StatementList> ::= (<Statement>)*;
 
 <Statement> ::= <VariableDeclaration>
-              | <AssignmentStatement>
               | <FunctionDeclaration>
               | <StructDeclaration>
               | <ReturnStatement>
@@ -18,7 +17,6 @@
 <ExpressionStatement> ::= <Expression> ";";
 
 <VariableDeclaration> ::= "let" <Identifier> ":" <Type> ("=" <Expression>)? ";";
-<AssignmentStatement> ::= <Identifier> "=" <Expression> ";";
 
 <ReturnStatement> ::= "return" <Expression> ";";
 <ImportStatement> ::= "import" <StringLiteral> ";";
@@ -34,8 +32,9 @@
 <StructBody> ::= (<StructMember>)*;
 <StructMember> ::= <FunctionDeclaration> | <VariableDeclaration>;
 
-<Expression> ::= <LogicOr>;
+<Expression> ::= <AssignmentExpression> | <LogicOr>;
 
+<AssignmentExpression> ::= <Identifier> "=" <Expression> ";";
 <LogicOr> ::= <LogicAnd> ( "or" <LogicAnd> )*;
 <LogicAnd> ::= <EqualityExpression> ( "and" <EqualityExpression> )*;
 <EqualityExpression> ::= <ComparisonExpression> ( ("==" | "!=") <ComparisonExpression> )*;

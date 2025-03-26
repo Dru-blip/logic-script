@@ -1,7 +1,5 @@
-import type { Node } from "typescript";
-import type { Program } from "../frontend/parser/ast";
-import type { ParserContext } from "../frontend/parser/context";
 import type { LogicError } from "../frontend/errors";
+import type { ParserContext } from "../frontend/parser/context";
 
 export interface LogicConfig {
   project: {

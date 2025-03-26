@@ -25,7 +25,7 @@ export const group: LogicParser<LogicNode> = (context) => {
         `found ${context.currentToken}`,
       )
   }
-  context.advance();
+  // context.advance();
   return {
     isOk: true,
     value: new GroupingExpression(expr.value!),

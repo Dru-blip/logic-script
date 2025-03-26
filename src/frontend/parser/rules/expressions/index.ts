@@ -3,11 +3,10 @@ import { LgSyntaxError } from "../../../errors";
 import { TokenType } from "../../../lexer";
 import type { LogicNode } from "../../ast";
 import { ExpressionStatement } from "../../ast/statements/expression";
-import { logicAnd } from "./logic-and";
-import { logicOr } from "./logic-or";
+import { assignment } from "../assignments/assignment";
 
 export const expression: LogicParser<LogicNode> = (context) => {
-  const expr = logicOr(context);
+  const expr = assignment(context);
 
   if (!expr.isOk) {
     return expr;
@@ -18,7 +17,7 @@ export const expression: LogicParser<LogicNode> = (context) => {
 export const expressionStatement: LogicParser<
   ExpressionStatement | LogicNode
 > = (context) => {
-  const expr = logicOr(context);
+  const expr = assignment(context);
 
   if (!expr.isOk) {
     return expr;
