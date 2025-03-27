@@ -30,7 +30,7 @@ export interface ParseResult<T> {
   error?: LogicError;
 }
 
-export type LogicParser<T extends LogicNode> = (context: ParserContext) => ParseResult<T>;
+export type LogicParser<T> = (context: ParserContext) => ParseResult<T>;
 
 export type TokenLocation = {
   line: number;

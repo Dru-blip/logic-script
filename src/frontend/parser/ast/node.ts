@@ -28,6 +28,8 @@ export enum NodeType {
   BreakStatement="BreakStatement",
   ContinueStatement="ContinueStatement",
   StructDeclaration="StructDeclaration",
+  StructMember="StructMember",
+  StructProperty="StructProperty",
 }
 
 export interface LogicNode {
