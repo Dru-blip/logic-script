@@ -12,6 +12,7 @@
               | <ImportStatement>
               | <IterationStatement>
               | <ConditionalStatement>
+              | break | continue;
               | <ExpressionStatement>
 
 <ExpressionStatement> ::= <Expression> ";";

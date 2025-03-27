@@ -25,6 +25,8 @@ export enum NodeType {
   ObjectLiteral = "ObjectLiteral",
   RangeExpression = "RangeExpression",
   ExpressionStatement = "ExpressionStatement",
+  BreakStatement="BreakStatement",
+  ContinueStatement="ContinueStatement",
 }
 
 export interface LogicNode {

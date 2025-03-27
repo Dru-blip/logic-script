@@ -114,13 +114,7 @@ export class Lexer {
     literal: string,
     location: { line: number; col: number; offset: number },
   ) {
-    // console.log("making token: ", {
-    //   type,
-    //   literal,
-    //   offset: location.offset,
-    //   line: location.line,
-    //   col: location.offset,
-    // });
+
     return new Token(literal, type, location);
   }
 
