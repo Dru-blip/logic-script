@@ -55,7 +55,6 @@ export class Lexer {
     this.keywords.set("true", TokenType.BOOLEAN);
     this.keywords.set("false", TokenType.BOOLEAN);
     this.keywords.set("mut", TokenType.MUT);
-    this.keywords.set("..", TokenType.RANGE);
     this.keywords.set("let", TokenType.LET);
     this.keywords.set("and", TokenType.AND);
     this.keywords.set("or", TokenType.OR);
@@ -300,6 +299,15 @@ export class Lexer {
       case ";":{
         this.advance()
         return this.makeToken(TokenType.SEMICOLON,";",location)
+      }
+      case ".":{
+        if(this.nextChar==="."){
+          this.advance();
+          this.advance();
+          return this.makeToken(TokenType.RANGE, "..",location)
+        }
+        this.advance();
+        return this.makeToken(TokenType.DOT, ".",location)
       }
       case '"': {
         let literal = "";

@@ -5,16 +5,17 @@ import {Identifier, type LogicNode} from "../../ast";
 import {AssignmentExpression} from "../../ast/assignments/variable-assignment";
 import {expression} from "../expressions";
 import {logicOr} from "../expressions/logic-or";
+import {range} from "../expressions/range.ts";
 
 export const assignment: LogicParser<AssignmentExpression | LogicNode> = (
     context
 ) => {
     if (!context.check(TokenType.IDENTIFIER)) {
-        return logicOr(context)
+        return range(context)
     }
 
     if(context.check(TokenType.IDENTIFIER) && context.nextToken.type!==TokenType.ASSIGN){
-        return logicOr(context)
+        return range(context)
     }
 
     const identifier = new Identifier(context.currentToken.literal, context.currentToken.location);

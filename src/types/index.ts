@@ -1,5 +1,6 @@
 import type { LogicError } from "../frontend/errors";
 import type { ParserContext } from "../frontend/parser/context";
+import type {LogicNode} from "../frontend/parser/ast";
 
 export interface LogicConfig {
   project: {
@@ -29,7 +30,7 @@ export interface ParseResult<T> {
   error?: LogicError;
 }
 
-export type LogicParser<T> = (context: ParserContext) => ParseResult<T>;
+export type LogicParser<T extends LogicNode> = (context: ParserContext) => ParseResult<T>;
 
 export type TokenLocation = {
   line: number;

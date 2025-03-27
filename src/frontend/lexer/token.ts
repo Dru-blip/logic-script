@@ -1,67 +1,71 @@
-import type { TokenLocation } from "../../types";
+import type {TokenLocation} from "../../types";
 
 export enum TokenType {
-  //Operators
-  PLUS = "+",
-  MINUS = "-",
-  ASTERISK = "*",
-  SLASH = "/",
-  MODULO = "%",
-  ASSIGN = "=",
-  EQUALS = "==",
-  LESS_THAN = "<",
-  GREATER_THAN = ">",
-  LESS_THAN_EQUAL = "<=",
-  GREATER_THAN_EQUAL = ">=",
-  BANG = "!",
-  NOT_EQUAL = "!=",
-  COLON = ":",
-  SEMICOLON=";",
-  RANGE = "..",
-  
-  //PUNCTUATION
-  HASH = "#",
-  COMMA = ",",
-  LPAREN = "(",
-  RPAREN = ")",
-  LBRACE = "{",
-  RBRACE = "}",
+    //Operators
+    PLUS = "+",
+    MINUS = "-",
+    ASTERISK = "*",
+    SLASH = "/",
+    MODULO = "%",
+    ASSIGN = "=",
+    EQUALS = "==",
+    LESS_THAN = "<",
+    GREATER_THAN = ">",
+    LESS_THAN_EQUAL = "<=",
+    GREATER_THAN_EQUAL = ">=",
+    BANG = "!",
+    NOT_EQUAL = "!=",
+    COLON = ":",
+    SEMICOLON = ";",
+    RANGE = "..",
 
-  // Keywords
-  FN = "fn",
-  IF = "if",
-  ELSE = "else",
-  FOR = "for",
-  RETURN = "return",
-  LET = "let",
-  MUT = "mut",
-  AND = "and",
-  OR = "or",
-  IN="in",
+    DOT = ".",
 
-  IDENTIFIER = "IDENTIFIER",
 
-  ERROR = "error",
+    //PUNCTUATION
+    HASH = "#",
+    COMMA = ",",
+    LPAREN = "(",
+    RPAREN = ")",
+    LBRACE = "{",
+    RBRACE = "}",
 
-  //Types
-  NUMBER = "number",
-  STRING = "string",
-  BOOLEAN = "boolean",
-  TRUE = "true",
-  FALSE = "false",
+    // Keywords
+    FN = "fn",
+    IF = "if",
+    ELSE = "else",
+    FOR = "for",
+    RETURN = "return",
+    LET = "let",
+    MUT = "mut",
+    AND = "and",
+    OR = "or",
+    IN = "in",
 
-  INT = "Int",
-  BOOL = "Bool",
-  STR = "Str",
-  ANY = "any",
-  VOID = "void",
-  EOF = "EOF",
+    IDENTIFIER = "IDENTIFIER",
+
+    ERROR = "error",
+
+    //Types
+    NUMBER = "number",
+    STRING = "string",
+    BOOLEAN = "boolean",
+    TRUE = "true",
+    FALSE = "false",
+
+    INT = "Int",
+    BOOL = "Bool",
+    STR = "Str",
+    ANY = "any",
+    VOID = "void",
+    EOF = "EOF",
 }
 
 export class Token {
-  constructor(
-    public literal: string,
-    public type: TokenType,
-    public location: TokenLocation,
-  ) {}
+    constructor(
+        public literal: string,
+        public type: TokenType,
+        public location: TokenLocation,
+    ) {
+    }
 }

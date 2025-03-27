@@ -9,10 +9,11 @@ const fileName =
 const source = readFileSync(fileName).toString();
 
 const name = "main.lgs";
-
+//
 // const lexer = new Lexer(source, name);
 //
 // const tokens = lexer.getTokens();
+// console.log(tokens);
 
 const parser = parse(
     source

@@ -23,7 +23,7 @@
 
 <IterationStatement> ::= "for" <Identifier> "in" <Iterable> "{" <StatementList> "}";
 <Iterable> ::= <Expression> (".." <Expression>)?
-<RangeExpression> ::= <Expression> ".." <Expression>;
+
 
 <ConditionalStatement> ::= "if" <Expression> "{" <StatementList> "}" ("elif" <Expression> "{" <StatementList> "}")* ("else" "{" <StatementList> "}")?;
 
@@ -34,9 +34,9 @@
 <StructBody> ::= (<StructMember>)*;
 <StructMember> ::= <FunctionDeclaration> | <VariableDeclaration>;
 
-<Expression> ::= <AssignmentExpression> | <LogicOr>;
-
+<Expression> ::= <AssignmentExpression> | <RangeExpression>;
 <AssignmentExpression> ::= <Identifier> "=" <Expression> ";";
+<RangeExpression> ::= <LogicOr> ".." <LogicOr>;
 <LogicOr> ::= <LogicAnd> ( "or" <LogicAnd> )*;
 <LogicAnd> ::= <EqualityExpression> ( "and" <EqualityExpression> )*;
 <EqualityExpression> ::= <ComparisonExpression> ( ("==" | "!=") <ComparisonExpression> )*;
