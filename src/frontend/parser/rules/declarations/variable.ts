@@ -1,5 +1,4 @@
 import {TokenType} from "../../../lexer";
-
 import {type LogicParser, type LogicType} from "../../../../types";
 import {LgSyntaxError} from "../../../errors";
 import {Identifier, type LogicNode, VariableDeclaration} from "../../ast";

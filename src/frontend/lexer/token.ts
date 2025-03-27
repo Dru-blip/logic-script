@@ -2,6 +2,7 @@ import type {TokenLocation} from "../../types";
 
 export enum TokenType {
     //Operators
+
     PLUS = "+",
     MINUS = "-",
     ASTERISK = "*",
@@ -41,6 +42,8 @@ export enum TokenType {
     AND = "and",
     OR = "or",
     IN = "in",
+    CONTINUE="continue",
+    BREAK="break",
 
     IDENTIFIER = "IDENTIFIER",
 
