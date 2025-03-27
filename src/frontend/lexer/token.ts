@@ -20,6 +20,7 @@ export enum TokenType {
     SEMICOLON = ";",
     RANGE = "..",
 
+    ARROW="->",
     DOT = ".",
 
 

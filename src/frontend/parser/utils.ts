@@ -1,18 +1,21 @@
 import {ObjectType, PrimitiveType, SpecialType} from "../../types";
-import {TokenType} from "../lexer";
+import {Token, TokenType} from "../lexer";
+import {Identifier} from "./ast";
 
-export const tokenToType = (token: TokenType) => {
-  if (token === TokenType.INT) {
-    return PrimitiveType.INT;
-  } else if (token === TokenType.STR) {
-    return PrimitiveType.STR;
-  } else if (token === TokenType.BOOL) {
-    return PrimitiveType.BOOLEAN;
-  } else if (token === TokenType.ANY) {
-    return SpecialType.ANY;
-  }else if(token===TokenType.TYRANGE) {
-    return ObjectType.Range
-  }else {
-    return null;
-  }
+export const tokenToType = (tokenType: TokenType, token?: Token) => {
+    if (tokenType === TokenType.INT) {
+        return PrimitiveType.INT;
+    } else if (tokenType === TokenType.STR) {
+        return PrimitiveType.STR;
+    } else if (tokenType === TokenType.BOOL) {
+        return PrimitiveType.BOOLEAN;
+    } else if (tokenType === TokenType.ANY) {
+        return SpecialType.ANY;
+    } else if (tokenType === TokenType.TYRANGE) {
+        return ObjectType.Range
+    } else if (tokenType === TokenType.IDENTIFIER) {
+        return new Identifier(token?.literal!, token?.location!)
+    } else {
+        return null;
+    }
 };

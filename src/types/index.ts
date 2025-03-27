@@ -1,6 +1,6 @@
 import type { LogicError } from "../frontend/errors";
 import type { ParserContext } from "../frontend/parser/context";
-import type {LogicNode} from "../frontend/parser/ast";
+import {Identifier, type LogicNode} from "../frontend/parser/ast";
 
 export interface LogicConfig {
   project: {
@@ -53,4 +53,4 @@ export enum SpecialType {
   ANY = "any",
 }
 
-export type LogicType = PrimitiveType | SpecialType | ObjectType;
+export type LogicType = PrimitiveType | SpecialType | ObjectType |Identifier;

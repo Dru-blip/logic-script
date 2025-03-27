@@ -14,5 +14,6 @@ export class FunctionDeclaration implements LogicNode {
     public name: Identifier,
     public params: FunctionParam[],
     public body: BlockStatement,
+    public returnType: LogicType,
   ) {}
 }

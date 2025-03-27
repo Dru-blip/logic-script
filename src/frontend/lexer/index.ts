@@ -152,7 +152,12 @@ export class Lexer {
         break;
       }
       case "-": {
-        tokenType = TokenType.MINUS;
+        if(this.nextChar===">"){
+          this.advance();
+          tokenType=TokenType.ARROW;
+        }else{
+          tokenType = TokenType.MINUS;
+        }
         break;
       }
       case "*": {

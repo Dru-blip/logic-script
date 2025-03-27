@@ -5,6 +5,7 @@ import {LgSyntaxError} from "../../../errors";
 import {FunctionParam} from "../../ast/declarations/functions.ts";
 import {typeDeclaration} from "./variable.ts";
 import {block} from "../statements/block.ts";
+import {tokenToType} from "../../utils.ts";
 
 
 const parameterList: LogicParser<FunctionParam[]> = (context) => {
@@ -55,6 +56,18 @@ export const functionDeclaration: LogicParser<FunctionDeclaration> = (context) =
         return <ParseResult<never>>paramsList
     }
 
+    let returnType;
+    if (context.check(TokenType.ARROW)) {
+        context.advance()
+        const {currentToken} = context
+        const ty = tokenToType(currentToken.type, currentToken)
+        if (ty === null) {
+            return LgSyntaxError.unexpected(context, "unknown type");
+        }
+        context.advance()
+        returnType = ty
+    }
+
     const body = block(context)
 
     if (!body.isOk) {
@@ -63,6 +76,6 @@ export const functionDeclaration: LogicParser<FunctionDeclaration> = (context) =
 
     return {
         isOk: true,
-        value: new FunctionDeclaration(ident, paramsList.value!, body.value!)
+        value: new FunctionDeclaration(ident, paramsList.value!, body.value!, returnType!)
     }
 }
