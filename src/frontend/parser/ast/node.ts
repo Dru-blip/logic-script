@@ -27,6 +27,7 @@ export enum NodeType {
   ExpressionStatement = "ExpressionStatement",
   BreakStatement="BreakStatement",
   ContinueStatement="ContinueStatement",
+  StructDeclaration="StructDeclaration",
 }
 
 export interface LogicNode {
