@@ -7,6 +7,7 @@ import {expressionStatement} from "./expressions";
 import {forStatement} from "./control-flow/for.ts";
 import {breakContinue} from "./statements/breakContinue.ts";
 import {struct} from "./declarations/struct.ts";
+import {functionDeclaration} from "./declarations/function.ts";
 
 export const statement: LogicParser<LogicNode> = (context) => {
     switch (context.currentToken.type) {
@@ -15,6 +16,9 @@ export const statement: LogicParser<LogicNode> = (context) => {
         }
         case TokenType.STRUCT: {
             return struct(context)
+        }
+        case TokenType.FN:{
+            return functionDeclaration(context)
         }
         case TokenType.FOR: {
             return forStatement(context)

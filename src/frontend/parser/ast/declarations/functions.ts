@@ -1,11 +1,18 @@
-import { BlockStatement } from "../statements/block";
+import { BlockStatement } from "../statements";
 import { type LogicNode, NodeType, type LogicExpression } from "../node";
+import type {Identifier} from "./variable.ts";
+import type {LogicType} from "../../../../types";
+
+
+export class FunctionParam {
+  constructor(public id:Identifier,public paramType:LogicType) {}
+}
 
 export class FunctionDeclaration implements LogicNode {
   readonly type = NodeType.FunctionDeclaration;
   constructor(
-    public name: string,
-    public params: { name: string }[],
-    public body: LogicNode[],
+    public name: Identifier,
+    public params: FunctionParam[],
+    public body: BlockStatement,
   ) {}
 }

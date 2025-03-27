@@ -6,7 +6,7 @@ import {Identifier} from "../../ast";
 import {typeDeclaration} from "./variable.ts";
 
 
-const structMember:LogicParser<StructProperty>=(context)=>{
+const structProperty:LogicParser<StructProperty>=(context)=>{
     if(!context.check(TokenType.IDENTIFIER)){
         return LgSyntaxError.unexpected(context,'identifier')
     }
@@ -30,7 +30,6 @@ const structMember:LogicParser<StructProperty>=(context)=>{
         isOk:true,
         value:new StructProperty(ident,decltype!)
     }
-
 }
 
 const structBody:LogicParser<StructProperty[]>=(context)=>{
@@ -42,7 +41,7 @@ const structBody:LogicParser<StructProperty[]>=(context)=>{
 
     const props:StructProperty[]=[];
     while (!context.check(TokenType.RBRACE)){
-        const prop=structMember(context)
+        const prop=structProperty(context)
         if(!prop.isOk){
             return <ParseResult<never>>prop
         }
