@@ -58,6 +58,7 @@ export enum TokenType {
     STR = "Str",
     ANY = "any",
     VOID = "void",
+    TYRANGE="Range",
     EOF = "EOF",
 }
 

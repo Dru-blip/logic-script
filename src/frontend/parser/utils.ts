@@ -1,5 +1,5 @@
-import { PrimitiveType, SpecialType } from "../../types";
-import { TokenType } from "../lexer";
+import {ObjectType, PrimitiveType, SpecialType} from "../../types";
+import {TokenType} from "../lexer";
 
 export const tokenToType = (token: TokenType) => {
   if (token === TokenType.INT) {
@@ -10,7 +10,9 @@ export const tokenToType = (token: TokenType) => {
     return PrimitiveType.BOOLEAN;
   } else if (token === TokenType.ANY) {
     return SpecialType.ANY;
-  } else {
+  }else if(token===TokenType.TYRANGE) {
+    return ObjectType.Range
+  }else {
     return null;
   }
 };

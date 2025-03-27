@@ -64,6 +64,8 @@ export class Lexer {
     this.keywords.set("any", TokenType.ANY);
     this.keywords.set("void", TokenType.VOID);
     this.keywords.set("in",TokenType.IN)
+    this.keywords.set("Range",TokenType.TYRANGE)
+
 
     this.position = 0;
     this.line = 0;
