@@ -4,7 +4,6 @@ import {TokenType} from "../../../lexer";
 import {Identifier, type LogicNode} from "../../ast";
 import {AssignmentExpression} from "../../ast/assignments/variable-assignment";
 import {expression} from "../expressions";
-import {logicOr} from "../expressions/logic-or";
 import {range} from "../expressions/range.ts";
 
 export const assignment: LogicParser<AssignmentExpression | LogicNode> = (

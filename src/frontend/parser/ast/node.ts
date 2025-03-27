@@ -5,7 +5,7 @@ export enum NodeType {
   FunctionDeclaration = "FunctionDeclaration",
   BlockStatement = "BlockStatement",
   VariableDeclaration = "VariableDeclaration",
-  ReturnExpression = "ReturnStatement",
+  ReturnStatement = "ReturnStatement",
   IfStatement = "IfStatement",
   ForStatement = "ForStatement",
   RangeStatement = "RangeStatement",

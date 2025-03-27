@@ -2,6 +2,7 @@ import type { LogicParser } from "../../../../types";
 import { TokenType } from "../../../lexer";
 import { type LogicNode, UnaryExpression } from "../../ast";
 import { primary } from "./primary";
+import {call} from "./call.ts";
 
 export const unary: LogicParser<LogicNode> = (context) => {
   const token = context.peek();
@@ -19,5 +20,5 @@ export const unary: LogicParser<LogicNode> = (context) => {
 
     return right;
   }
-  return primary(context);
+  return call(context);
 };
