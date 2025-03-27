@@ -56,6 +56,7 @@ export class Lexer {
     this.keywords.set("false", TokenType.BOOLEAN);
     this.keywords.set("break",TokenType.BREAK);
     this.keywords.set("continue",TokenType.CONTINUE);
+    this.keywords.set("struct",TokenType.STRUCT);
     this.keywords.set("mut", TokenType.MUT);
     this.keywords.set("let", TokenType.LET);
     this.keywords.set("and", TokenType.AND);

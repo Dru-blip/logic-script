@@ -44,6 +44,7 @@ export enum TokenType {
     IN = "in",
     CONTINUE="continue",
     BREAK="break",
+    STRUCT="struct",
 
     IDENTIFIER = "IDENTIFIER",
 
