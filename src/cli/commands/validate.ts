@@ -1,7 +1,7 @@
 import { Option } from "commander";
 import type { LogicCommand } from "../types";
 import { parse } from "../../frontend/parser";
-import {TypeChecker} from "../../frontend/semantics/type-checker.ts";
+import {TypeChecker} from "../../frontend/semantics/type-checker/type-checker.ts";
 
 export const validateCommand: LogicCommand = {
   command: "validate",
