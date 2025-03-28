@@ -3,9 +3,7 @@ import {FunctionDeclaration, Identifier} from "../../ast";
 import {TokenType} from "../../../lexer";
 import {LgSyntaxError} from "../../../errors";
 import {FunctionParam} from "../../ast/declarations/functions.ts";
-import {typeDeclaration} from "./variable.ts";
 import {block} from "../statements/block.ts";
-import {tokenToType} from "../../utils.ts";
 import {typeParser} from "../types.ts";
 
 

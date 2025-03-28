@@ -1,11 +1,11 @@
-import type { LogicParser } from "../../../../types";
-import { LgErrorCode, LgSyntaxError } from "../../../errors";
-import { TokenType } from "../../../lexer";
-import { Identifier, type LogicNode } from "../../ast";
-import { type ParserContext } from "../../context";
+import type {LogicParser} from "../../../../types";
+import {LgErrorCode, LgSyntaxError} from "../../../errors";
+import {TokenType} from "../../../lexer";
+import {Identifier, type LogicNode} from "../../ast";
+import {type ParserContext} from "../../context";
 // import { type LogicParser, type ParseResult } from "../../types";
-import { literal } from "../literal";
-import { group } from "./group";
+import {literal} from "../literal";
+import {group} from "./group";
 
 export const primary: LogicParser<LogicNode> = (context: ParserContext) => {
   // console.log("parsing primary");
@@ -13,7 +13,8 @@ export const primary: LogicParser<LogicNode> = (context: ParserContext) => {
   switch (currentToken.type) {
     case TokenType.NUMBER:
     case TokenType.STRING:
-    case TokenType.BOOLEAN: {
+    case TokenType.BOOLEAN:
+    case TokenType.LSQRB:{
       const result = literal(context);
       context.advance();
       return result;

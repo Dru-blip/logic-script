@@ -3,7 +3,6 @@ import {StructDeclaration, StructProperty} from "../../ast/declarations/struct.t
 import {TokenType} from "../../../lexer";
 import {LgSyntaxError} from "../../../errors";
 import {FunctionDeclaration, Identifier} from "../../ast";
-import {typeDeclaration} from "./variable.ts";
 import {functionDeclaration} from "./function.ts";
 import {typeParser} from "../types.ts";
 

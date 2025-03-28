@@ -1,5 +1,5 @@
 // import { PrimitiveType, type TokenLocation } from "../types";
-import type { PrimitiveType, TokenLocation } from "../../../types";
+import {ArrayType, type LogicType, type PrimitiveType, type TokenLocation} from "../../../types";
 import { type LogicNode, NodeType } from "./node";
 
 export class LogicLiteral<T = any, Ty extends PrimitiveType>
@@ -9,7 +9,7 @@ export class LogicLiteral<T = any, Ty extends PrimitiveType>
   literalType: string;
   value: T;
   location: TokenLocation;
-  declType: PrimitiveType;
+  declType: LogicType;
 
   constructor(
     value: T,
@@ -22,4 +22,10 @@ export class LogicLiteral<T = any, Ty extends PrimitiveType>
     this.location = location;
     this.declType = declType;
   }
+}
+
+
+export class ArrayLiteral implements LogicNode{
+  type=NodeType.ArrayLiteral
+  constructor(public values:LogicNode[],public location:TokenLocation) {}
 }

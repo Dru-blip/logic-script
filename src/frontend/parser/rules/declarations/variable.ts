@@ -2,7 +2,6 @@ import {TokenType} from "../../../lexer";
 import {type LogicParser, type LogicType, type ParseResult} from "../../../../types";
 import {LgSyntaxError} from "../../../errors";
 import {Identifier, type LogicNode, VariableDeclaration} from "../../ast";
-import {tokenToType} from "../../utils";
 import {primary} from "../expressions/primary";
 import {expression} from "../expressions";
 import type {ParserContext} from "../../context.ts";
@@ -47,7 +46,12 @@ export const variableDeclaration: LogicParser<VariableDeclaration> = (
     }
 
     let decltype: LogicType | undefined;
-    const ty=typeDeclaration(context)
+    if(!context.check(TokenType.COLON)){
+        return LgSyntaxError.unexpected(context, ":");
+    }
+    context.advance()
+    const ty=typeParser(context)
+
     if(!ty.isOk){
         return <ParseResult<never>>ty;
     }
