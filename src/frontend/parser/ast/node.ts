@@ -30,6 +30,7 @@ export enum NodeType {
   StructDeclaration="StructDeclaration",
   StructMember="StructMember",
   StructProperty="StructProperty",
+  MemberAssignment="MemberAssignment",
 }
 
 export interface LogicNode {

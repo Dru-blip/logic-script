@@ -1,6 +1,6 @@
 import { LgErrorCode, LgSyntaxError, type LogicError } from "../errors";
 import { Lexer } from "../lexer";
-import { Token, TokenType } from "../lexer/token";
+import { Token, TokenType } from "../lexer";
 
 export class ParserContext {
   lexer: Lexer;

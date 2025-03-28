@@ -12,8 +12,8 @@
               | <ImportStatement>
               | <IterationStatement>
               | <ConditionalStatement>
-              | break | continue;
-              | <ExpressionStatement>
+              | "break" | "continue"
+              | <ExpressionStatement>;
 
 <ExpressionStatement> ::= <Expression> ";";
 
@@ -23,10 +23,11 @@
 <ImportStatement> ::= "import" <StringLiteral> ";";
 
 <IterationStatement> ::= "for" <Identifier> "in" <Iterable> "{" <StatementList> "}";
-<Iterable> ::= <Expression> (".." <Expression>)?
+<Iterable> ::= <Expression> (".." <Expression>)?;
 
-
-<ConditionalStatement> ::= "if" <Expression> "{" <StatementList> "}" ("elif" <Expression> "{" <StatementList> "}")* ("else" "{" <StatementList> "}")?;
+<ConditionalStatement> ::= "if" <Expression> "{" <StatementList> "}"
+                         ("elif" <Expression> "{" <StatementList> "}")*
+                         ("else" "{" <StatementList> "}")?;
 
 <FunctionDeclaration> ::= "fn" <Identifier> "(" <ParameterList> ")" "->" <Type> "{" <StatementList> "}";
 <ParameterList> ::= <Identifier> ":" <Type> ("," <Identifier> ":" <Type>)*;
@@ -35,29 +36,24 @@
 <StructBody> ::= (<StructMember>)*;
 <StructMember> ::= <FunctionDeclaration> | <VariableDeclaration>;
 
-<Expression> ::= <AssignmentExpression> | <RangeExpression>;
-<AssignmentExpression> ::= ( call "." )? <Identifier> "=" <Expression> ";";
-<RangeExpression> ::= <LogicOr> ".." <LogicOr>;
-<LogicOr> ::= <LogicAnd> ( "or" <LogicAnd> )*;
-<LogicAnd> ::= <EqualityExpression> ( "and" <EqualityExpression> )*;
+<Expression> ::= <AssignmentExpression>
+<AssignmentExpression> ::= ( <Call> "." )? <Identifier> "=" <RangeExpression> ";";
+<RangeExpression> ::= <LogicOr> (".." <LogicOr>)?
+<LogicOr> ::= <LogicAnd> ( "or" <LogicAnd> )*
+<LogicAnd> ::= <EqualityExpression> ( "and" <EqualityExpression> )*
 <EqualityExpression> ::= <ComparisonExpression> ( ("==" | "!=") <ComparisonExpression> )*;
 <ComparisonExpression> ::= <AdditiveExpression> ( (">" | ">=" | "<" | "<=") <AdditiveExpression> )*;
 <AdditiveExpression> ::= <MultiplicativeExpression> ( ("+" | "-") <MultiplicativeExpression> )*;
 <MultiplicativeExpression> ::= <UnaryExpression> ( ("*" | "/") <UnaryExpression> )*;
 <UnaryExpression> ::= ( "+" | "-" | "!" ) <UnaryExpression> | <Call>;
 <Call>           ::= <PrimaryExpression> ( "(" arguments? ")" | "." <Identifier> )* ;
+
 <PrimaryExpression> ::= <Literal>
                       | <Identifier>
                       | "(" <Expression> ")"
-                      | <FunctionCall>
-                      | <MemberAccess>
                       | <ArrayAccess>
                       | <ObjectCreation>;
 
-<FunctionCall> ::= <Identifier> "(" <ArgumentList> ")" ;
-<ArgumentList> ::= <Expression> ("," <Expression>)*;
-
-<MemberAccess> ::= <PrimaryExpression> "." <Identifier>;
 <ArrayAccess> ::= <Identifier> "[" <Expression> "]";
 <ObjectCreation> ::= <Identifier> "{" <PropertyAssignments> "}";
 <PropertyAssignments> ::= <Property> ("," <Property>)*;

@@ -1,10 +1,11 @@
 import type {LogicParser, ParseResult} from "../../../../types";
 import {CallExpression} from "../../ast/expressions/call.ts";
 import {primary} from "./primary.ts";
-import type {LogicNode} from "../../ast";
+import {Identifier, type LogicNode} from "../../ast";
 import {TokenType} from "../../../lexer";
 import {expression} from "./index.ts";
 import {LgSyntaxError} from "../../../errors";
+import {MemberExpression} from "../../ast/expressions/member.ts";
 
 
 const argumentList: LogicParser<LogicNode[]> = (context) => {
@@ -38,17 +39,29 @@ export const call: LogicParser<CallExpression | LogicNode> = (context) => {
         return expr
     }
 
-    if (context.check(TokenType.LPAREN)) {
-        const args = argumentList(context)
-        if (!args.isOk) {
-            return <ParseResult<never>>args
-        }
-        return {
-            isOk: true,
-            value: new CallExpression(expr.value!, args.value!)
+    let val = expr.value
+    while (true) {
+        if (context.check(TokenType.LPAREN)) {
+            const args = argumentList(context)
+            if (!args.isOk) {
+                return <ParseResult<never>>args
+            }
+
+            val = new CallExpression(val!, args.value!)
+
+        } else if (context.check(TokenType.DOT)) {
+            context.advance()
+            const ident = new Identifier(context.currentToken.literal, context.currentToken.location)
+            context.advance()
+            val=new MemberExpression(val!, ident)
+        } else {
+            break
         }
     }
 
 
-    return expr
+    return {
+        isOk: true,
+        value: val
+    }
 }

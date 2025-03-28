@@ -1,42 +1,39 @@
-import type {LogicParser} from "../../../../types";
-import {LgSyntaxError} from "../../../errors";
+import type {LogicParser, ParseResult} from "../../../../types";
 import {TokenType} from "../../../lexer";
 import {Identifier, type LogicNode} from "../../ast";
 import {AssignmentExpression} from "../../ast/assignments/variable-assignment";
-import {expression} from "../expressions";
 import {range} from "../expressions/range.ts";
+import {MemberAssignment} from "../../ast/assignments/member-assignment.ts";
+import {MemberExpression} from "../../ast/expressions/member.ts";
 
-export const assignment: LogicParser<AssignmentExpression | LogicNode> = (
+export const assignment: LogicParser<AssignmentExpression | MemberAssignment | LogicNode> = (
     context
 ) => {
-    if (!context.check(TokenType.IDENTIFIER)) {
-        return range(context)
+    const ident = range(context)
+
+    if (!ident.isOk) {
+        return <ParseResult<never>>ident
     }
 
-    if(context.check(TokenType.IDENTIFIER) && context.nextToken.type!==TokenType.ASSIGN){
-        return range(context)
-    }
-
-    const identifier = new Identifier(context.currentToken.literal, context.currentToken.location);
-
-    context.advance();
-
-    if (!context.check(TokenType.ASSIGN)) {
-        return {
-            isOk: true,
-            value: identifier
+    if (context.check(TokenType.ASSIGN)) {
+        context.advance();
+        const expr = assignment(context);
+        if (!expr.isOk) {
+            return expr
+        }
+        if (ident.value instanceof Identifier) {
+            return {
+                isOk: true,
+                value: new AssignmentExpression(ident.value, expr.value!)
+            }
+        }
+        if(ident.value instanceof MemberExpression){
+            return {
+                isOk: true,
+                value:new MemberAssignment(ident.value,expr.value!)
+            }
         }
     }
-    context.advance();
-    const expr = expression(context);
-    if (!expr.isOk) {
-        return LgSyntaxError.missingAssignment(context, "expected expression");
-    }
-    return {
-        isOk: true,
-        value: new AssignmentExpression(
-            identifier,
-            expr.value as LogicNode
-        ),
-    };
+
+    return ident
 };

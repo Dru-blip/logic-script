@@ -1,9 +1,9 @@
-import type { LogicParser } from "../../../../types";
-import { LgSyntaxError } from "../../../errors";
-import { TokenType } from "../../../lexer";
-import type { LogicNode } from "../../ast";
-import { ExpressionStatement } from "../../ast/statements/expression";
-import { assignment } from "../assignments/assignment";
+import type {LogicParser} from "../../../../types";
+import {LgSyntaxError} from "../../../errors";
+import {TokenType} from "../../../lexer";
+import type {LogicNode} from "../../ast";
+import {ExpressionStatement} from "../../ast/statements/expression";
+import {assignment} from "../assignments/assignment";
 
 export const expression: LogicParser<LogicNode> = (context) => {
   const expr = assignment(context);

@@ -1,8 +1,7 @@
-import type { LogicParser } from "../../../../types";
-import { LgSyntaxError } from "../../../errors";
-import { TokenType } from "../../../lexer";
-import { BinaryExpression, type LogicNode } from "../../ast";
-import { logicAnd } from "./logic-and";
+import type {LogicParser} from "../../../../types";
+import {TokenType} from "../../../lexer";
+import {BinaryExpression, type LogicNode} from "../../ast";
+import {logicAnd} from "./logic-and";
 
 export const logicOr: LogicParser<LogicNode> = (context) => {
   let left = logicAnd(context);
