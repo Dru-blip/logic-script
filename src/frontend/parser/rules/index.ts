@@ -5,9 +5,10 @@ import {ifStatement} from "./control-flow/if";
 import {variableDeclaration} from "./declarations/variable";
 import {expressionStatement} from "./expressions";
 import {forStatement} from "./control-flow/for.ts";
-import {breakContinue} from "./statements/breakContinue.ts";
+import {breakContinue} from "./statements/break-continue.ts";
 import {struct} from "./declarations/struct.ts";
 import {functionDeclaration} from "./declarations/function.ts";
+import {returnStatement} from "./statements/return-statement.ts";
 
 export const statement: LogicParser<LogicNode> = (context) => {
     switch (context.currentToken.type) {
@@ -29,6 +30,9 @@ export const statement: LogicParser<LogicNode> = (context) => {
         case TokenType.BREAK:
         case TokenType.CONTINUE: {
             return breakContinue(context)
+        }
+        case TokenType.RETURN:{
+            return returnStatement(context)
         }
         default: {
             return expressionStatement(context);
