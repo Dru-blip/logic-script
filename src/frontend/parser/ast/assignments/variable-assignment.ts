@@ -1,10 +1,9 @@
-import type { Identifier } from "../declarations";
-import { NodeType, type LogicNode } from "../node";
+import {type LogicNode, NodeType} from "../node";
 
 export class AssignmentExpression implements LogicNode {
   type: NodeType = NodeType.AssignmentExpression;
   constructor(
-    public ident: Identifier,
+    public target: LogicNode,
     public value: LogicNode,
   ) {}
 }

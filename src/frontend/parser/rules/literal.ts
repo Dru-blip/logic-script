@@ -5,6 +5,7 @@ import {LogicLiteral} from "../ast";
 import {ParserContext} from "../context";
 import {expressionList} from "./expression-list.ts";
 import {ArrayLiteral} from "../ast/literal.ts";
+import {arrayAccess} from "./expressions/array.ts";
 
 export const literal: LogicParser<LogicLiteral<any, PrimitiveType> | ArrayLiteral> = (
     context: ParserContext
@@ -20,9 +21,7 @@ export const literal: LogicParser<LogicLiteral<any, PrimitiveType> | ArrayLitera
                 context.currentToken.location
             ),
         };
-    }
-
-    if (currentToken.type === TokenType.BOOLEAN) {
+    }else if (currentToken.type === TokenType.BOOLEAN) {
         return {
             isOk: true,
             value: new LogicLiteral<boolean, PrimitiveType.BOOLEAN>(
@@ -32,9 +31,7 @@ export const literal: LogicParser<LogicLiteral<any, PrimitiveType> | ArrayLitera
                 context.currentToken.location
             ),
         };
-    }
-
-    if (currentToken.type === TokenType.STRING) {
+    }else if (currentToken.type === TokenType.STRING) {
         return {
             isOk: true,
             value: new LogicLiteral<string, PrimitiveType.STR>(
@@ -44,32 +41,28 @@ export const literal: LogicParser<LogicLiteral<any, PrimitiveType> | ArrayLitera
                 context.currentToken.location
             ),
         };
-    }
-
-    if (currentToken.type === TokenType.LSQRB) {
+    }else if (currentToken.type === TokenType.LSQRB) {
         context.advance()
         const literals = expressionList(context, TokenType.RSQRB)
         if (!literals.isOk) {
             return <ParseResult<never>>literals
         }
         return {isOk: true, value: new ArrayLiteral(literals.value!, currentToken.location)}
-    }
-
-    if (currentToken.type === TokenType.ERROR) {
+    }else if (currentToken.type === TokenType.ERROR) {
         return LgSyntaxError.unexpected(
             context,
             "Unknown token",
             LgErrorCode.UNKNOWN_KEYWORD
         );
-    }
-
-    if (currentToken.type === TokenType.EOF) {
+    }else if (currentToken.type === TokenType.EOF) {
         // console.log(context.currentToken);
         return LgSyntaxError.unexpected(
             context,
             "Unexpected end of file",
             LgErrorCode.UNEXPECTED_EOF
         );
+    }else{
+        return LgSyntaxError.unexpected(context, "");
     }
-    return LgSyntaxError.unexpected(context, "");
+
 };

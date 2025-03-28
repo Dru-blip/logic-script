@@ -4,5 +4,5 @@ import {Identifier} from "../declarations";
 
 export class MemberExpression implements  LogicNode{
     type:NodeType=NodeType.MemberExpression
-    constructor(public object:LogicNode,public member:Identifier) {}
+    constructor(public object:LogicNode,public member:LogicNode) {}
 }

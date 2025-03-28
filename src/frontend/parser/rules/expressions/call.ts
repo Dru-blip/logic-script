@@ -6,6 +6,7 @@ import {TokenType} from "../../../lexer";
 import {expression} from "./index.ts";
 import {LgSyntaxError} from "../../../errors";
 import {MemberExpression} from "../../ast/expressions/member.ts";
+import {ArrayAccess} from "../../ast/expressions/array-access.ts";
 
 
 const argumentList: LogicParser<LogicNode[]> = (context) => {
@@ -48,12 +49,22 @@ export const call: LogicParser<CallExpression | LogicNode> = (context) => {
             }
 
             val = new CallExpression(val!, args.value!)
-
         } else if (context.check(TokenType.DOT)) {
             context.advance()
             const ident = new Identifier(context.currentToken.literal, context.currentToken.location)
             context.advance()
             val=new MemberExpression(val!, ident)
+        }else if(context.check(TokenType.LSQRB)){
+            context.advance()
+            const index=expression(context)
+            if(!index.isOk){
+                return <ParseResult<never>>index
+            }
+            if(!context.check(TokenType.RSQRB)) {
+                return LgSyntaxError.unexpected(context, "]")
+            }
+            context.advance()
+            val=new ArrayAccess(val!,index.value!)
         } else {
             break
         }

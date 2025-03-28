@@ -34,7 +34,6 @@ export const primary: LogicParser<LogicNode> = (context: ParserContext) => {
     }
 
     default: {
-      context.advance();
       if (context.check(TokenType.EOF)) {
         return LgSyntaxError.unexpected(
             context,

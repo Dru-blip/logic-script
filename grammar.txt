@@ -46,12 +46,11 @@
 <AdditiveExpression> ::= <MultiplicativeExpression> ( ("+" | "-") <MultiplicativeExpression> )*;
 <MultiplicativeExpression> ::= <UnaryExpression> ( ("*" | "/") <UnaryExpression> )*;
 <UnaryExpression> ::= ( "+" | "-" | "!" ) <UnaryExpression> | <Call>;
-<Call>           ::= <PrimaryExpression> ( "(" arguments? ")" | "." <Identifier> )* ;
+<Call>           ::= <PrimaryExpression> ( "(" arguments? ")" | "." <Identifier>  )* ;
 
 <PrimaryExpression> ::= <Literal>
                       | <Identifier>
                       | "(" <Expression> ")"
-                      | <ArrayAccess>
                       | <ObjectCreation>;
 
 <ArrayAccess> ::= <Identifier> "[" <Expression> "]";

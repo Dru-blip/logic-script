@@ -10,10 +10,11 @@
 - [x] Parse struct methods (`fn method(self) { ... };`)
 - [x] Ensure struct members are properly scoped
 - [ ] printing better error information
-- [ ] Implement property access (`instance.field`)
-- [ ] Support method calls on struct instances (`instance.method();`)
-- [ ] Ensure nested property access works (`a.b.c`)
+- [x] Implement property access (`instance.field`)
+- [x] Support method calls on struct instances (`instance.method();`)
+- [x] Ensure nested property access works (`a.b.c`)
 - [ ] Handle errors for undefined properties (`instance.unknown_field`)
+- [ ] Implement Array index expression
 ---
 
 ## Type checker and Semantic Analysis

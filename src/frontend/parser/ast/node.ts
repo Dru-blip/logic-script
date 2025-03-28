@@ -31,6 +31,7 @@ export enum NodeType {
   StructMember="StructMember",
   StructProperty="StructProperty",
   MemberAssignment="MemberAssignment",
+  ArrayAccess="ArrayAccess",
 }
 
 export interface LogicNode {
