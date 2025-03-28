@@ -1,6 +1,7 @@
 import { Option } from "commander";
 import type { LogicCommand } from "../types";
 import { parse } from "../../frontend/parser";
+import {TypeChecker} from "../../frontend/semantics/type-checker.ts";
 
 export const validateCommand: LogicCommand = {
   command: "validate",
@@ -15,7 +16,9 @@ export const validateCommand: LogicCommand = {
     const parser = parse(content, filePath);
     const ast = parser.parse();
     if (ast.isOk) {
-      console.info(`Validation success: ${ast}`);
+      console.info(`No parsing errors`);
+      const typeChecker = new TypeChecker();
+      typeChecker.check(ast.value!)
     }
   },
   options: [
