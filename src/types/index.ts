@@ -45,6 +45,11 @@ export enum PrimitiveType {
   UNKNOWN = "Unknown",
 }
 
+export class ArrayType{
+  type="Array"
+  constructor(public of:LogicType) {}
+}
+
 export enum ObjectType {
   Range= "Range",
 }
@@ -53,4 +58,4 @@ export enum SpecialType {
   ANY = "any",
 }
 
-export type LogicType = PrimitiveType | SpecialType | ObjectType |Identifier;
+export type LogicType = PrimitiveType | SpecialType | ObjectType |Identifier | ArrayType;

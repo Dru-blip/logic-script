@@ -31,6 +31,8 @@ export enum TokenType {
     RPAREN = ")",
     LBRACE = "{",
     RBRACE = "}",
+    LSQRB="[",
+    RSQRB="]",
 
     // Keywords
     FN = "fn",

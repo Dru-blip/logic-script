@@ -15,7 +15,9 @@ export const tokenToType = (tokenType: TokenType, token?: Token) => {
         return ObjectType.Range
     } else if (tokenType === TokenType.IDENTIFIER) {
         return new Identifier(token?.literal!, token?.location!)
-    } else {
+    } else if(tokenType===TokenType.LSQRB){
+
+    }else {
         return null;
     }
 };

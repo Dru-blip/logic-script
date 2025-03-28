@@ -6,23 +6,20 @@ import {tokenToType} from "../../utils";
 import {primary} from "../expressions/primary";
 import {expression} from "../expressions";
 import type {ParserContext} from "../../context.ts";
+import {typeParser} from "../types.ts";
 
 
 export const typeDeclaration: (context: ParserContext) =>  ParseResult<never|LogicType> = (context) => {
     if (context.check(TokenType.COLON)) {
         context.advance();
-        const ty = tokenToType(context.currentToken.type);
-        if (ty === null) {
-            return LgSyntaxError.missingType(
-                context,
-                "expected type after ':'",
-                context.currentToken.type
-            );
+        const ty= typeParser(context)
+        if(!ty.isOk){
+            return ty
         }
-        context.advance();
+        // context.advance();
         return {
             isOk:true,
-            value:ty,
+            value:ty.value,
         };
     } else {
         return LgSyntaxError.missingType(

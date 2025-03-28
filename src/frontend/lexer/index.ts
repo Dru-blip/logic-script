@@ -296,6 +296,14 @@ export class Lexer {
         const type = this.scanOperators();
         return this.makeToken(type, type, location);
       }
+      case "[":{
+        this.advance()
+        return this.makeToken(TokenType.LSQRB, "[",location)
+      }
+      case "]":{
+        this.advance()
+        return this.makeToken(TokenType.RSQRB, "]",location)
+      }
       case ":": {
         this.advance();
         return this.makeToken(TokenType.COLON, ":", location);

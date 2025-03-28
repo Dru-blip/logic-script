@@ -1,4 +1,4 @@
-import type {LogicParser, ParseResult} from "../../../../types";
+import type {LogicParser, LogicType, ParseResult} from "../../../../types";
 import {FunctionDeclaration, Identifier} from "../../ast";
 import {TokenType} from "../../../lexer";
 import {LgSyntaxError} from "../../../errors";
@@ -6,6 +6,7 @@ import {FunctionParam} from "../../ast/declarations/functions.ts";
 import {typeDeclaration} from "./variable.ts";
 import {block} from "../statements/block.ts";
 import {tokenToType} from "../../utils.ts";
+import {typeParser} from "../types.ts";
 
 
 const parameterList: LogicParser<FunctionParam[]> = (context) => {
@@ -21,7 +22,11 @@ const parameterList: LogicParser<FunctionParam[]> = (context) => {
         }
         const ident = new Identifier(context.currentToken.literal, context.currentToken.location)
         context.advance()
-        const declType = typeDeclaration(context)
+        if(!context.check(TokenType.COLON)){
+            return LgSyntaxError.unexpected(context, ":");
+        }
+        context.advance()
+        const declType = typeParser(context)
         if (!declType.isOk) {
             return <ParseResult<never>>declType
         }
@@ -56,16 +61,16 @@ export const functionDeclaration: LogicParser<FunctionDeclaration> = (context) =
         return <ParseResult<never>>paramsList
     }
 
-    let returnType;
+    let returnType:LogicType;
     if (context.check(TokenType.ARROW)) {
         context.advance()
         const {currentToken} = context
-        const ty = tokenToType(currentToken.type, currentToken)
-        if (ty === null) {
-            return LgSyntaxError.unexpected(context, "unknown type");
+        const ty = typeParser(context)
+        if (!ty.isOk) {
+            return <ParseResult<never>>ty
         }
-        context.advance()
-        returnType = ty
+        // context.advance()
+        returnType = ty.value!
     }
 
     const body = block(context)
