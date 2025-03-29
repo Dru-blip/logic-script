@@ -1,6 +1,7 @@
-import { LgErrorCode, LgSyntaxError, type LogicError } from "../errors";
+import { LgErrorCode, type LogicError } from "../errors";
 import { Lexer } from "../lexer";
 import { Token, TokenType } from "../lexer";
+import {LgSyntaxError} from "../errors/syntax.ts";
 
 export class ParserContext {
   lexer: Lexer;

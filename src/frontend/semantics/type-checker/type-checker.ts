@@ -1,96 +1,144 @@
 import {SymbolTable} from "../symbols/symbol-table.ts";
 import {AstAnalyzer} from "../ast-analyzer.ts";
 import {type LogicType, PrimitiveType} from "../../../types";
-import {type LogicLiteral, type LogicNode, NodeType, Program, VariableDeclaration} from "../../parser/ast";
+import {
+    BinaryExpression,
+    type LogicLiteral,
+    type LogicNode,
+    NodeType,
+    Program,
+    VariableDeclaration,
+} from "../../parser/ast";
 import type {TypeDeclSymbol} from "../symbols/type-decl-symbol.ts";
 import type {ExpressionStatement} from "../../parser/ast/statements/expression.ts";
 import type {TypeCheckerResult} from "./types.ts";
-
+import {LgSemanticError} from "../../errors/semantics.ts";
 
 export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
-    symbols: SymbolTable<TypeDeclSymbol>
+    symbols: SymbolTable<TypeDeclSymbol>;
 
-    constructor() {
+    typeRules: Map<string, LogicType> = new Map([
+        ["Int+Int", PrimitiveType.INT],
+        ["Int-Int", PrimitiveType.INT],
+        ["Int*Int", PrimitiveType.INT],
+        ["Int/Int", PrimitiveType.INT],
+        ["Int%Int", PrimitiveType.INT],
+        ["Int<Int", PrimitiveType.BOOLEAN],
+        ["Int>Int", PrimitiveType.BOOLEAN],
+        ["Int<=Int", PrimitiveType.BOOLEAN],
+        ["Int>=Int", PrimitiveType.BOOLEAN],
+        ["Int!=Int", PrimitiveType.BOOLEAN],
+        ["Int==Int", PrimitiveType.BOOLEAN],
+    ]);
+
+    constructor(public fileName: string) {
         super();
-        this.symbols = new SymbolTable()
+        this.symbols = new SymbolTable();
     }
 
-    check(ast: LogicNode): boolean {
-        const res=this.visit(ast)
+    check(ast: LogicNode) {
         // console.log(this.symbols.getSymbols())
-        if(!res.isOk){
-            console.log(res)
-        }
-
-        console.log(this.symbols.getSymbols())
-        return true
-
+        return this.visit(ast);
     }
 
     visit(ast: LogicNode): TypeCheckerResult {
         switch (ast.type) {
             case NodeType.Program: {
-                return this.visitProgram(<Program>ast)
-            }
-            case NodeType.ExpressionStatement: {
-                return this.visit((<ExpressionStatement>ast).expr)
-            }
-            case NodeType.Literal: {
-                return this.visitLiteral(<LogicLiteral<number | string | boolean, PrimitiveType>>ast)
+                return this.visitProgram(<Program>ast);
             }
             case NodeType.VariableDeclaration: {
-                return this.visitVariableDeclaration(<VariableDeclaration>ast)
+                return this.visitVariableDeclaration(<VariableDeclaration>ast);
+            }
+            case NodeType.ExpressionStatement: {
+                return this.visit((<ExpressionStatement>ast).expr);
+            }
+            case NodeType.BinaryExpression: {
+                return this.visitBinaryExpression(<BinaryExpression>ast);
+            }
+            case NodeType.Literal: {
+                return this.visitLiteral(
+                    <LogicLiteral<number | string | boolean, PrimitiveType>>ast,
+                );
             }
             default: {
                 return {
-                    isOk: false,
-                    error: "Unexpected type",
-                }
+                    isOk: true,
+                    value: PrimitiveType.UNKNOWN,
+                };
             }
         }
     }
 
     visitProgram(node: Program): TypeCheckerResult {
+        let result: TypeCheckerResult;
         for (const statement of node.statements) {
-            const res = this.visit(statement)
+            const res = this.visit(statement);
             if (!res.isOk) {
-                return res
+                return res;
             }
+            result = res;
         }
-        return {
-            isOk: true,
-            type: PrimitiveType.UNKNOWN
-        }
+        return result!;
     }
 
     visitVariableDeclaration(node: VariableDeclaration): TypeCheckerResult {
-        const id = node.name.name
-        const declType = node.declType
-        const initType = this.visit(node.initializer!)
+        const id = node.name.name;
+        const declType = node.declType;
+        const initType = this.visit(node.initializer!);
 
         if (!initType.isOk) {
-            return initType
+            return initType;
         }
 
-        if (declType !== initType.type) {
-            return {
-                isOk: false,
-                error: "Type mismatch",
-            }
+        if (declType !== initType.value) {
+            return LgSemanticError.typeMismatch(
+                this.fileName,
+                node,
+                node.name.location,
+                declType.toString(),
+                initType.value!.toString(),
+            );
         }
 
-        this.symbols.addSymbol(id, {name: id, declType: declType})
+        this.symbols.addSymbol(id, {name: id, declType: declType});
 
         return {
             isOk: true,
-            type: PrimitiveType.UNKNOWN
-        }
+            value: declType,
+        };
     }
 
-    visitLiteral(node: LogicLiteral<number | string | boolean, PrimitiveType>): TypeCheckerResult {
+    visitBinaryExpression(node: BinaryExpression): TypeCheckerResult {
+        const lht = this.visit(node.left);
+        if (!lht.isOk) {
+            return lht;
+        }
+        const rht = this.visit(node.right);
+        if (!rht.isOk) {
+            return rht;
+        }
+
+        const op = node.operator.literal;
+        if (lht.value !== rht.value) {
+            return LgSemanticError.invalidBinOp(
+                this.fileName,
+                node,
+                lht.value!,
+                rht.value!,
+            );
+        }
         return {
             isOk: true,
-            type: node.declType
-        }
+            value: this.typeRules.get(lht.value?.toString() + op + rht.value!.toString()),
+        };
+    }
+
+    visitLiteral(
+        node: LogicLiteral<number | string | boolean, PrimitiveType>,
+    ): TypeCheckerResult {
+        return {
+            isOk: true,
+            value: node.declType,
+        };
     }
 }

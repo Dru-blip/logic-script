@@ -1,22 +1,16 @@
 import {LgErrorCode, LgErrorType, LogicError} from "./index.ts";
-import type {ParseResult, TokenLocation} from "../../types";
+import type {LogicType, ParseResult, SemanticResult, TokenLocation} from "../../types";
 import type {ParserContext} from "../parser/context.ts";
+import {BinaryExpression, Identifier, type LogicNode} from "../parser/ast";
+import type {TypeCheckerResult} from "../semantics/type-checker/types.ts";
 
-
-export enum LgSemanticErrorCode {
-    UNDEFINED_VARIABLE = "S2001",
-    TYPE_MISMATCH = "S2002",
-    REDECLARATION = "S2003",
-    UNDEFINED_FUNCTION = "S2004",
-    INVALID_OPERATION = "S2005",
-}
 
 const SEMANTIC_ERROR_HINTS: Map<string, string> = new Map([
-    [LgSemanticErrorCode.UNDEFINED_VARIABLE, "Check if the variable is declared before use."],
-    [LgSemanticErrorCode.TYPE_MISMATCH, "Ensure type consistency in expressions."],
-    [LgSemanticErrorCode.REDECLARATION, "A variable with this name already exists in the current scope."],
-    [LgSemanticErrorCode.UNDEFINED_FUNCTION, "Ensure the function is defined before calling it."],
-    [LgSemanticErrorCode.INVALID_OPERATION, "Verify that the operation is valid for the given types."],
+    [LgErrorCode.UNDEFINED_VARIABLE, "Check if the variable is declared before use."],
+    [LgErrorCode.TYPE_MISMATCH, "Ensure type consistency in expressions."],
+    [LgErrorCode.REDECLARATION, "A variable with this name already exists in the current scope."],
+    [LgErrorCode.UNDEFINED_FUNCTION, "Ensure the function is defined before calling it."],
+    [LgErrorCode.INVALID_OPERATION, "Verify that the operation is valid for the given types."],
 ]);
 
 export class LgSemanticError extends LogicError {
@@ -25,7 +19,6 @@ export class LgSemanticError extends LogicError {
         public location: TokenLocation,
         public message: string,
         public code: LgErrorCode,
-        public details?: string,
         expected?: string,
         unexpected?: string) {
         super(filename, location, message, code, LgErrorType.SEMANTIC, expected, unexpected);
@@ -36,31 +29,43 @@ export class LgSemanticError extends LogicError {
     }
 
 
-    static undefinedVariable(context: ParserContext, varName: string): ParseResult<never> {
+    static undefinedVariable(fileName: string, node: Identifier): SemanticResult<never> {
         return {
             isOk: false,
             error: new LgSemanticError(
-                context.lexer.filename,
-                context.currentToken.location,
-                `Use of undeclared variable '${varName}'.`,
+                fileName,
+                node.location,
+                `Use of undeclared variable '${node.name}'.`,
                 LgErrorCode.UNDEFINED_VARIABLE
             ),
         };
     }
 
-    static typeMismatch(context: ParserContext, expected: string, found: string): ParseResult<never> {
+    static typeMismatch(fileName: string, node: LogicNode, location: TokenLocation, expected: string, found: string): SemanticResult<never> {
         return {
             isOk: false,
             error: new LgSemanticError(
-                context.lexer.filename,
-                context.currentToken.location,
+                fileName, location,
                 `Type mismatch: expected '${expected}', found '${found}'.`,
                 LgErrorCode.TYPE_MISMATCH
             ),
         };
     }
 
-    static redeclaration(context: ParserContext, varName: string): ParseResult<never> {
+    static invalidBinOp(fileName:string,node:BinaryExpression,leftType:LogicType,rightType:LogicType):SemanticResult<never>{
+        return {
+            isOk: false,
+            error: new LgSemanticError(
+                fileName,
+                node.operator.location,
+                `Invalid operands for operator '${node.operator.literal}'. ` +
+                `Expected both operands to be of the same type, but found '${leftType}' and '${rightType}'. `,
+                LgErrorCode.INVALID_OPERATION,
+            ),
+        };
+    }
+
+    static redeclaration(context: ParserContext, varName: string): SemanticResult<never> {
         return {
             isOk: false,
             error: new LgSemanticError(
@@ -72,7 +77,7 @@ export class LgSemanticError extends LogicError {
         };
     }
 
-    static undefinedFunction(context: ParserContext, funcName: string): ParseResult<never> {
+    static undefinedFunction(context: ParserContext, funcName: string): SemanticResult<never> {
         return {
             isOk: false,
             error: new LgSemanticError(
@@ -84,7 +89,7 @@ export class LgSemanticError extends LogicError {
         };
     }
 
-    static invalidOperation(context: ParserContext, operation: string): ParseResult<never> {
+    static invalidOperation(context: ParserContext, operation: string): SemanticResult<never> {
         return {
             isOk: false,
             error: new LgSemanticError(

@@ -1,6 +1,7 @@
 import type { LogicError } from "../frontend/errors";
 import type { ParserContext } from "../frontend/parser/context";
 import {Identifier, type LogicNode} from "../frontend/parser/ast";
+import type {LgSemanticError} from "../frontend/errors/semantics.ts";
 
 export interface LogicConfig {
   project: {
@@ -31,6 +32,12 @@ export interface ParseResult<T> {
 }
 
 export type LogicParser<T> = (context: ParserContext) => ParseResult<T>;
+
+export interface SemanticResult<T>{
+  isOk: boolean;
+  error?:LgSemanticError,
+  value?:T
+}
 
 export type TokenLocation = {
   line: number;

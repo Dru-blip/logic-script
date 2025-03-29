@@ -1,7 +1,7 @@
 import {ArrayType, type LogicParser, type LogicType, ObjectType, PrimitiveType, SpecialType} from "../../../types";
 import {TokenType} from "../../lexer";
 import {Identifier} from "../ast";
-import {LgSyntaxError} from "../../errors";
+import {LgSyntaxError} from "../../errors/syntax.ts";
 
 
 export const typeParser:LogicParser<LogicType>=(context)=>{

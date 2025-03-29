@@ -1,8 +1,4 @@
-import type {LogicType} from "../../../types";
+import type {LogicType, SemanticResult} from "../../../types";
 
 
-export interface TypeCheckerResult {
-    isOk: boolean,
-    error?: string,
-    type?:LogicType
-}
+export interface TypeCheckerResult extends SemanticResult<LogicType|never>{}

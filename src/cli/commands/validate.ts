@@ -16,9 +16,13 @@ export const validateCommand: LogicCommand = {
     const parser = parse(content, filePath);
     const ast = parser.parse();
     if (ast.isOk) {
-      console.info(`No parsing errors`);
-      const typeChecker = new TypeChecker();
-      typeChecker.check(ast.value!)
+      const typeChecker = new TypeChecker(filePath);
+      const res=typeChecker.check(ast.value!)
+      if(res.isOk){
+        console.log(res)
+      }else{
+        res.error?.printError(content)
+      }
     }
   },
   options: [
