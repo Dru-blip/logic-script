@@ -57,6 +57,7 @@ export const call: LogicParser<CallExpression | LogicNode> = (context) => {
       context.advance();
       val = new MemberExpression(val!, ident);
     } else if (context.check(TokenType.LSQRB)) {
+      const { currentToken } = context;
       context.advance();
       const index = expression(context);
       if (!index.isOk) {
@@ -66,7 +67,7 @@ export const call: LogicParser<CallExpression | LogicNode> = (context) => {
         return LgSyntaxError.unexpected(context, "]");
       }
       context.advance();
-      val = new ArrayAccess(val!, index.value!);
+      val = new ArrayAccess(val!, index.value!, currentToken.location);
     } else {
       break;
     }

@@ -46,7 +46,7 @@ export abstract class LogicError {
 
         const fileInfo = chalk.blue(`${filename}:${location.line + 1}:${location.col + 1}`);
 
-        const details = expected
+        const details = expected ?? "" + unexpected ?? ""
         console.log(`${chalk.red(`${this.type}[${code}]:`)} ${message}`);
         console.log(` --> ${fileInfo}`);
         console.log(`${" ".repeat(2)} |`);

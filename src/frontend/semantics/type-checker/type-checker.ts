@@ -1,6 +1,5 @@
 import { SymbolTable } from "../symbols/symbol-table.ts";
 import { AstAnalyzer } from "../ast-analyzer.ts";
-import { ArrayType, type LogicType, PrimitiveType } from "../../../types";
 import {
   BinaryExpression,
   Identifier,
@@ -18,27 +17,33 @@ import type { RangeExpression } from "../../parser/ast/expressions/range.ts";
 import { LgErrorCode } from "../../errors";
 import type { AssignmentExpression } from "../../parser/ast/assignments/variable-assignment.ts";
 import type { ArrayLiteral } from "../../parser/ast/literal.ts";
+import { Int } from "../../type-system/int.ts";
+import { LArrayType, LogicType } from "../../type-system";
+import { Bool } from "../../type-system/bool.ts";
+import { Str } from "../../type-system/str.ts";
+import { Any } from "../../type-system/any-type.ts";
+import type { ArrayAccess } from "../../parser/ast/expressions/array-access.ts";
 
 export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
   symbols: SymbolTable<TypeDeclSymbol>;
 
   typeRules: Map<string, LogicType> = new Map([
-    ["Int+Int", PrimitiveType.INT],
-    ["Int-Int", PrimitiveType.INT],
-    ["Int*Int", PrimitiveType.INT],
-    ["Int/Int", PrimitiveType.INT],
-    ["Int%Int", PrimitiveType.INT],
-    ["Int<Int", PrimitiveType.BOOLEAN],
-    ["Int>Int", PrimitiveType.BOOLEAN],
-    ["Int<=Int", PrimitiveType.BOOLEAN],
-    ["Int>=Int", PrimitiveType.BOOLEAN],
-    ["Int!=Int", PrimitiveType.BOOLEAN],
-    ["Int==Int", PrimitiveType.BOOLEAN],
-    ["Str+Str", PrimitiveType.STR],
-    ["Bool!=Bool", PrimitiveType.BOOLEAN],
-    ["Bool==Bool", PrimitiveType.BOOLEAN],
-    ["BoolandBool", PrimitiveType.BOOLEAN],
-    ["BoolorBool", PrimitiveType.BOOLEAN],
+    ["Int+Int", Int],
+    ["Int-Int", Int],
+    ["Int*Int", Int],
+    ["Int/Int", Int],
+    ["Int%Int", Int],
+    ["Int<Int", Int],
+    ["Int>Int", Bool],
+    ["Int<=Int", Bool],
+    ["Int>=Int", Bool],
+    ["Int!=Int", Bool],
+    ["Int==Int", Bool],
+    ["Str+Str", Str],
+    ["Bool!=Bool", Bool],
+    ["Bool==Bool", Bool],
+    ["BoolandBool", Bool],
+    ["BoolorBool", Bool],
   ]);
 
   constructor(public fileName: string) {
@@ -74,9 +79,12 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
       case NodeType.ArrayLiteral: {
         return this.visitArrayLiteral(<ArrayLiteral>ast);
       }
+      case NodeType.ArrayAccess: {
+        return this.visitArrayAccess(<ArrayAccess>ast);
+      }
       case NodeType.Literal: {
         return this.visitLiteral(
-          <LogicLiteral<number | string | boolean, PrimitiveType>>ast,
+          <LogicLiteral<number | string | boolean, LogicType>>ast,
         );
       }
       case NodeType.Identifier: {
@@ -85,7 +93,7 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
       default: {
         return {
           isOk: false,
-          value: PrimitiveType.UNKNOWN,
+          value: Any,
         };
       }
     }
@@ -112,7 +120,7 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
       return initType;
     }
 
-    if (declType !== initType.value) {
+    if (!declType.equals(initType.value!)) {
       return LgSemanticError.typeMismatch(
         this.fileName,
         node,
@@ -141,7 +149,7 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
       return value;
     }
 
-    if (ident.value !== value.value) {
+    if (!ident.value?.equals(value.value!)) {
       return LgSemanticError.typeMismatch(
         this.fileName,
         node,
@@ -167,7 +175,7 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
       return rht;
     }
 
-    if (lht.value === PrimitiveType.INT && lht.value !== rht.value) {
+    if (lht.value === Int && !lht.value.equals(rht.value!)) {
       return {
         isOk: false,
         error: new LgSemanticError(
@@ -198,7 +206,7 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
     }
 
     const op = node.operator.literal;
-    if (lht.value !== rht.value) {
+    if (lht.value?.equals(rht.value!)) {
       return LgSemanticError.invalidBinOp(
         this.fileName,
         node,
@@ -222,6 +230,34 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
     };
   }
 
+  visitArrayAccess(node: ArrayAccess): TypeCheckerResult {
+    const array = this.visit(node.array);
+    if (!array.isOk) {
+      return array;
+    }
+    const index = this.visit(node.index);
+    if (!index.isOk) {
+      return index;
+    }
+
+    if (index.value !== Int) {
+      return {
+        isOk: false,
+        error: new LgSemanticError(
+          this.fileName,
+          node.location,
+          `array index should be an Int,got ${index.value?.toString()}`,
+          LgErrorCode.TYPE_MISMATCH,
+        ),
+      };
+    }
+
+    return {
+      isOk: true,
+      value: array.value!,
+    };
+  }
+
   visitIdentifier(node: Identifier): TypeCheckerResult {
     const variable = this.symbols.getSymbol(node.name);
     if (!variable) {
@@ -242,9 +278,9 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
         return valType;
       }
 
-      if (ty && ty !== valType.value) {
+      if (ty && !ty.equals(valType.value!)) {
         return {
-          isOk: true,
+          isOk: false,
           error: new LgSemanticError(
             this.fileName,
             node.location,
@@ -262,12 +298,12 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
     }
     return {
       isOk: true,
-      value: new ArrayType(ty!),
+      value: new LArrayType(ty!),
     };
   }
 
   visitLiteral(
-    node: LogicLiteral<number | string | boolean, PrimitiveType>,
+    node: LogicLiteral<number | string | boolean, LogicType>,
   ): TypeCheckerResult {
     return {
       isOk: true,
