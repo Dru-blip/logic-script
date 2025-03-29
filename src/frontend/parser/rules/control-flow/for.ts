@@ -1,7 +1,7 @@
 import type {LogicParser} from "../../../../types";
 import {ForStatement} from "../../ast/control-flow/for.ts";
 import {TokenType} from "../../../lexer";
-import {LgSyntaxError} from "../../../errors";
+import {LgSyntaxError} from "../../../errors/syntax.ts";
 import {primary} from "../expressions/primary.ts";
 import {expression} from "../expressions";
 import {block} from "../statements/block.ts";

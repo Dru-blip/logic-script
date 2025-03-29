@@ -1,7 +1,7 @@
 import type {LogicParser, LogicType, ParseResult} from "../../../../types";
 import {StructDeclaration, StructProperty} from "../../ast/declarations/struct.ts";
 import {TokenType} from "../../../lexer";
-import {LgSyntaxError} from "../../../errors";
+import {LgSyntaxError} from "../../../errors/syntax.ts";
 import {FunctionDeclaration, Identifier} from "../../ast";
 import {functionDeclaration} from "./function.ts";
 import {typeParser} from "../types.ts";
@@ -16,7 +16,7 @@ const structProperty: LogicParser<StructProperty> = (context) => {
     context.advance()
 
     let decltype: LogicType | undefined;
-    if(!context.check(TokenType.COLON)){
+    if (!context.check(TokenType.COLON)) {
         return LgSyntaxError.unexpected(context, ":");
     }
     context.advance()

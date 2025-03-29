@@ -1,8 +1,8 @@
-import type { LogicParser } from "../../../../types";
-import { TokenType } from "../../../lexer";
-import { BinaryExpression, type LogicNode } from "../../ast";
+import type {LogicParser} from "../../../../types";
+import {TokenType} from "../../../lexer";
+import {BinaryExpression, type LogicNode} from "../../ast";
 // import { type LogicParser } from "../../types";
-import { unary } from "./unary";
+import {unary} from "./unary";
 
 export const multiplicative: LogicParser<LogicNode> = (context) => {
   // console.log("parsing multiplicative");

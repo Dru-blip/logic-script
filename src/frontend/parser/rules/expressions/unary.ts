@@ -12,10 +12,10 @@ export const unary: LogicParser<LogicNode> = (context) => {
       return { value: new UnaryExpression(token, right.value!), isOk: true };
     }
 
-    if (right.error) {
-      right.error.expected = "Expected expression";
-      right.error.unexpected = context.currentToken.literal;
-    }
+    // if (right.error) {
+    //   right.error.expected = "Expected expression";
+    //   right.error.unexpected = context.currentToken.literal;
+    // }
 
     return right;
   }

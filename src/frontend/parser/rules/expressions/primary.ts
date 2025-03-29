@@ -1,11 +1,12 @@
 import type {LogicParser} from "../../../../types";
-import {LgErrorCode, LgSyntaxError} from "../../../errors";
+import {LgErrorCode} from "../../../errors";
 import {TokenType} from "../../../lexer";
 import {Identifier, type LogicNode} from "../../ast";
 import {type ParserContext} from "../../context";
 // import { type LogicParser, type ParseResult } from "../../types";
 import {literal} from "../literal";
 import {group} from "./group";
+import {LgSyntaxError} from "../../../errors/syntax.ts";
 
 export const primary: LogicParser<LogicNode> = (context: ParserContext) => {
   // console.log("parsing primary");
@@ -37,13 +38,12 @@ export const primary: LogicParser<LogicNode> = (context: ParserContext) => {
       if (context.check(TokenType.EOF)) {
         return LgSyntaxError.unexpected(
             context,
-            "expected expression",
-            LgErrorCode.UNEXPECTED_EOF
+            "expression",
           )
       }
       return  LgSyntaxError.unexpected(
           context,
-          `expected expression`,
+          `expression`,
         )
     }
   }

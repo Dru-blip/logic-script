@@ -1,7 +1,7 @@
 import type {LogicParser, LogicType, ParseResult} from "../../../../types";
 import {FunctionDeclaration, Identifier} from "../../ast";
 import {TokenType} from "../../../lexer";
-import {LgSyntaxError} from "../../../errors";
+import {LgSyntaxError} from "../../../errors/syntax.ts";
 import {FunctionParam} from "../../ast/declarations/functions.ts";
 import {block} from "../statements/block.ts";
 import {typeParser} from "../types.ts";

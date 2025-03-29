@@ -1,33 +1,11 @@
 import {TokenType} from "../../../lexer";
 import {type LogicParser, type LogicType, type ParseResult} from "../../../../types";
-import {LgSyntaxError} from "../../../errors";
+import {LgSyntaxError} from "../../../errors/syntax.ts";
 import {Identifier, type LogicNode, VariableDeclaration} from "../../ast";
 import {primary} from "../expressions/primary";
 import {expression} from "../expressions";
-import type {ParserContext} from "../../context.ts";
 import {typeParser} from "../types.ts";
 
-
-export const typeDeclaration: (context: ParserContext) =>  ParseResult<never|LogicType> = (context) => {
-    if (context.check(TokenType.COLON)) {
-        context.advance();
-        const ty= typeParser(context)
-        if(!ty.isOk){
-            return ty
-        }
-        // context.advance();
-        return {
-            isOk:true,
-            value:ty.value,
-        };
-    } else {
-        return LgSyntaxError.missingType(
-            context,
-            "expected type after ':'",
-            context.currentToken.type
-        );
-    }
-}
 
 export const variableDeclaration: LogicParser<VariableDeclaration> = (
     context
@@ -46,17 +24,17 @@ export const variableDeclaration: LogicParser<VariableDeclaration> = (
     }
 
     let decltype: LogicType | undefined;
-    if(!context.check(TokenType.COLON)){
+    if (!context.check(TokenType.COLON)) {
         return LgSyntaxError.unexpected(context, ":");
     }
     context.advance()
-    const ty=typeParser(context)
+    const ty = typeParser(context)
 
-    if(!ty.isOk){
+    if (!ty.isOk) {
         return <ParseResult<never>>ty;
     }
 
-    decltype=ty.value
+    decltype = ty.value
 
     let expr: LogicNode | undefined;
     if (context.check(TokenType.ASSIGN)) {
@@ -65,8 +43,6 @@ export const variableDeclaration: LogicParser<VariableDeclaration> = (
         if (result.error) {
             return LgSyntaxError.missingAssignment(
                 context,
-                "expression",
-                "expression after '='"
             );
         }
         expr = result.value;
@@ -80,8 +56,6 @@ export const variableDeclaration: LogicParser<VariableDeclaration> = (
     if (!decltype && !expr) {
         return LgSyntaxError.missingAssignment(
             context,
-            "expression",
-            "expression after '='"
         );
     }
 

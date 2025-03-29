@@ -4,7 +4,7 @@ import {primary} from "./primary.ts";
 import {Identifier, type LogicNode} from "../../ast";
 import {TokenType} from "../../../lexer";
 import {expression} from "./index.ts";
-import {LgSyntaxError} from "../../../errors";
+import {LgSyntaxError} from "../../../errors/syntax.ts";
 import {MemberExpression} from "../../ast/expressions/member.ts";
 import {ArrayAccess} from "../../ast/expressions/array-access.ts";
 
@@ -53,18 +53,18 @@ export const call: LogicParser<CallExpression | LogicNode> = (context) => {
             context.advance()
             const ident = new Identifier(context.currentToken.literal, context.currentToken.location)
             context.advance()
-            val=new MemberExpression(val!, ident)
-        }else if(context.check(TokenType.LSQRB)){
+            val = new MemberExpression(val!, ident)
+        } else if (context.check(TokenType.LSQRB)) {
             context.advance()
-            const index=expression(context)
-            if(!index.isOk){
+            const index = expression(context)
+            if (!index.isOk) {
                 return <ParseResult<never>>index
             }
-            if(!context.check(TokenType.RSQRB)) {
+            if (!context.check(TokenType.RSQRB)) {
                 return LgSyntaxError.unexpected(context, "]")
             }
             context.advance()
-            val=new ArrayAccess(val!,index.value!)
+            val = new ArrayAccess(val!, index.value!)
         } else {
             break
         }

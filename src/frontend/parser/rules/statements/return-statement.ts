@@ -2,7 +2,7 @@ import type {LogicParser, ParseResult} from "../../../../types";
 import {ReturnStatement} from "../../ast/statements/return.ts";
 import {expression} from "../expressions";
 import {TokenType} from "../../../lexer";
-import {LgSyntaxError} from "../../../errors";
+import {LgSyntaxError} from "../../../errors/syntax.ts";
 
 
 export const returnStatement:LogicParser<ReturnStatement> =(context)=>{

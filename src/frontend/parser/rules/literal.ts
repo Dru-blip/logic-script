@@ -1,11 +1,10 @@
-import {ArrayType, type LogicParser, type ParseResult, PrimitiveType} from "../../../types";
-import {LgErrorCode, LgSyntaxError} from "../../errors";
+import {type LogicParser, type ParseResult, PrimitiveType} from "../../../types";
 import {TokenType} from "../../lexer";
 import {LogicLiteral} from "../ast";
 import {ParserContext} from "../context";
 import {expressionList} from "./expression-list.ts";
 import {ArrayLiteral} from "../ast/literal.ts";
-import {arrayAccess} from "./expressions/array.ts";
+import {LgSyntaxError} from "../../errors/syntax.ts";
 
 export const literal: LogicParser<LogicLiteral<any, PrimitiveType> | ArrayLiteral> = (
     context: ParserContext
@@ -52,14 +51,11 @@ export const literal: LogicParser<LogicLiteral<any, PrimitiveType> | ArrayLitera
         return LgSyntaxError.unexpected(
             context,
             "Unknown token",
-            LgErrorCode.UNKNOWN_KEYWORD
         );
     }else if (currentToken.type === TokenType.EOF) {
-        // console.log(context.currentToken);
         return LgSyntaxError.unexpected(
             context,
-            "Unexpected end of file",
-            LgErrorCode.UNEXPECTED_EOF
+            "end of file",
         );
     }else{
         return LgSyntaxError.unexpected(context, "");

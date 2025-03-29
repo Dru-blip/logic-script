@@ -3,7 +3,7 @@ import type {LogicNode} from "../ast";
 import type {ParserContext} from "../context.ts";
 import {TokenType} from "../../lexer";
 import {expression} from "./expressions";
-import {LgSyntaxError} from "../../errors";
+import {LgSyntaxError} from "../../errors/syntax.ts";
 
 
 export const expressionList: (context: ParserContext, endType: TokenType) => ParseResult<LogicNode[] | never> = (context, endType) => {
@@ -16,12 +16,12 @@ export const expressionList: (context: ParserContext, endType: TokenType) => Par
 
         expressions.push(expr.value!)
 
-        if(context.check(TokenType.COMMA)){
+        if (context.check(TokenType.COMMA)) {
             context.advance()
         }
     }
 
-    if(!context.check(endType)) {
+    if (!context.check(endType)) {
         return LgSyntaxError.unexpected(context, endType)
     }
 

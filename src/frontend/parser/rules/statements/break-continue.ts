@@ -2,7 +2,7 @@ import type {LogicParser} from "../../../../types";
 import {BreakStatement} from "../../ast/statements/break.ts";
 import {ContinueStatement} from "../../ast/statements/continue.ts";
 import {TokenType} from "../../../lexer";
-import {LgSyntaxError} from "../../../errors";
+import {LgSyntaxError} from "../../../errors/syntax.ts";
 
 
 export const breakContinue: LogicParser<BreakStatement|ContinueStatement> = (context)=>{

@@ -1,5 +1,5 @@
 import type {LogicParser} from "../../../../types";
-import {LgSyntaxError} from "../../../errors";
+import {LgSyntaxError} from "../../../errors/syntax.ts";
 import {TokenType} from "../../../lexer";
 import {BlockStatement, type LogicNode} from "../../ast";
 import {IfStatement} from "../../ast/control-flow/if";
