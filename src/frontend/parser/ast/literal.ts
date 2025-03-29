@@ -1,8 +1,9 @@
 // import { PrimitiveType, type TokenLocation } from "../types";
-import {ArrayType, type LogicType, type PrimitiveType, type TokenLocation} from "../../../types";
+import { type TokenLocation} from "../../../types";
 import { type LogicNode, NodeType } from "./node";
+import {LogicType} from "../../type-system";
 
-export class LogicLiteral<T = any, Ty extends PrimitiveType>
+export class LogicLiteral<T = any, Ty extends LogicType>
   implements LogicNode
 {
   type = NodeType.Literal;

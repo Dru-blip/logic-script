@@ -18,7 +18,7 @@ export const validateCommand: LogicCommand = {
     if (ast.isOk) {
       const typeChecker = new TypeChecker(filePath);
       const res=typeChecker.check(ast.value!)
-      console.log(res)
+      // console.log(res)
       if(res.isOk){
         console.log(res)
       }else{

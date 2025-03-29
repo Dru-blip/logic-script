@@ -2,7 +2,9 @@ import {AstAnalyzer} from "./ast-analyzer.ts";
 import {BinaryExpression, Identifier, LogicLiteral, type LogicNode, Program, VariableDeclaration} from "../parser/ast";
 import  {type PrimitiveType} from "../../types";
 import {SymbolTable} from "./symbols/symbol-table.ts";
-import type {RangeExpression} from "../parser/ast/expressions/range.ts";
+import  {type RangeExpression} from "../parser/ast/expressions/range.ts";
+import type {ArrayLiteral} from "../parser/ast/literal.ts";
+import type {AssignmentExpression} from "../parser/ast/assignments/variable-assignment.ts";
 
 
 export class SymbolResolver extends AstAnalyzer<any>{
@@ -31,5 +33,11 @@ export class SymbolResolver extends AstAnalyzer<any>{
     }
 
     visitRangeExpression(node: RangeExpression): any {
+    }
+
+    visitArrayLiteral(node: ArrayLiteral): any {
+    }
+
+    visitAssignmentExpression(node: AssignmentExpression): any {
     }
 }

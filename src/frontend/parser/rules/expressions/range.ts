@@ -1,32 +1,31 @@
-import type {LogicParser} from "../../../../types";
-import {RangeExpression} from "../../ast/expressions/range.ts";
-import {logicOr} from "./logic-or.ts";
-import {TokenType} from "../../../lexer";
-import type {LogicNode} from "../../ast";
+import type { LogicParser } from "../../../../types";
+import { RangeExpression } from "../../ast/expressions/range.ts";
+import { logicOr } from "./logic-or.ts";
+import { TokenType } from "../../../lexer";
+import type { LogicNode } from "../../ast";
 
+export const range: LogicParser<RangeExpression | LogicNode> = (context) => {
+  const start = logicOr(context);
 
-export const range:LogicParser<RangeExpression|LogicNode>=(context)=>{
-    const start=logicOr(context)
+  if (!start.isOk) {
+    return start;
+  }
 
-    if(!start.isOk){
-        return start
-    }
+  if (!context.check(TokenType.RANGE)) {
+    return start;
+  }
 
-    if(!context.check(TokenType.RANGE)){
-        return start
-    }
+  const op = context.currentToken;
+  context.advance();
 
-    const op=context.currentToken
-    context.advance();
+  const end = logicOr(context);
 
-    const end=logicOr(context)
+  if (!end.isOk) {
+    return end;
+  }
 
-    if(!end.isOk){
-        return end
-    }
-
-    return {
-        isOk: true,
-        value:new RangeExpression(start.value!,end.value!,op)
-    }
-}
+  return {
+    isOk: true,
+    value: new RangeExpression(start.value!, end.value!, op),
+  };
+};

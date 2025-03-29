@@ -4,7 +4,6 @@ export { LogicLiteral } from "./literal";
 export {
   Identifier,
   VariableDeclaration,
-  ClassDeclaration,
   FunctionDeclaration,
 } from "./declarations";
 export { UnaryExpression, BinaryExpression } from "./expressions";

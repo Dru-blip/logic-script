@@ -1,7 +1,7 @@
 import type { LogicError } from "../frontend/errors";
 import type { ParserContext } from "../frontend/parser/context";
-import {Identifier, type LogicNode} from "../frontend/parser/ast";
-import type {LgSemanticError} from "../frontend/errors/semantics.ts";
+import { Identifier, type LogicNode } from "../frontend/parser/ast";
+import type { LgSemanticError } from "../frontend/errors/semantics.ts";
 
 export interface LogicConfig {
   project: {
@@ -33,10 +33,10 @@ export interface ParseResult<T> {
 
 export type LogicParser<T> = (context: ParserContext) => ParseResult<T>;
 
-export interface SemanticResult<T>{
+export interface SemanticResult<T> {
   isOk: boolean;
-  error?:LgSemanticError,
-  value?:T
+  error?: LgSemanticError;
+  value?: T;
 }
 
 export type TokenLocation = {
@@ -45,24 +45,27 @@ export type TokenLocation = {
   offset: number;
 };
 
-export enum PrimitiveType {
-  STR = "Str",
-  INT = "Int",
-  BOOLEAN = "Bool",
-  UNKNOWN = "Unknown",
-}
-
-export class ArrayType{
-  type="Array"
-  constructor(public of:LogicType) {}
-}
-
-export enum ObjectType {
-  Range= "Range",
-}
-
-export enum SpecialType {
-  ANY = "any",
-}
-
-export type LogicType = PrimitiveType | SpecialType | ObjectType |Identifier | ArrayType;
+// export enum PrimitiveType {
+//   STR = "Str",
+//   INT = "Int",
+//   BOOLEAN = "Bool",
+//   UNKNOWN = "Unknown",
+// }
+//
+// export class ArrayType{
+//   type="Array"
+//   constructor(public of:LogicType) {}
+//   toString():string{
+//     return `[${this.of.toString()}]`;
+//   }
+// }
+//
+// export enum ObjectType {
+//   Range= "Range",
+// }
+//
+// export enum SpecialType {
+//   ANY = "any",
+// }
+//
+// export type LogicType = PrimitiveType | SpecialType | ObjectType |Identifier | ArrayType;

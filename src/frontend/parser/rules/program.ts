@@ -14,5 +14,5 @@ export const program: LogicParser<Program> = (context) => {
       context.errors.push(<LogicError>stmt.error);
     }
   }
-  return { isOk: context.errors.length ===0, value: new Program(statements) };
+  return { isOk: context.errors.length === 0, value: new Program(statements) };
 };

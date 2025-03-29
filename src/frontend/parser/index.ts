@@ -3,6 +3,7 @@ import { Lexer } from "../lexer";
 import { Program } from "./ast";
 import { ParserContext } from "./context";
 import { program } from "./rules/program";
+import type { LgSyntaxError } from "../errors/syntax.ts";
 
 /**
  * Parses the given source code and returns a program node.
@@ -13,7 +14,7 @@ import { program } from "./rules/program";
  */
 export const parse: (
   source: string,
-  filename: string
+  filename: string,
 ) => {
   parse: () => ParseResult<Program>;
 } = (source: string, filename: string) => {
@@ -25,7 +26,7 @@ export const parse: (
       const programNode = program(context);
       if (context.errors.length > 0) {
         for (const error of context.errors) {
-          error.printError(source);
+          (<LgSyntaxError>error).printError(source);
         }
 
         return {

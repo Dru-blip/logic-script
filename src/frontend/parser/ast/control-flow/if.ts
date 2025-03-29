@@ -1,5 +1,5 @@
 import { NodeType, type LogicNode } from "../node";
-import {BlockStatement} from "../statements";
+import { BlockStatement } from "../statements";
 
 export class IfStatement implements LogicNode {
   type: NodeType = NodeType.IfStatement;
@@ -8,6 +8,6 @@ export class IfStatement implements LogicNode {
     public condition: LogicNode,
     public then: BlockStatement,
     public or?: BlockStatement,
-    public elseIfBlocks?: LogicNode[]
+    public elseIfBlocks?: LogicNode[],
   ) {}
 }

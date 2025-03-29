@@ -1,21 +1,18 @@
-import type {LogicParser} from "../../../../types";
-import {LgErrorCode} from "../../../errors";
-import {TokenType} from "../../../lexer";
-import {Identifier, type LogicNode} from "../../ast";
-import {type ParserContext} from "../../context";
-// import { type LogicParser, type ParseResult } from "../../types";
-import {literal} from "../literal";
-import {group} from "./group";
-import {LgSyntaxError} from "../../../errors/syntax.ts";
+import type { LogicParser } from "../../../../types";
+import { TokenType } from "../../../lexer";
+import { Identifier, type LogicNode } from "../../ast";
+import { type ParserContext } from "../../context";
+import { literal } from "../literal";
+import { group } from "./group";
+import { LgSyntaxError } from "../../../errors/syntax.ts";
 
 export const primary: LogicParser<LogicNode> = (context: ParserContext) => {
-  // console.log("parsing primary");
   const { currentToken } = context;
   switch (currentToken.type) {
     case TokenType.NUMBER:
     case TokenType.STRING:
     case TokenType.BOOLEAN:
-    case TokenType.LSQRB:{
+    case TokenType.LSQRB: {
       const result = literal(context);
       context.advance();
       return result;
@@ -36,15 +33,9 @@ export const primary: LogicParser<LogicNode> = (context: ParserContext) => {
 
     default: {
       if (context.check(TokenType.EOF)) {
-        return LgSyntaxError.unexpected(
-            context,
-            "expression",
-          )
+        return LgSyntaxError.unexpected(context, "expression");
       }
-      return  LgSyntaxError.unexpected(
-          context,
-          `expression`,
-        )
+      return LgSyntaxError.unexpected(context, `expression`);
     }
   }
 };

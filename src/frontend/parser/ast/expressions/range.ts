@@ -1,5 +1,4 @@
 import { type LogicNode, NodeType } from "../node.ts";
-import type { TokenLocation } from "../../../../types";
 import { Token } from "../../../lexer";
 
 export class RangeExpression implements LogicNode {
