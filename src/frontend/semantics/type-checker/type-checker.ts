@@ -3,6 +3,7 @@ import {AstAnalyzer} from "../ast-analyzer.ts";
 import {type LogicType, PrimitiveType} from "../../../types";
 import {
     BinaryExpression,
+    Identifier,
     type LogicLiteral,
     type LogicNode,
     NodeType,
@@ -60,9 +61,12 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
                     <LogicLiteral<number | string | boolean, PrimitiveType>>ast,
                 );
             }
+            case NodeType.Identifier:{
+                return this.visitIdentifier(<Identifier>ast)
+            }
             default: {
                 return {
-                    isOk: true,
+                    isOk: false,
                     value: PrimitiveType.UNKNOWN,
                 };
             }
@@ -131,6 +135,18 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
             isOk: true,
             value: this.typeRules.get(lht.value?.toString() + op + rht.value!.toString()),
         };
+    }
+
+    visitIdentifier(node: Identifier): TypeCheckerResult {
+        const variable=this.symbols.getSymbol(node.name)
+        if(!variable){
+            return LgSemanticError.undefinedVariable(this.fileName,node)
+        }
+
+        return {
+            isOk:true,
+            value:variable.declType
+        }
     }
 
     visitLiteral(

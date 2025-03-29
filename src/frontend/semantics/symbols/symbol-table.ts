@@ -1,5 +1,5 @@
 export class SymbolTable<T> {
-    private defs: Map<String, T>
+    private readonly defs: Map<String, T>
 
     constructor(public parent?: SymbolTable<T>) {
         this.defs = new Map()
@@ -7,6 +7,10 @@ export class SymbolTable<T> {
 
     addSymbol(name: string, symbol: T): void {
         this.defs.set(name, symbol)
+    }
+
+    getSymbol(name: string): T|undefined{
+        return this.defs.get(name)
     }
 
     getSymbols(): Readonly<typeof this.defs> {

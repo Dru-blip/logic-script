@@ -1,5 +1,6 @@
-import {BinaryExpression, LogicLiteral, type LogicNode, Program, VariableDeclaration} from "../parser/ast";
+import {BinaryExpression, Identifier, LogicLiteral, type LogicNode, Program, VariableDeclaration} from "../parser/ast";
 import type {PrimitiveType} from "../../types";
+import type {TypeCheckerResult} from "./type-checker/types.ts";
 
 
 export abstract class AstAnalyzer<T> {
@@ -8,4 +9,5 @@ export abstract class AstAnalyzer<T> {
     abstract visitBinaryExpression(node: BinaryExpression): T
     abstract visitLiteral(node:LogicLiteral<number | string | boolean, PrimitiveType>):T;
     abstract visitVariableDeclaration(node:VariableDeclaration):T;
+    abstract visitIdentifier(node: Identifier): T
 }
