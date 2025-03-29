@@ -14,6 +14,8 @@ import type {TypeDeclSymbol} from "../symbols/type-decl-symbol.ts";
 import type {ExpressionStatement} from "../../parser/ast/statements/expression.ts";
 import type {TypeCheckerResult} from "./types.ts";
 import {LgSemanticError} from "../../errors/semantics.ts";
+import type {RangeExpression} from "../../parser/ast/expressions/range.ts";
+import {LgErrorCode} from "../../errors";
 
 export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
     symbols: SymbolTable<TypeDeclSymbol>;
@@ -30,6 +32,11 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
         ["Int>=Int", PrimitiveType.BOOLEAN],
         ["Int!=Int", PrimitiveType.BOOLEAN],
         ["Int==Int", PrimitiveType.BOOLEAN],
+        ["Str+Str", PrimitiveType.STR],
+        ["Bool!=Bool", PrimitiveType.BOOLEAN],
+        ["Bool==Bool", PrimitiveType.BOOLEAN],
+        ["BoolandBool", PrimitiveType.BOOLEAN],
+        ["BoolorBool", PrimitiveType.BOOLEAN],
     ]);
 
     constructor(public fileName: string) {
@@ -53,6 +60,9 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
             case NodeType.ExpressionStatement: {
                 return this.visit((<ExpressionStatement>ast).expr);
             }
+            case NodeType.RangeExpression: {
+                return this.visitRangeExpression(<RangeExpression>ast)
+            }
             case NodeType.BinaryExpression: {
                 return this.visitBinaryExpression(<BinaryExpression>ast);
             }
@@ -61,8 +71,8 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
                     <LogicLiteral<number | string | boolean, PrimitiveType>>ast,
                 );
             }
-            case NodeType.Identifier:{
-                return this.visitIdentifier(<Identifier>ast)
+            case NodeType.Identifier: {
+                return this.visitIdentifier(<Identifier>ast);
             }
             default: {
                 return {
@@ -112,6 +122,36 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
         };
     }
 
+    visitRangeExpression(node: RangeExpression): TypeCheckerResult {
+        const lht = this.visit(node.start);
+        if (!lht.isOk) {
+            return lht;
+        }
+        const rht = this.visit(node.end);
+        if (!rht.isOk) {
+            return rht;
+        }
+
+        if (lht.value === PrimitiveType.INT && lht.value !== rht.value) {
+            return {
+                isOk: false,
+                error: new LgSemanticError(
+                    this.fileName,
+                    node.op.location,
+                    "Range expression requires both operands to be Int",
+                    LgErrorCode.INVALID_OPERATION,
+                    lht.value?.toString(),
+                    rht.value?.toString(),
+                ),
+            };
+        }
+
+        return {
+            isOk: true,
+            value: lht.value,
+        };
+    }
+
     visitBinaryExpression(node: BinaryExpression): TypeCheckerResult {
         const lht = this.visit(node.left);
         if (!lht.isOk) {
@@ -131,22 +171,32 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
                 rht.value!,
             );
         }
+        const key = lht.value?.toString() + op + rht.value?.toString();
+        const typeRule = this.typeRules.get(key);
+        if (!typeRule) {
+            return LgSemanticError.invalidOperation(
+                this.fileName,
+                node.operator,
+                lht.value!,
+                rht.value!,
+            );
+        }
         return {
             isOk: true,
-            value: this.typeRules.get(lht.value?.toString() + op + rht.value!.toString()),
+            value: this.typeRules.get(key),
         };
     }
 
     visitIdentifier(node: Identifier): TypeCheckerResult {
-        const variable=this.symbols.getSymbol(node.name)
-        if(!variable){
-            return LgSemanticError.undefinedVariable(this.fileName,node)
+        const variable = this.symbols.getSymbol(node.name);
+        if (!variable) {
+            return LgSemanticError.undefinedVariable(this.fileName, node);
         }
 
         return {
-            isOk:true,
-            value:variable.declType
-        }
+            isOk: true,
+            value: variable.declType,
+        };
     }
 
     visitLiteral(

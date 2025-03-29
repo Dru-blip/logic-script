@@ -1,8 +1,8 @@
 import {LgErrorCode, LgErrorType, LogicError} from "./index.ts";
-import type {LogicType, ParseResult, SemanticResult, TokenLocation} from "../../types";
+import type {LogicType, SemanticResult, TokenLocation} from "../../types";
 import type {ParserContext} from "../parser/context.ts";
 import {BinaryExpression, Identifier, type LogicNode} from "../parser/ast";
-import type {TypeCheckerResult} from "../semantics/type-checker/types.ts";
+import {Token} from "../lexer";
 
 
 const SEMANTIC_ERROR_HINTS: Map<string, string> = new Map([
@@ -52,17 +52,24 @@ export class LgSemanticError extends LogicError {
         };
     }
 
-    static invalidBinOp(fileName:string,node:BinaryExpression,leftType:LogicType,rightType:LogicType):SemanticResult<never>{
+    static invalidBinOp(fileName: string, node: BinaryExpression, leftType: LogicType, rightType: LogicType): SemanticResult<never> {
         return {
             isOk: false,
             error: new LgSemanticError(
                 fileName,
                 node.operator.location,
-                `Invalid operands for operator '${node.operator.literal}'. ` +
+                `Invalid operands for '${node.operator.literal}'. ` +
                 `Expected both operands to be of the same type, but found '${leftType}' and '${rightType}'. `,
                 LgErrorCode.INVALID_OPERATION,
             ),
         };
+    }
+
+    static invalidOperation(fileName: string, operator: Token, leftHand: LogicType, rightHand: LogicType): SemanticResult<never> {
+        return {
+            isOk: false,
+            error: new LgSemanticError(fileName, operator.location, `Invalid operation "${operator.literal}" between ${leftHand.toString()} and ${rightHand.toString()}`, LgErrorCode.INVALID_OPERATION)
+        }
     }
 
     static redeclaration(context: ParserContext, varName: string): SemanticResult<never> {
@@ -89,15 +96,5 @@ export class LgSemanticError extends LogicError {
         };
     }
 
-    static invalidOperation(context: ParserContext, operation: string): SemanticResult<never> {
-        return {
-            isOk: false,
-            error: new LgSemanticError(
-                context.lexer.filename,
-                context.currentToken.location,
-                `Invalid operation: '${operation}'.`,
-                LgErrorCode.INVALID_OPERATION
-            ),
-        };
-    }
+
 }

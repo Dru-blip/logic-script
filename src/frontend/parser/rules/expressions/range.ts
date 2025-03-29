@@ -16,6 +16,7 @@ export const range:LogicParser<RangeExpression|LogicNode>=(context)=>{
         return start
     }
 
+    const op=context.currentToken
     context.advance();
 
     const end=logicOr(context)
@@ -26,6 +27,6 @@ export const range:LogicParser<RangeExpression|LogicNode>=(context)=>{
 
     return {
         isOk: true,
-        value:new RangeExpression(start.value!,end.value!)
+        value:new RangeExpression(start.value!,end.value!,op)
     }
 }
