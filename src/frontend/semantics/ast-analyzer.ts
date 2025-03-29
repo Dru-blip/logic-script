@@ -13,11 +13,14 @@ import type { ArrayLiteral } from "../parser/ast/literal.ts";
 import type { ArrayAccess } from "../parser/ast/expressions/array-access.ts";
 import { LogicType } from "../type-system";
 import type { IfStatement } from "../parser/ast/control-flow/if.ts";
+import type {ForStatement} from "../parser/ast/control-flow/for.ts";
 
 export abstract class AstAnalyzer<T> {
   abstract visit(ast: LogicNode): T;
 
   abstract visitProgram(node: Program): T;
+
+  abstract visitForStatement(node: ForStatement): T;
 
   abstract visitIfStatement(node: IfStatement): T;
 

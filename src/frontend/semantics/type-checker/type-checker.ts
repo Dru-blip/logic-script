@@ -10,24 +10,25 @@ import {
   Program,
   VariableDeclaration,
 } from "../../parser/ast";
-import type { TypeDeclSymbol } from "../symbols/type-decl-symbol.ts";
-import type { ExpressionStatement } from "../../parser/ast/statements/expression.ts";
+import { type TypeDeclSymbol } from "../symbols/type-decl-symbol.ts";
+import { type ExpressionStatement } from "../../parser/ast/statements/expression.ts";
 import type { TypeCheckerResult } from "./types.ts";
 import { LgSemanticError } from "../../errors/semantics.ts";
-import type { RangeExpression } from "../../parser/ast/expressions/range.ts";
+import { type RangeExpression } from "../../parser/ast/expressions/range.ts";
 import { LgErrorCode } from "../../errors";
-import type { AssignmentExpression } from "../../parser/ast/assignments/variable-assignment.ts";
-import type { ArrayLiteral } from "../../parser/ast/literal.ts";
+import { type AssignmentExpression } from "../../parser/ast/assignments/variable-assignment.ts";
+import { type ArrayLiteral } from "../../parser/ast/literal.ts";
 import { Int } from "../../type-system/int.ts";
 import { LArrayType, LogicType } from "../../type-system";
 import { Bool } from "../../type-system/bool.ts";
 import { Str } from "../../type-system/str.ts";
 import { Any } from "../../type-system/any-type.ts";
 import { ArrayAccess } from "../../parser/ast/expressions/array-access.ts";
-import type { IfStatement } from "../../parser/ast/control-flow/if.ts";
+import { type IfStatement } from "../../parser/ast/control-flow/if.ts";
 import { TypeKind } from "../../type-system/logic-type.ts";
 import { ReturnStatement } from "../../parser/ast/statements/return.ts";
 import { Void } from "../../type-system/void.ts";
+import type { ForStatement } from "../../parser/ast/control-flow/for.ts";
 
 export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
   symbols: SymbolTable<TypeDeclSymbol>;
@@ -74,6 +75,9 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
     switch (ast.type) {
       case NodeType.Program: {
         return this.visitProgram(<Program>ast);
+      }
+      case NodeType.ForStatement: {
+        return this.visitForStatement(<ForStatement>ast);
       }
       case NodeType.IfStatement: {
         return this.visitIfStatement(<IfStatement>ast);
@@ -136,6 +140,19 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
       result = res;
     }
     return result!;
+  }
+
+  visitForStatement(node: ForStatement): TypeCheckerResult {
+    this.enterScope();
+
+    console.log(node.target);
+    console.log(node.iterable);
+    this.leaveScope();
+
+    return {
+      isOk: true,
+      value: Void,
+    };
   }
 
   visitIfStatement(node: IfStatement): TypeCheckerResult {

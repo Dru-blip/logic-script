@@ -5,6 +5,7 @@ import { LgSyntaxError } from "../../../errors/syntax.ts";
 import { primary } from "../expressions/primary.ts";
 import { expression } from "../expressions";
 import { block } from "../statements/block.ts";
+import { Identifier } from "../../ast";
 
 export const forStatement: LogicParser<ForStatement> = (context) => {
   if (!context.check(TokenType.FOR)) {
@@ -49,6 +50,10 @@ export const forStatement: LogicParser<ForStatement> = (context) => {
 
   return {
     isOk: true,
-    value: new ForStatement(ident.value!, iterable.value!, body.value!),
+    value: new ForStatement(
+      <Identifier>ident.value!,
+      iterable.value!,
+      body.value!,
+    ),
   };
 };
