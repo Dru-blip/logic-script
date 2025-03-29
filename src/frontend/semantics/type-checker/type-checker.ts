@@ -2,6 +2,7 @@ import { SymbolTable } from "../symbols/symbol-table.ts";
 import { AstAnalyzer } from "../ast-analyzer.ts";
 import {
   BinaryExpression,
+  BlockStatement,
   Identifier,
   type LogicLiteral,
   type LogicNode,
@@ -22,7 +23,8 @@ import { LArrayType, LogicType } from "../../type-system";
 import { Bool } from "../../type-system/bool.ts";
 import { Str } from "../../type-system/str.ts";
 import { Any } from "../../type-system/any-type.ts";
-import type { ArrayAccess } from "../../parser/ast/expressions/array-access.ts";
+import { ArrayAccess } from "../../parser/ast/expressions/array-access.ts";
+import type { IfStatement } from "../../parser/ast/control-flow/if.ts";
 
 export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
   symbols: SymbolTable<TypeDeclSymbol>;
@@ -56,10 +58,28 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
     return this.visit(ast);
   }
 
+  enterScope(): void {
+    const parent = this.symbols;
+    this.symbols = new SymbolTable(parent);
+  }
+
+  leaveScope(): void {
+    this.symbols = this.symbols.parent!;
+  }
+
   visit(ast: LogicNode): TypeCheckerResult {
     switch (ast.type) {
       case NodeType.Program: {
         return this.visitProgram(<Program>ast);
+      }
+      case NodeType.IfStatement: {
+        return this.visitIfStatement(<IfStatement>ast);
+      }
+      case NodeType.BlockStatement: {
+        this.enterScope();
+        const res = this.visitBlockStatement(<BlockStatement>ast);
+        this.leaveScope();
+        return res;
       }
       case NodeType.VariableDeclaration: {
         return this.visitVariableDeclaration(<VariableDeclaration>ast);
@@ -111,6 +131,27 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
     return result!;
   }
 
+  visitIfStatement(node: IfStatement): TypeCheckerResult {
+    console.log(node);
+
+    return {
+      isOk: true,
+      value: Any,
+    };
+  }
+
+  visitBlockStatement(node: BlockStatement): TypeCheckerResult {
+    let result: TypeCheckerResult;
+    for (const statement of node.statements) {
+      const res = this.visit(statement);
+      if (!res.isOk) {
+        return res;
+      }
+      result = res;
+    }
+    return result!;
+  }
+
   visitVariableDeclaration(node: VariableDeclaration): TypeCheckerResult {
     const id = node.name.name;
     const declType = node.declType;
@@ -147,6 +188,25 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
     const value = this.visit(node.value);
     if (!value.isOk) {
       return value;
+    }
+
+    if (node.target instanceof ArrayAccess) {
+      const arrayType = <LArrayType>ident.value;
+      const elementType = arrayType.of;
+
+      if (!elementType.equals(value.value!)) {
+        return LgSemanticError.typeMismatch(
+          this.fileName,
+          node,
+          node.location,
+          elementType.toString(),
+          value.value!.toString(),
+        );
+      }
+      return {
+        isOk: true,
+        value: elementType,
+      };
     }
 
     if (!ident.value?.equals(value.value!)) {

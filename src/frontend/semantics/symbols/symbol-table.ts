@@ -1,19 +1,33 @@
 export class SymbolTable<T> {
-    private readonly defs: Map<String, T>
+  private readonly defs: Map<String, T>;
 
-    constructor(public parent?: SymbolTable<T>) {
-        this.defs = new Map()
+  constructor(public parent?: SymbolTable<T>) {
+    this.defs = new Map();
+  }
+
+  addSymbol(name: string, symbol: T): void {
+    this.defs.set(name, symbol);
+  }
+
+  getSymbol(name: string): T | undefined {
+    let symbol = this.defs.get(name);
+
+    if (symbol) {
+      return symbol;
     }
 
-    addSymbol(name: string, symbol: T): void {
-        this.defs.set(name, symbol)
+    let parent = this.parent;
+    while (parent) {
+      symbol = parent?.getSymbol(name);
+      if (!symbol) {
+        parent = parent?.parent;
+      } else {
+        return symbol;
+      }
     }
+  }
 
-    getSymbol(name: string): T|undefined{
-        return this.defs.get(name)
-    }
-
-    getSymbols(): Readonly<typeof this.defs> {
-        return this.defs
-    }
+  getSymbols(): Readonly<typeof this.defs> {
+    return this.defs;
+  }
 }
