@@ -9,6 +9,7 @@ export enum TypeKind{
     ObjectType,
 
     Identifier,
+    Void,
 }
 
 export abstract class LogicType{

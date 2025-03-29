@@ -25,6 +25,9 @@ import { Str } from "../../type-system/str.ts";
 import { Any } from "../../type-system/any-type.ts";
 import { ArrayAccess } from "../../parser/ast/expressions/array-access.ts";
 import type { IfStatement } from "../../parser/ast/control-flow/if.ts";
+import { TypeKind } from "../../type-system/logic-type.ts";
+import { ReturnStatement } from "../../parser/ast/statements/return.ts";
+import { Void } from "../../type-system/void.ts";
 
 export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
   symbols: SymbolTable<TypeDeclSymbol>;
@@ -35,7 +38,7 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
     ["Int*Int", Int],
     ["Int/Int", Int],
     ["Int%Int", Int],
-    ["Int<Int", Int],
+    ["Int<Int", Bool],
     ["Int>Int", Bool],
     ["Int<=Int", Bool],
     ["Int>=Int", Bool],
@@ -74,6 +77,10 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
       }
       case NodeType.IfStatement: {
         return this.visitIfStatement(<IfStatement>ast);
+      }
+
+      case NodeType.ReturnStatement: {
+        return this.visit((<ReturnStatement>ast).value);
       }
       case NodeType.BlockStatement: {
         this.enterScope();
@@ -132,19 +139,66 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
   }
 
   visitIfStatement(node: IfStatement): TypeCheckerResult {
-    console.log(node);
+    const conditionType = this.visit(node.condition);
+    if (!conditionType.isOk) {
+      return conditionType;
+    }
 
-    return {
-      isOk: true,
-      value: Any,
-    };
+    // console.log(conditionType);
+    if (conditionType.value?.kind !== TypeKind.Bool) {
+      return LgSemanticError.typeMismatch(
+        this.fileName,
+        node,
+        node.location,
+        "condition requires a Bool",
+        `${conditionType.value!.toString()}`,
+      );
+    }
+
+    this.enterScope();
+    const thenBlockType = this.visitBlockStatement(node.then);
+    this.leaveScope();
+
+    if (!thenBlockType.isOk) {
+      return thenBlockType;
+    }
+
+    if (!node.or) {
+      return thenBlockType;
+    }
+
+    this.enterScope();
+    const elseBlockType = this.visitBlockStatement(node.or);
+    this.leaveScope();
+
+    if (!elseBlockType.isOk) {
+      return thenBlockType;
+    }
+
+    if (!thenBlockType.value?.equals(elseBlockType.value!)) {
+      return LgSemanticError.typeMismatch(
+        this.fileName,
+        node,
+        node.location,
+        `required return type : ${thenBlockType.value?.toString()}`,
+        `${elseBlockType.value?.toString()}`,
+      );
+    }
+
+    return thenBlockType;
   }
 
   visitBlockStatement(node: BlockStatement): TypeCheckerResult {
-    let result: TypeCheckerResult;
+    let result: TypeCheckerResult = {
+      isOk: true,
+      value: Void,
+    };
     for (const statement of node.statements) {
       const res = this.visit(statement);
       if (!res.isOk) {
+        return res;
+      }
+      if (statement instanceof ReturnStatement) {
         return res;
       }
       result = res;
@@ -266,7 +320,7 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
     }
 
     const op = node.operator.literal;
-    if (lht.value?.equals(rht.value!)) {
+    if (!lht.value?.equals(rht.value!)) {
       return LgSemanticError.invalidBinOp(
         this.fileName,
         node,
@@ -274,6 +328,7 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
         rht.value!,
       );
     }
+
     const key = lht.value?.toString() + op + rht.value?.toString();
     const typeRule = this.typeRules.get(key);
     if (!typeRule) {
@@ -284,6 +339,7 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
         rht.value!,
       );
     }
+
     return {
       isOk: true,
       value: this.typeRules.get(key),

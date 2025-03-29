@@ -13,6 +13,7 @@ export const ifStatement: LogicParser<IfStatement | LogicNode> = (context) => {
 
   context.advance();
 
+  const { currentToken } = context;
   const condition = expression(context);
 
   if (!condition.isOk) {
@@ -37,6 +38,7 @@ export const ifStatement: LogicParser<IfStatement | LogicNode> = (context) => {
   return {
     isOk: true,
     value: new IfStatement(
+      currentToken.location,
       <LogicNode>condition.value,
       <BlockStatement>thenBlock.value,
       elseBlock?.value ?? undefined,
