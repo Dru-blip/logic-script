@@ -61,13 +61,7 @@ export class Lexer {
     this.keywords.set("let", TokenType.LET);
     this.keywords.set("and", TokenType.AND);
     this.keywords.set("or", TokenType.OR);
-    this.keywords.set("Int", TokenType.INT);
-    this.keywords.set("Bool", TokenType.BOOL);
-    this.keywords.set("Str", TokenType.STR);
-    this.keywords.set("any", TokenType.ANY);
-    this.keywords.set("void", TokenType.VOID);
     this.keywords.set("in",TokenType.IN)
-    this.keywords.set("Range",TokenType.TYRANGE)
 
 
     this.position = 0;

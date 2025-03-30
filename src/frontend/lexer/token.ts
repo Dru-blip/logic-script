@@ -60,12 +60,7 @@ export enum TokenType {
     TRUE = "true",
     FALSE = "false",
 
-    INT = "Int",
-    BOOL = "Bool",
-    STR = "Str",
-    ANY = "any",
-    VOID = "void",
-    TYRANGE="Range",
+
     EOF = "EOF",
 }
 
