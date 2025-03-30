@@ -28,7 +28,6 @@ export const parse: (
         for (const error of context.errors) {
           (<LgSyntaxError>error).printError(source);
         }
-
         return {
           isOk: false,
           error: context.errors[0],

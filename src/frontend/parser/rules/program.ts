@@ -3,6 +3,7 @@ import type { LogicParser } from "../../../types";
 import type { LogicError } from "../../errors";
 import { TokenType } from "../../lexer";
 import { Program } from "../ast";
+import type {LgSyntaxError} from "../../errors/syntax.ts";
 
 export const program: LogicParser<Program> = (context) => {
   const statements = [];
@@ -11,7 +12,8 @@ export const program: LogicParser<Program> = (context) => {
     if (stmt.isOk) {
       statements.push(stmt.value!);
     } else {
-      context.errors.push(<LogicError>stmt.error);
+      context.errors.push(<LgSyntaxError>stmt.error);
+      break;
     }
   }
   return { isOk: context.errors.length === 0, value: new Program(statements) };

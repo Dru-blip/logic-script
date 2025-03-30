@@ -3,8 +3,21 @@ import { ReturnStatement } from "../../ast/statements/return.ts";
 import { expression } from "../expressions";
 import { TokenType } from "../../../lexer";
 import { LgSyntaxError } from "../../../errors/syntax.ts";
+import { LgErrorCode } from "../../../errors";
 
 export const returnStatement: LogicParser<ReturnStatement> = (context) => {
+  if (!context.insideFunction) {
+    context.advance();
+    return {
+      isOk: false,
+      error: new LgSyntaxError(
+        context.lexer.filename,
+        context.currentToken.location,
+        "return statement outside of function",
+        LgErrorCode.INVALID_RETURN,
+      ),
+    };
+  }
   context.advance();
 
   const value = expression(context);

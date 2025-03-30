@@ -44,7 +44,7 @@ export const forStatement: LogicParser<ForStatement> = (context) => {
   if (!body.isOk) {
     return {
       isOk: false,
-      error: iterable.error,
+      error: body.error,
     };
   }
 
