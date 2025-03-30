@@ -1,6 +1,3 @@
-<Type> ::= "Int" | "Bool" | "Str" | <Identifier> | <ArrayType>;
-<ArrayType> ::= "[" <Type> "]";
-
 <Program> ::= <StatementList>;
 
 <StatementList> ::= (<Statement>)*;
@@ -17,7 +14,7 @@
 
 <ExpressionStatement> ::= <Expression> ";";
 
-<VariableDeclaration> ::= "let" <Identifier> ":" <Type> ("=" <Expression>)? ";";
+<VariableDeclaration> ::= "let" <Identifier> ("=" <Expression>)? ";";
 
 <ReturnStatement> ::= "return" <Expression> ";";
 <ImportStatement> ::= "import" <StringLiteral> ";";
@@ -29,8 +26,8 @@
                          ("elif" <Expression> "{" <StatementList> "}")*
                          ("else" "{" <StatementList> "}")?;
 
-<FunctionDeclaration> ::= "fn" <Identifier> "(" <ParameterList> ")" "->" <Type> "{" <StatementList> "}";
-<ParameterList> ::= <Identifier> ":" <Type> ("," <Identifier> ":" <Type>)*;
+<FunctionDeclaration> ::= "fn" <Identifier> "(" <ParameterList> ")" "{" <StatementList> "}";
+<ParameterList> ::= <Identifier> ("," <Identifier>)*;
 
 <StructDeclaration> ::= "struct" <Identifier> "{" <StructBody> "}" ";";
 <StructBody> ::= (<StructMember>)*;
