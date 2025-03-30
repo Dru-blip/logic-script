@@ -1,5 +1,4 @@
 import { LogicType, TypeKind } from "./logic-type.ts";
-import { Identifier } from "../parser/ast";
 
 export class LObject extends LogicType {
   kind: TypeKind = TypeKind.ObjectType;
@@ -9,10 +8,10 @@ export class LObject extends LogicType {
   }
 
   equals(other: LogicType): boolean {
-    throw new Error("Method not implemented.");
+    return other instanceof LObject && other.id === this.id;
   }
 
   toString(): string {
-    return `Object<${this.id}>`
+    return `Object<${this.id}>`;
   }
 }

@@ -10,7 +10,7 @@ import {
   Program,
   VariableDeclaration,
 } from "../../parser/ast";
-import { type TypeDeclSymbol } from "../symbols/type-decl-symbol.ts";
+import { TypeDeclSymbol } from "../symbols/type-decl-symbol.ts";
 import { type ExpressionStatement } from "../../parser/ast/statements/expression.ts";
 import type { TypeCheckerResult } from "./types.ts";
 import { LgSemanticError } from "../../errors/semantics.ts";
@@ -29,6 +29,8 @@ import { TypeKind } from "../../type-system/logic-type.ts";
 import { ReturnStatement } from "../../parser/ast/statements/return.ts";
 import { Void } from "../../type-system/void.ts";
 import type { ForStatement } from "../../parser/ast/control-flow/for.ts";
+import { LObject } from "../../type-system/object.ts";
+import { LIter } from "../../type-system/iter.ts";
 
 export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
   symbols: SymbolTable<TypeDeclSymbol>;
@@ -145,14 +147,40 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
   visitForStatement(node: ForStatement): TypeCheckerResult {
     this.enterScope();
 
-    console.log(node.target);
-    console.log(node.iterable);
+    const { target, iterable } = node;
+    const iterator = this.visit(iterable);
+    if (iterator.value instanceof LIter) {
+      const iterType = iterator.value;
+      this.symbols.addSymbol(
+        target.name,
+        new TypeDeclSymbol(target.name, iterType),
+      );
+    } else if (iterator.value instanceof LArrayType) {
+      const arrayType = iterator.value;
+      this.symbols.addSymbol(
+        target.name,
+        new TypeDeclSymbol(target.name, arrayType.of),
+      );
+    } else {
+      return LgSemanticError.typeMismatch(
+        this.fileName,
+        node,
+        target.location,
+        "iterable object",
+        `${iterator.value?.toString()}`,
+      );
+    }
+
+    const bodyType = this.visitBlockStatement(node.body);
+
+    console.log(bodyType)
+    if (!bodyType.isOk) {
+      return bodyType;
+    }
+
     this.leaveScope();
 
-    return {
-      isOk: true,
-      value: Void,
-    };
+    return bodyType;
   }
 
   visitIfStatement(node: IfStatement): TypeCheckerResult {
@@ -161,7 +189,6 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
       return conditionType;
     }
 
-    // console.log(conditionType);
     if (conditionType.value?.kind !== TypeKind.Bool) {
       return LgSemanticError.typeMismatch(
         this.fileName,
@@ -322,7 +349,7 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
 
     return {
       isOk: true,
-      value: lht.value,
+      value: new LIter("Range", Int),
     };
   }
 
