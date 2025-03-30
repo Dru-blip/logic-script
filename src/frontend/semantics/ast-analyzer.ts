@@ -16,11 +16,14 @@ import { LogicType } from "../type-system";
 import type { IfStatement } from "../parser/ast/control-flow/if.ts";
 import type { ForStatement } from "../parser/ast/control-flow/for.ts";
 import type { CallExpression } from "../parser/ast/expressions/call.ts";
+import type {StructDeclaration} from "../parser/ast/declarations/struct.ts";
 
 export abstract class AstAnalyzer<T> {
   abstract visit(ast: LogicNode): T;
 
   abstract visitProgram(node: Program): T;
+
+  abstract visitStructDeclaration(node: StructDeclaration): T;
 
   abstract visitFunctionDeclaration(node: FunctionDeclaration): T;
 

@@ -33,8 +33,7 @@ import type { ForStatement } from "../../parser/ast/control-flow/for.ts";
 import { LIter } from "../../type-system/iter.ts";
 import { LFuncType } from "../../type-system/func.ts";
 import type { CallExpression } from "../../parser/ast/expressions/call.ts";
-import { supportsColorStderr } from "chalk";
-import { compileNode } from "../../compiler/functions";
+import { type StructDeclaration } from "../../parser/ast/declarations/struct.ts";
 
 export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
   symbols: SymbolTable<TypeDeclSymbol>;
@@ -81,6 +80,9 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
     switch (ast.type) {
       case NodeType.Program: {
         return this.visitProgram(<Program>ast);
+      }
+      case NodeType.StructDeclaration: {
+        return this.visitStructDeclaration(<StructDeclaration>ast);
       }
       case NodeType.FunctionDeclaration: {
         return this.visitFunctionDeclaration(<FunctionDeclaration>ast);
@@ -152,6 +154,14 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
       result = res;
     }
     return result!;
+  }
+
+  visitStructDeclaration(node: StructDeclaration): TypeCheckerResult {
+    console.log(node)
+    return {
+      isOk: true,
+      value: Void,
+    };
   }
 
   visitFunctionDeclaration(node: FunctionDeclaration): TypeCheckerResult {
