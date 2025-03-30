@@ -4,9 +4,6 @@ import { TokenType } from "../../../lexer";
 import { LgSyntaxError } from "../../../errors/syntax.ts";
 import { FunctionParam } from "../../ast/declarations/functions.ts";
 import { block } from "../statements/block.ts";
-import { typeParser } from "../types.ts";
-import { LogicType } from "../../../type-system";
-import { Void } from "../../../type-system/void.ts";
 
 const parameterList: LogicParser<FunctionParam[]> = (context) => {
   if (!context.check(TokenType.LPAREN)) {
@@ -24,20 +21,12 @@ const parameterList: LogicParser<FunctionParam[]> = (context) => {
       context.currentToken.location,
     );
     context.advance();
-    if (!context.check(TokenType.COLON)) {
-      return LgSyntaxError.unexpected(context, ":");
-    }
-    context.advance();
-    const declType = typeParser(context);
-    if (!declType.isOk) {
-      return <ParseResult<never>>declType;
-    }
 
     if (context.check(TokenType.COMMA)) {
       context.advance();
     }
 
-    paramsList.push(new FunctionParam(ident, declType.value!));
+    paramsList.push(new FunctionParam(ident));
   }
   if (!context.check(TokenType.RPAREN)) {
     return LgSyntaxError.unexpected(context, ")");
@@ -70,19 +59,6 @@ export const functionDeclaration: LogicParser<FunctionDeclaration> = (
     return <ParseResult<never>>paramsList;
   }
 
-  let returnType: LogicType = Void;
-  if (context.check(TokenType.ARROW)) {
-    context.advance();
-    const { currentToken } = context;
-    const ty = typeParser(context);
-    if (!ty.isOk) {
-      context.functionDeclarationDepth.pop();
-      return <ParseResult<never>>ty;
-    }
-    // context.advance()
-    returnType = ty.value!;
-  }
-
   const body = block(context);
 
   if (!body.isOk) {
@@ -94,11 +70,6 @@ export const functionDeclaration: LogicParser<FunctionDeclaration> = (
 
   return {
     isOk: true,
-    value: new FunctionDeclaration(
-      ident,
-      paramsList.value!,
-      body.value!,
-      returnType,
-    ),
+    value: new FunctionDeclaration(ident, paramsList.value!, body.value!),
   };
 };

@@ -75,10 +75,4 @@ export class ParserContext {
       };
     }
   }
-
-  // error(message: string): void {
-  //   this.errors.push(
-  //     makeSyntaxError(this.lexer.filename, this.currentToken.location, message),
-  //   );
-  // }
 }

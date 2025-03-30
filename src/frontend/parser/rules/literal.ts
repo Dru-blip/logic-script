@@ -5,21 +5,17 @@ import { ParserContext } from "../context";
 import { expressionList } from "./expression-list.ts";
 import { ArrayLiteral } from "../ast/literal.ts";
 import { LgSyntaxError } from "../../errors/syntax.ts";
-import { LBool, LInt, LogicType, LStr } from "../../type-system";
-import { Int } from "../../type-system/int.ts";
-import { Bool } from "../../type-system/bool.ts";
-import { Str } from "../../type-system/str.ts";
+
 
 export const literal: LogicParser<
-  LogicLiteral<any, LogicType> | ArrayLiteral
+  LogicLiteral<any> | ArrayLiteral
 > = (context: ParserContext) => {
   const { currentToken } = context;
   if (currentToken.type === TokenType.NUMBER) {
     return {
       isOk: true,
-      value: new LogicLiteral<number, LInt>(
+      value: new LogicLiteral<number>(
         Number(currentToken.literal),
-        Int,
         "number",
         context.currentToken.location,
       ),
@@ -27,9 +23,8 @@ export const literal: LogicParser<
   } else if (currentToken.type === TokenType.BOOLEAN) {
     return {
       isOk: true,
-      value: new LogicLiteral<boolean, LBool>(
+      value: new LogicLiteral<boolean>(
         currentToken.literal === "true",
-        Bool,
         "boolean",
         context.currentToken.location,
       ),
@@ -37,9 +32,8 @@ export const literal: LogicParser<
   } else if (currentToken.type === TokenType.STRING) {
     return {
       isOk: true,
-      value: new LogicLiteral<string, LStr>(
+      value: new LogicLiteral<string>(
         currentToken.literal,
-        Str,
         "string",
         context.currentToken.location,
       ),

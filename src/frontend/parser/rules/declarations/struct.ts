@@ -7,8 +7,6 @@ import { TokenType } from "../../../lexer";
 import { LgSyntaxError } from "../../../errors/syntax.ts";
 import { FunctionDeclaration, Identifier } from "../../ast";
 import { functionDeclaration } from "./function.ts";
-import { typeParser } from "../types.ts";
-import { LogicType } from "../../../type-system";
 
 const structProperty: LogicParser<StructProperty> = (context) => {
   if (!context.check(TokenType.IDENTIFIER)) {
@@ -18,17 +16,6 @@ const structProperty: LogicParser<StructProperty> = (context) => {
   const ident = new Identifier(currentToken.literal, currentToken.location);
   context.advance();
 
-  let decltype: LogicType | undefined;
-  if (!context.check(TokenType.COLON)) {
-    return LgSyntaxError.unexpected(context, ":");
-  }
-  context.advance();
-  const ty = typeParser(context);
-  if (!ty.isOk) {
-    return <ParseResult<never>>ty;
-  }
-  decltype = ty.value;
-
   if (!context.check(TokenType.SEMICOLON)) {
     return LgSyntaxError.missingSemicolon(context);
   }
@@ -36,7 +23,7 @@ const structProperty: LogicParser<StructProperty> = (context) => {
 
   return {
     isOk: true,
-    value: new StructProperty(ident, decltype!),
+    value: new StructProperty(ident),
   };
 };
 

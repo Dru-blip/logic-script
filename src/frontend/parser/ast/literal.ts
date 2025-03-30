@@ -1,27 +1,22 @@
-// import { PrimitiveType, type TokenLocation } from "../types";
 import { type TokenLocation} from "../../../types";
 import { type LogicNode, NodeType } from "./node";
-import {LogicType} from "../../type-system";
 
-export class LogicLiteral<T = any, Ty extends LogicType>
+export class LogicLiteral<T = any>
   implements LogicNode
 {
   type = NodeType.Literal;
   literalType: string;
   value: T;
   location: TokenLocation;
-  declType: LogicType;
 
   constructor(
     value: T,
-    declType: Ty,
     literalType: string,
     location: TokenLocation,
   ) {
     this.value = value;
     this.literalType = literalType;
     this.location = location;
-    this.declType = declType;
   }
 }
 

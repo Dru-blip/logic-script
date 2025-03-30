@@ -4,8 +4,6 @@ import { LgSyntaxError } from "../../../errors/syntax.ts";
 import { Identifier, type LogicNode, VariableDeclaration } from "../../ast";
 import { primary } from "../expressions/primary";
 import { expression } from "../expressions";
-import { typeParser } from "../types.ts";
-import { LogicType } from "../../../type-system";
 
 export const variableDeclaration: LogicParser<VariableDeclaration> = (
   context,
@@ -23,19 +21,6 @@ export const variableDeclaration: LogicParser<VariableDeclaration> = (
     };
   }
 
-  let decltype: LogicType | undefined;
-  if (!context.check(TokenType.COLON)) {
-    return LgSyntaxError.unexpected(context, ":");
-  }
-  context.advance();
-  const ty = typeParser(context);
-
-  if (!ty.isOk) {
-    return <ParseResult<never>>ty;
-  }
-
-  decltype = ty.value;
-
   let expr: LogicNode | undefined;
   if (context.check(TokenType.ASSIGN)) {
     context.advance();
@@ -51,23 +36,9 @@ export const variableDeclaration: LogicParser<VariableDeclaration> = (
   }
 
   context.advance();
-  if (!decltype && !expr) {
-    return LgSyntaxError.missingAssignment(context);
-  }
-
-  if (decltype && !expr) {
-    return {
-      isOk: true,
-      value: new VariableDeclaration(<Identifier>ident.value, null, decltype),
-    };
-  }
 
   return {
     isOk: true,
-    value: new VariableDeclaration(
-      <Identifier>ident.value,
-      <LogicNode>expr,
-      decltype!,
-    ),
+    value: new VariableDeclaration(<Identifier>ident.value, <LogicNode>expr),
   };
 };
