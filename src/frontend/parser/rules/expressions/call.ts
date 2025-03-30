@@ -42,12 +42,13 @@ export const call: LogicParser<CallExpression | LogicNode> = (context) => {
   let val = expr.value;
   while (true) {
     if (context.check(TokenType.LPAREN)) {
+      const { currentToken } = context;
       const args = argumentList(context);
       if (!args.isOk) {
         return <ParseResult<never>>args;
       }
 
-      val = new CallExpression(val!, args.value!);
+      val = new CallExpression(currentToken.location, val!, args.value!);
     } else if (context.check(TokenType.DOT)) {
       context.advance();
       const ident = new Identifier(

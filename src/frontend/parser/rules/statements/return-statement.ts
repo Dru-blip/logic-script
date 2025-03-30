@@ -6,7 +6,7 @@ import { LgSyntaxError } from "../../../errors/syntax.ts";
 import { LgErrorCode } from "../../../errors";
 
 export const returnStatement: LogicParser<ReturnStatement> = (context) => {
-  if (!context.insideFunction) {
+  if (context.functionDeclarationDepth.length === 0) {
     context.advance();
     return {
       isOk: false,

@@ -6,6 +6,7 @@ import { FunctionParam } from "../../ast/declarations/functions.ts";
 import { block } from "../statements/block.ts";
 import { typeParser } from "../types.ts";
 import { LogicType } from "../../../type-system";
+import { Void } from "../../../type-system/void.ts";
 
 const parameterList: LogicParser<FunctionParam[]> = (context) => {
   if (!context.check(TokenType.LPAREN)) {
@@ -54,6 +55,7 @@ export const functionDeclaration: LogicParser<FunctionDeclaration> = (
 ) => {
   context.advance();
   if (!context.check(TokenType.IDENTIFIER)) {
+    context.functionDeclarationDepth.pop();
     return LgSyntaxError.unexpected(context, "identifier");
   }
   const ident = new Identifier(
@@ -64,15 +66,17 @@ export const functionDeclaration: LogicParser<FunctionDeclaration> = (
 
   const paramsList = parameterList(context);
   if (!paramsList.isOk) {
+    context.functionDeclarationDepth.pop();
     return <ParseResult<never>>paramsList;
   }
 
-  let returnType: LogicType;
+  let returnType: LogicType = Void;
   if (context.check(TokenType.ARROW)) {
     context.advance();
     const { currentToken } = context;
     const ty = typeParser(context);
     if (!ty.isOk) {
+      context.functionDeclarationDepth.pop();
       return <ParseResult<never>>ty;
     }
     // context.advance()
@@ -82,8 +86,11 @@ export const functionDeclaration: LogicParser<FunctionDeclaration> = (
   const body = block(context);
 
   if (!body.isOk) {
+    context.functionDeclarationDepth.pop();
     return <ParseResult<never>>body;
   }
+
+  context.functionDeclarationDepth.pop();
 
   return {
     isOk: true,
@@ -91,7 +98,7 @@ export const functionDeclaration: LogicParser<FunctionDeclaration> = (
       ident,
       paramsList.value!,
       body.value!,
-      returnType!,
+      returnType,
     ),
   };
 };

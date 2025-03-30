@@ -46,7 +46,7 @@
 <AdditiveExpression> ::= <MultiplicativeExpression> ( ("+" | "-") <MultiplicativeExpression> )*;
 <MultiplicativeExpression> ::= <UnaryExpression> ( ("*" | "/") <UnaryExpression> )*;
 <UnaryExpression> ::= ( "+" | "-" | "!" ) <UnaryExpression> | <Call>;
-<Call>           ::= <PrimaryExpression> ( "(" arguments? ")" | "." <Identifier>  )* ;
+<Call>           ::= <PrimaryExpression> ( "(" arguments? ")" | "." <Identifier> | "[" <Expression> "]" )* ;
 
 <PrimaryExpression> ::= <Literal>
                       | <Identifier>

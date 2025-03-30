@@ -4,6 +4,7 @@ import type { ParserContext } from "../parser/context.ts";
 import { BinaryExpression, Identifier, type LogicNode } from "../parser/ast";
 import { Token } from "../lexer";
 import { LogicType } from "../type-system";
+import type {CallExpression} from "../parser/ast/expressions/call.ts";
 
 const SEMANTIC_ERROR_HINTS: Map<string, string> = new Map([
   [
@@ -48,6 +49,24 @@ export class LgSemanticError extends LogicError {
   printError(source: string) {
     super.printError(source, SEMANTIC_ERROR_HINTS);
   }
+
+  static argumentCountMismatch(
+      fileName: string,
+      node: CallExpression,
+      expected: number,
+  ): SemanticResult<never> {
+    return {
+      isOk: false,
+      error: new LgSemanticError(
+          fileName,
+          node.location,
+          `Expected ${expected} arguments, but got ${node.args.length}.`,
+          LgErrorCode.ARGUMENT_COUNT_MISMATCH,
+      ),
+    };
+  }
+
+
 
   static undefinedVariable(
     fileName: string,

@@ -3,6 +3,7 @@ import { AstAnalyzer } from "../ast-analyzer.ts";
 import {
   BinaryExpression,
   BlockStatement,
+  FunctionDeclaration,
   Identifier,
   type LogicLiteral,
   type LogicNode,
@@ -29,8 +30,11 @@ import { TypeKind } from "../../type-system/logic-type.ts";
 import { ReturnStatement } from "../../parser/ast/statements/return.ts";
 import { Void } from "../../type-system/void.ts";
 import type { ForStatement } from "../../parser/ast/control-flow/for.ts";
-import { LObject } from "../../type-system/object.ts";
 import { LIter } from "../../type-system/iter.ts";
+import { LFuncType } from "../../type-system/func.ts";
+import type { CallExpression } from "../../parser/ast/expressions/call.ts";
+import { supportsColorStderr } from "chalk";
+import { compileNode } from "../../compiler/functions";
 
 export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
   symbols: SymbolTable<TypeDeclSymbol>;
@@ -78,6 +82,9 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
       case NodeType.Program: {
         return this.visitProgram(<Program>ast);
       }
+      case NodeType.FunctionDeclaration: {
+        return this.visitFunctionDeclaration(<FunctionDeclaration>ast);
+      }
       case NodeType.ForStatement: {
         return this.visitForStatement(<ForStatement>ast);
       }
@@ -108,6 +115,9 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
       }
       case NodeType.BinaryExpression: {
         return this.visitBinaryExpression(<BinaryExpression>ast);
+      }
+      case NodeType.CallExpression: {
+        return this.visitCallExpression(<CallExpression>ast);
       }
       case NodeType.ArrayLiteral: {
         return this.visitArrayLiteral(<ArrayLiteral>ast);
@@ -144,6 +154,46 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
     return result!;
   }
 
+  visitFunctionDeclaration(node: FunctionDeclaration): TypeCheckerResult {
+    const id = node.name;
+
+    const returnType = node.returnType;
+
+    this.enterScope();
+    for (const param of node.params) {
+      this.symbols.addSymbol(
+        param.id.name,
+        new TypeDeclSymbol(param.id.name, param.paramType),
+      );
+    }
+    const returnTypeCheck = this.visitBlockStatement(node.body);
+    this.leaveScope();
+
+    if (!returnTypeCheck.isOk) {
+      return returnTypeCheck;
+    }
+
+    if (!returnType.equals(returnTypeCheck.value!)) {
+      return {
+        isOk: false,
+        error: new LgSemanticError(
+          this.fileName,
+          id.location,
+          `expected return type ${returnType.toString()},got ${returnTypeCheck.value?.toString()}`,
+          LgErrorCode.TYPE_MISMATCH,
+        ),
+      };
+    }
+
+    const functype = new LFuncType(id.name, node.params, returnType);
+    this.symbols.addSymbol(id.name, new TypeDeclSymbol(id.name, functype));
+
+    return {
+      isOk: true,
+      value: functype,
+    };
+  }
+
   visitForStatement(node: ForStatement): TypeCheckerResult {
     this.enterScope();
 
@@ -173,7 +223,7 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
 
     const bodyType = this.visitBlockStatement(node.body);
 
-    console.log(bodyType)
+    console.log(bodyType);
     if (!bodyType.isOk) {
       return bodyType;
     }
@@ -388,6 +438,55 @@ export class TypeChecker extends AstAnalyzer<TypeCheckerResult> {
       isOk: true,
       value: this.typeRules.get(key),
     };
+  }
+
+  visitCallExpression(node: CallExpression): TypeCheckerResult {
+    const calleType = this.visit(node.callee);
+    if (!calleType.isOk) {
+      return calleType;
+    }
+
+    let funcType = calleType.value!;
+
+    if (funcType instanceof LFuncType) {
+      if (node.args.length !== funcType.params.length) {
+        return LgSemanticError.argumentCountMismatch(
+          this.fileName,
+          node,
+          funcType.params.length,
+        );
+      }
+
+      for (let index = 0; index < funcType.params.length; index++) {
+        const param = funcType.params[index];
+        const arg = this.visit(node.args[index]!);
+        if (!arg.isOk) {
+          return arg;
+        }
+        if (!param?.paramType.equals(arg.value!)) {
+          return LgSemanticError.typeMismatch(
+            this.fileName,
+            node,
+            node.location,
+            `Argument ${index} expected type '${param?.paramType}'`,
+            `${arg.value!}`,
+          );
+        }
+      }
+
+      return {
+        isOk: true,
+        value: funcType.returnType,
+      };
+    }
+
+    return LgSemanticError.typeMismatch(
+      this.fileName,
+      node,
+      node.location,
+      "expected a function type",
+      funcType.toString(),
+    );
   }
 
   visitArrayAccess(node: ArrayAccess): TypeCheckerResult {

@@ -3,9 +3,11 @@ export enum TypeKind {
   Str,
   Bool,
   Any,
+
   ArrayType,
   ObjectType,
   IterType,
+  FunctionType,
 
   Identifier,
   Void,

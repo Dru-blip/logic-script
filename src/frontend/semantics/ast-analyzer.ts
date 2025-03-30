@@ -1,6 +1,7 @@
 import {
   BinaryExpression,
   BlockStatement,
+  FunctionDeclaration,
   Identifier,
   LogicLiteral,
   type LogicNode,
@@ -13,12 +14,15 @@ import type { ArrayLiteral } from "../parser/ast/literal.ts";
 import type { ArrayAccess } from "../parser/ast/expressions/array-access.ts";
 import { LogicType } from "../type-system";
 import type { IfStatement } from "../parser/ast/control-flow/if.ts";
-import type {ForStatement} from "../parser/ast/control-flow/for.ts";
+import type { ForStatement } from "../parser/ast/control-flow/for.ts";
+import type { CallExpression } from "../parser/ast/expressions/call.ts";
 
 export abstract class AstAnalyzer<T> {
   abstract visit(ast: LogicNode): T;
 
   abstract visitProgram(node: Program): T;
+
+  abstract visitFunctionDeclaration(node: FunctionDeclaration): T;
 
   abstract visitForStatement(node: ForStatement): T;
 
@@ -35,6 +39,8 @@ export abstract class AstAnalyzer<T> {
   abstract visitBinaryExpression(node: BinaryExpression): T;
 
   abstract visitArrayAccess(node: ArrayAccess): T;
+
+  abstract visitCallExpression(node: CallExpression): T;
 
   abstract visitIdentifier(node: Identifier): T;
 

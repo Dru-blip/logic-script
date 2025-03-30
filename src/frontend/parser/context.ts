@@ -12,7 +12,9 @@ export class ParserContext {
   public isInsideAngleBrackets = false;
   public leftbracketDepth: string[] = [];
   public rightbracketDepth: string[] = [];
-  public insideFunction: boolean = false;
+
+  // for handling nested function declarations
+  public functionDeclarationDepth: boolean[] = [];
 
   constructor(lexer: Lexer) {
     this.lexer = lexer;
@@ -27,7 +29,7 @@ export class ParserContext {
     this.nextToken = this.lexer.nextToken();
 
     if (this.currentToken && this.currentToken.type === TokenType.FN) {
-      this.insideFunction = true;
+      this.functionDeclarationDepth.push(true);
     }
 
     // if (this.currentToken&& this.currentToken.type === TokenType.LESS_THAN) {
