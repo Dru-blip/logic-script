@@ -6,6 +6,50 @@ import { range } from "../expressions/range.ts";
 import { MemberAssignment } from "../../ast/assignments/member-assignment.ts";
 import { MemberExpression } from "../../ast/expressions/member.ts";
 import { ArrayAccess } from "../../ast/expressions/array-access.ts";
+import { StructInitialisation } from "../../ast/assignments/struct-initialisation.ts";
+import { LgSyntaxError } from "../../../errors/syntax.ts";
+import { expression } from "../expressions";
+
+export const propertyAssignment: LogicParser<Record<string, LogicNode>> = (
+  context,
+) => {
+  context.advance();
+
+  const properties: Record<string, LogicNode> = {};
+  while (!context.check(TokenType.RBRACE)) {
+    if (!context.check(TokenType.IDENTIFIER)) {
+      return LgSyntaxError.unexpected(context, "identifier");
+    }
+    const id = new Identifier(
+      context.currentToken.literal,
+      context.currentToken.location,
+    );
+
+    context.advance();
+
+    if (!context.check(TokenType.ASSIGN)) {
+      return LgSyntaxError.unexpected(context, "=");
+    }
+    context.advance();
+
+    const value = expression(context);
+    if (!value.isOk) {
+      return <ParseResult<never>>value;
+    }
+
+    if (context.check(TokenType.COMMA)) {
+      context.advance();
+    }
+    properties[id.name] = value.value!;
+  }
+
+  context.advance()
+
+  return {
+    isOk: true,
+    value: properties,
+  };
+};
 
 export const assignment: LogicParser<
   AssignmentExpression | MemberAssignment | LogicNode
@@ -14,6 +58,21 @@ export const assignment: LogicParser<
 
   if (!ident.isOk) {
     return <ParseResult<never>>ident;
+  }
+
+  if (context.check(TokenType.LBRACE)) {
+    const properties = propertyAssignment(context);
+    if (!properties.isOk) {
+      return <ParseResult<never>>properties;
+    }
+
+    return {
+      isOk: true,
+      value: new StructInitialisation(
+        <Identifier>ident.value,
+        properties.value!,
+      ),
+    };
   }
 
   if (context.check(TokenType.ASSIGN)) {

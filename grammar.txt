@@ -34,7 +34,7 @@
 <StructMember> ::= <FunctionDeclaration> | <VariableDeclaration>;
 
 <Expression> ::= <AssignmentExpression>
-<AssignmentExpression> ::= ( <Call> "." )? <Identifier> "=" <RangeExpression> ";";
+<AssignmentExpression> ::= ( <Call> "." )? <Identifier> (<ObjectCreation>)| ("=" <RangeExpression> )";";
 <RangeExpression> ::= <LogicOr> (".." <LogicOr>)?
 <LogicOr> ::= <LogicAnd> ( "or" <LogicAnd> )*
 <LogicAnd> ::= <EqualityExpression> ( "and" <EqualityExpression> )*
@@ -48,7 +48,6 @@
 <PrimaryExpression> ::= <Literal>
                       | <Identifier>
                       | "(" <Expression> ")"
-                      | <ObjectCreation>;
 
 <ArrayAccess> ::= <Identifier> "[" <Expression> "]";
 <ObjectCreation> ::= <Identifier> "{" <PropertyAssignments> "}";

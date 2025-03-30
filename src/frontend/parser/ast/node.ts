@@ -1,7 +1,6 @@
 export enum NodeType {
   Program = "Program",
   ImportStatement = "ImportStatement",
-  ClassDeclaration = "ClassDeclaration",
   FunctionDeclaration = "FunctionDeclaration",
   BlockStatement = "BlockStatement",
   VariableDeclaration = "VariableDeclaration",
@@ -11,7 +10,6 @@ export enum NodeType {
   RangeStatement = "RangeStatement",
   BinaryExpression = "BinaryExpression",
   UnaryExpression = "UnaryExpression",
-  LogicalExpression = "LogicalExpression",
   CallExpression = "CallExpression",
   MemberExpression = "MemberExpression",
   AssignmentExpression = "AssignmentExpression",
@@ -22,7 +20,6 @@ export enum NodeType {
   StringLiteral = "StringLiteral",
   BooleanLiteral = "BooleanLiteral",
   ArrayLiteral = "ArrayLiteral",
-  ObjectLiteral = "ObjectLiteral",
   RangeExpression = "RangeExpression",
   ExpressionStatement = "ExpressionStatement",
   BreakStatement="BreakStatement",
@@ -32,6 +29,7 @@ export enum NodeType {
   StructProperty="StructProperty",
   MemberAssignment="MemberAssignment",
   ArrayAccess="ArrayAccess",
+  StructInitializer="StructInitializer",
 }
 
 export interface LogicNode {
