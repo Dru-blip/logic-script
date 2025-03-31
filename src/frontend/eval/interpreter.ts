@@ -2,6 +2,7 @@ import { SymbolTable } from "./symbol-table/table.ts";
 import { AstAnalyzer } from "../analyzer/ast-analyzer.ts";
 import {
   BinaryExpression,
+  BlockStatement,
   FunctionDeclaration,
   Identifier,
   LogicLiteral,
@@ -25,7 +26,8 @@ import type { ForStatement } from "../parser/ast/control-flow/for.ts";
 import type { StructDeclaration } from "../parser/ast/declarations/struct.ts";
 import { TokenType } from "../lexer";
 import { BuiltinFunction } from "./objects/builtin-function.ts";
-import { LCallable } from "./objects/callable.ts";
+import { LArray } from "./objects/array.ts";
+import { LFunction } from "./objects/function.ts";
 
 export class Interpreter extends AstAnalyzer {
   symbols: SymbolTable;
@@ -34,6 +36,15 @@ export class Interpreter extends AstAnalyzer {
     super();
     this.symbols = new SymbolTable();
     this.initBuiltins();
+  }
+
+  enterScope() {
+    const parent = this.symbols;
+    this.symbols = new SymbolTable(parent);
+  }
+
+  leaveScope() {
+    this.symbols = this.symbols.parent!;
   }
 
   initBuiltins() {
@@ -64,6 +75,9 @@ export class Interpreter extends AstAnalyzer {
       }
       case NodeType.IfStatement: {
         return this.visitIfStatement(<IfStatement>node);
+      }
+      case NodeType.BlockStatement: {
+        return this.visitBlockStatement(<BlockStatement>node);
       }
       case NodeType.ExpressionStatement: {
         return this.visitExpressionStatement(<ExpressionStatement>node);
@@ -107,6 +121,19 @@ export class Interpreter extends AstAnalyzer {
     }
   }
 
+  visitFunctionDeclaration(node: FunctionDeclaration): any {
+    this.symbols.addSymbol(
+      node.name.name,
+      new LFunction(node.name.name, node.params, node.body),
+    );
+  }
+
+  visitBlockStatement(node: BlockStatement): any {
+    for (const statement of node.statements) {
+      this.visit(statement);
+    }
+  }
+
   visitVariableDeclaration(node: VariableDeclaration): any {
     const init = this.visit(node.initializer!);
     this.symbols.addSymbol(node.name.name, init);
@@ -117,17 +144,20 @@ export class Interpreter extends AstAnalyzer {
   }
 
   visitCallExpression(node: CallExpression): any {
+    const args = [];
+    for (const arg of node.args) {
+      args.push(this.visit(arg));
+    }
     if (node.callee instanceof Identifier) {
       let func = this.symbols.getSymbol(node.callee.name);
       if (!func) {
         throw new Error(`Unexpected callee: ${node.callee.name}`);
       }
       if (func instanceof BuiltinFunction) {
-        const args = [];
-        for (const arg of node.args) {
-          args.push(this.visit(arg));
-        }
-        func.call(args);
+        return func.call(args);
+      }
+      if (func instanceof LFunction) {
+        return func.call(this, args);
       }
     }
   }
@@ -141,9 +171,23 @@ export class Interpreter extends AstAnalyzer {
     }
   }
 
-  visitArrayAccess(node: ArrayAccess): any {}
+  visitArrayAccess(node: ArrayAccess): any {
+    const array = this.visit(node.array);
+    const index = this.visit(node.index);
 
-  visitArrayLiteral(node: ArrayLiteral): any {}
+    if (array instanceof LArray) {
+      return array.elements.at(index.value);
+    }
+  }
+
+  visitArrayLiteral(node: ArrayLiteral): LArray {
+    const values: LogicObject[] = [];
+    for (const value of node.values) {
+      values.push(this.visit(value));
+    }
+
+    return new LArray(values);
+  }
 
   visitBinaryExpression(node: BinaryExpression): any {
     const op = node.operator;
@@ -176,6 +220,8 @@ export class Interpreter extends AstAnalyzer {
           throw new Error(`Unknown operator '${op}'`);
       }
     }
+
+    throw new Error("type mismatch");
   }
 
   visitUnaryExpression(node: UnaryExpression): any {}

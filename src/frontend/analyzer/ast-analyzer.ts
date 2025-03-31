@@ -1,5 +1,5 @@
 import {
-  BinaryExpression,
+  BinaryExpression, BlockStatement,
   FunctionDeclaration,
   Identifier,
   LogicLiteral,
@@ -30,6 +30,8 @@ export abstract class AstAnalyzer {
   abstract visitForStatement(node: ForStatement): any;
 
   abstract visitIfStatement(node: IfStatement): any;
+
+  abstract visitBlockStatement(node: BlockStatement): any;
 
   abstract visitExpressionStatement(node: ExpressionStatement): any;
 

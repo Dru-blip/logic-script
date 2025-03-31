@@ -11,13 +11,21 @@ export class SymbolTable {
     this.defs.set(name, val);
   }
 
-  getSymbol(name: string) {
-    let temp: SymbolTable | undefined = this;
-    while (temp !== null) {
-      if (this.defs.has(name)) {
-        return this.defs.get(name);
+  getSymbol(name: string): LogicObject | undefined {
+    let symbol = this.defs.get(name);
+
+    if (symbol) {
+      return symbol;
+    }
+
+    let parent = this.parent;
+    while (parent) {
+      symbol = parent?.getSymbol(name);
+      if (!symbol) {
+        parent = parent?.parent;
+      } else {
+        return symbol;
       }
-      temp = temp?.parent;
     }
   }
 }
