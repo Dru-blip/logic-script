@@ -16,13 +16,14 @@ import { LogicInt } from "./objects/int.ts";
 import type { AssignmentExpression } from "../parser/ast/assignments/variable-assignment.ts";
 import { type ArrayLiteral } from "../parser/ast/literal.ts";
 import { type ArrayAccess } from "../parser/ast/expressions/array-access.ts";
-import type { CallExpression } from "../parser/ast/expressions/call.ts";
+import { type CallExpression } from "../parser/ast/expressions/call.ts";
 import type { RangeExpression } from "../parser/ast/expressions/range.ts";
 import type { StructInitialisation } from "../parser/ast/assignments/struct-initialisation.ts";
-import type { ExpressionStatement } from "../parser/ast/statements/expression.ts";
+import { type ExpressionStatement } from "../parser/ast/statements/expression.ts";
 import type { IfStatement } from "../parser/ast/control-flow/if.ts";
 import type { ForStatement } from "../parser/ast/control-flow/for.ts";
 import type { StructDeclaration } from "../parser/ast/declarations/struct.ts";
+import { TokenType } from "../lexer";
 
 export class Interpreter extends AstAnalyzer {
   symbols: SymbolTable;
@@ -31,6 +32,10 @@ export class Interpreter extends AstAnalyzer {
     super();
     this.symbols = new SymbolTable();
   }
+
+  // initBuiltins(){
+  //   this.symbols.addSymbol("print",)
+  // }
 
   visit(node: LogicNode) {
     switch (node.type) {
@@ -99,6 +104,14 @@ export class Interpreter extends AstAnalyzer {
     this.symbols.addSymbol(node.name.name, init);
   }
 
+  visitCallExpression(node: CallExpression): any {
+    console.log(node);
+  }
+
+  visitExpressionStatement(node: ExpressionStatement): any {
+    this.visit(node.expr);
+  }
+
   visitAssignmentExpression(node: AssignmentExpression): any {
     if (node.target instanceof Identifier) {
       const id = node.target.name;
@@ -112,7 +125,38 @@ export class Interpreter extends AstAnalyzer {
 
   visitArrayLiteral(node: ArrayLiteral): any {}
 
-  visitBinaryExpression(node: BinaryExpression): any {}
+  visitBinaryExpression(node: BinaryExpression): any {
+    const op = node.operator;
+    const lhs: LogicObject = this.visit(node.left);
+    const rhs: LogicObject = this.visit(node.right);
+
+    if (lhs instanceof LogicInt && rhs instanceof LogicInt) {
+      switch (op.type) {
+        case TokenType.PLUS:
+          return lhs.callMethod("add", [rhs]);
+        case TokenType.MINUS:
+          return lhs.callMethod("sub", [rhs]);
+        case TokenType.ASTERISK:
+          return lhs.callMethod("mul", [rhs]);
+        case TokenType.SLASH:
+          return lhs.callMethod("div", [rhs]);
+        case TokenType.EQUALS:
+          return lhs === rhs;
+        case TokenType.NOT_EQUAL:
+          return lhs !== rhs;
+        case TokenType.LESS_THAN:
+          return lhs < rhs;
+        case TokenType.LESS_THAN_EQUAL:
+          return lhs <= rhs;
+        case TokenType.GREATER_THAN:
+          return lhs > rhs;
+        case TokenType.GREATER_THAN_EQUAL:
+          return lhs >= rhs;
+        default:
+          throw new Error(`Unknown operator '${op}'`);
+      }
+    }
+  }
 
   visitUnaryExpression(node: UnaryExpression): any {}
 

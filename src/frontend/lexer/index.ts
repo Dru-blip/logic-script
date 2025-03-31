@@ -1,4 +1,4 @@
-import {Token, TokenType} from "./token";
+import { Token, TokenType } from "./token";
 
 export { Token, TokenType };
 
@@ -54,15 +54,14 @@ export class Lexer {
     this.keywords.set("return", TokenType.RETURN);
     this.keywords.set("true", TokenType.BOOLEAN);
     this.keywords.set("false", TokenType.BOOLEAN);
-    this.keywords.set("break",TokenType.BREAK);
-    this.keywords.set("continue",TokenType.CONTINUE);
-    this.keywords.set("struct",TokenType.STRUCT);
+    this.keywords.set("break", TokenType.BREAK);
+    this.keywords.set("continue", TokenType.CONTINUE);
+    this.keywords.set("struct", TokenType.STRUCT);
     this.keywords.set("mut", TokenType.MUT);
     this.keywords.set("let", TokenType.LET);
     this.keywords.set("and", TokenType.AND);
     this.keywords.set("or", TokenType.OR);
-    this.keywords.set("in",TokenType.IN)
-
+    this.keywords.set("in", TokenType.IN);
 
     this.position = 0;
     this.line = 0;
@@ -109,7 +108,6 @@ export class Lexer {
     literal: string,
     location: { line: number; col: number; offset: number },
   ) {
-
     return new Token(literal, type, location);
   }
 
@@ -120,7 +118,8 @@ export class Lexer {
     while (true) {
       if (
         this.currentChar === " " ||
-        this.currentChar === "\t" || this.currentChar==="" ||
+        this.currentChar === "\t" ||
+        this.currentChar === "" ||
         this.currentChar === "\r"
       ) {
       } else if (this.currentChar === "\n") {
@@ -146,10 +145,10 @@ export class Lexer {
         break;
       }
       case "-": {
-        if(this.nextChar===">"){
+        if (this.nextChar === ">") {
           this.advance();
-          tokenType=TokenType.ARROW;
-        }else{
+          tokenType = TokenType.ARROW;
+        } else {
           tokenType = TokenType.MINUS;
         }
         break;
@@ -290,30 +289,30 @@ export class Lexer {
         const type = this.scanOperators();
         return this.makeToken(type, type, location);
       }
-      case "[":{
-        this.advance()
-        return this.makeToken(TokenType.LSQRB, "[",location)
+      case "[": {
+        this.advance();
+        return this.makeToken(TokenType.LSQRB, "[", location);
       }
-      case "]":{
-        this.advance()
-        return this.makeToken(TokenType.RSQRB, "]",location)
+      case "]": {
+        this.advance();
+        return this.makeToken(TokenType.RSQRB, "]", location);
       }
       case ":": {
         this.advance();
         return this.makeToken(TokenType.COLON, ":", location);
       }
-      case ";":{
-        this.advance()
-        return this.makeToken(TokenType.SEMICOLON,";",location)
+      case ";": {
+        this.advance();
+        return this.makeToken(TokenType.SEMICOLON, ";", location);
       }
-      case ".":{
-        if(this.nextChar==="."){
+      case ".": {
+        if (this.nextChar === ".") {
           this.advance();
           this.advance();
-          return this.makeToken(TokenType.RANGE, "..",location)
+          return this.makeToken(TokenType.RANGE, "..", location);
         }
         this.advance();
-        return this.makeToken(TokenType.DOT, ".",location)
+        return this.makeToken(TokenType.DOT, ".", location);
       }
       case '"': {
         let literal = "";
