@@ -24,6 +24,8 @@ import type { IfStatement } from "../parser/ast/control-flow/if.ts";
 import type { ForStatement } from "../parser/ast/control-flow/for.ts";
 import type { StructDeclaration } from "../parser/ast/declarations/struct.ts";
 import { TokenType } from "../lexer";
+import { BuiltinFunction } from "./objects/builtin-function.ts";
+import { LCallable } from "./objects/callable.ts";
 
 export class Interpreter extends AstAnalyzer {
   symbols: SymbolTable;
@@ -31,11 +33,17 @@ export class Interpreter extends AstAnalyzer {
   constructor() {
     super();
     this.symbols = new SymbolTable();
+    this.initBuiltins();
   }
 
-  // initBuiltins(){
-  //   this.symbols.addSymbol("print",)
-  // }
+  initBuiltins() {
+    this.symbols.addSymbol(
+      "print",
+      new BuiltinFunction("print", (objects: LogicObject[]) => {
+        console.log(`${objects}`);
+      }),
+    );
+  }
 
   visit(node: LogicNode) {
     switch (node.type) {
@@ -104,12 +112,24 @@ export class Interpreter extends AstAnalyzer {
     this.symbols.addSymbol(node.name.name, init);
   }
 
-  visitCallExpression(node: CallExpression): any {
-    console.log(node);
-  }
-
   visitExpressionStatement(node: ExpressionStatement): any {
     this.visit(node.expr);
+  }
+
+  visitCallExpression(node: CallExpression): any {
+    if (node.callee instanceof Identifier) {
+      let func = this.symbols.getSymbol(node.callee.name);
+      if (!func) {
+        throw new Error(`Unexpected callee: ${node.callee.name}`);
+      }
+      if (func instanceof BuiltinFunction) {
+        const args = [];
+        for (const arg of node.args) {
+          args.push(this.visit(arg));
+        }
+        func.call(args);
+      }
+    }
   }
 
   visitAssignmentExpression(node: AssignmentExpression): any {
@@ -141,17 +161,17 @@ export class Interpreter extends AstAnalyzer {
         case TokenType.SLASH:
           return lhs.callMethod("div", [rhs]);
         case TokenType.EQUALS:
-          return lhs === rhs;
+          return lhs.callMethod("eq", [rhs]);
         case TokenType.NOT_EQUAL:
-          return lhs !== rhs;
+          return lhs.callMethod("neq", [rhs]);
         case TokenType.LESS_THAN:
-          return lhs < rhs;
+          return lhs.callMethod("lt", [rhs]);
         case TokenType.LESS_THAN_EQUAL:
-          return lhs <= rhs;
+          return lhs.callMethod("lte", [rhs]);
         case TokenType.GREATER_THAN:
-          return lhs > rhs;
+          return lhs.callMethod("gt", [rhs]);
         case TokenType.GREATER_THAN_EQUAL:
-          return lhs >= rhs;
+          return lhs.callMethod("gte", [rhs]);
         default:
           throw new Error(`Unknown operator '${op}'`);
       }
