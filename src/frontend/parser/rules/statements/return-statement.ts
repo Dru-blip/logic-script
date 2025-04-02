@@ -20,6 +20,8 @@ export const returnStatement: LogicParser<ReturnStatement> = (context) => {
   }
   context.advance();
 
+  const location = context.currentToken.location;
+
   const value = expression(context);
 
   if (!value.isOk) {
@@ -33,6 +35,6 @@ export const returnStatement: LogicParser<ReturnStatement> = (context) => {
 
   return {
     isOk: true,
-    value: new ReturnStatement(value.value!),
+    value: new ReturnStatement(value.value!, location),
   };
 };
