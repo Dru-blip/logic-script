@@ -1,6 +1,6 @@
 import type { LogicParser, ParseResult } from "../../../../types";
 import { TokenType } from "../../../lexer";
-import { Identifier, type LogicNode } from "../../ast";
+import {BinaryExpression, Identifier, type LogicNode} from "../../ast";
 import { AssignmentExpression } from "../../ast/assignments/variable-assignment";
 import { range } from "../expressions/range.ts";
 import { MemberAssignment } from "../../ast/assignments/member-assignment.ts";
@@ -61,6 +61,9 @@ export const assignment: LogicParser<
   }
 
   if (context.check(TokenType.LBRACE)) {
+    if(ident.value instanceof BinaryExpression){
+      return ident
+    }
     const properties = propertyAssignment(context);
     if (!properties.isOk) {
       return <ParseResult<never>>properties;

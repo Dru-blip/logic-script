@@ -17,6 +17,7 @@ import type { IfStatement } from "../parser/ast/control-flow/if.ts";
 import type { ForStatement } from "../parser/ast/control-flow/for.ts";
 import type { StructDeclaration } from "../parser/ast/declarations/struct.ts";
 import type { StructInitialisation } from "../parser/ast/assignments/struct-initialisation.ts";
+import type {ReturnStatement} from "../parser/ast/statements/return.ts";
 
 export abstract class AstAnalyzer {
   abstract visitProgram(node: Program): any;
@@ -32,6 +33,8 @@ export abstract class AstAnalyzer {
   abstract visitIfStatement(node: IfStatement): any;
 
   abstract visitBlockStatement(node: BlockStatement): any;
+
+  abstract visitReturnStatement(node:ReturnStatement):any
 
   abstract visitExpressionStatement(node: ExpressionStatement): any;
 
