@@ -1,8 +1,12 @@
-import {type LogicNode, NodeType} from "../node.ts";
-import {Identifier} from "../declarations";
+import { type LogicNode, NodeType } from "../node.ts";
+import type { TokenLocation } from "../../../../types";
 
+export class MemberExpression implements LogicNode {
+  type: NodeType = NodeType.MemberExpression;
 
-export class MemberExpression implements  LogicNode{
-    type:NodeType=NodeType.MemberExpression
-    constructor(public object:LogicNode,public member:LogicNode) {}
+  constructor(
+    public readonly location: TokenLocation,
+    public object: LogicNode,
+    public member: LogicNode,
+  ) {}
 }

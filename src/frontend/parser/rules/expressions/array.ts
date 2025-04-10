@@ -15,7 +15,7 @@ export const arrayAccess: LogicParser<ArrayAccess | LogicNode> = (context) => {
   if (context.check(TokenType.LSQRB)) {
     context.advance();
 
-    const token=context.currentToken
+    const token = context.currentToken;
     const index = expression(context);
 
     if (!index.isOk) {
@@ -29,7 +29,7 @@ export const arrayAccess: LogicParser<ArrayAccess | LogicNode> = (context) => {
     context.advance();
     return {
       isOk: true,
-      value: new ArrayAccess(expr.value!, index.value!,token.location),
+      value: new ArrayAccess(expr.value!, index.value!, token.location),
     };
   }
 

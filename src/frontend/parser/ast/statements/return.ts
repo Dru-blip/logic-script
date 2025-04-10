@@ -1,8 +1,11 @@
-import {type LogicNode, NodeType} from "../node.ts";
-import type {TokenLocation} from "../../../../types";
+import { type LogicNode, NodeType } from "../node.ts";
+import type { TokenLocation } from "../../../../types";
 
+export class ReturnStatement implements LogicNode {
+  type: NodeType = NodeType.ReturnStatement;
 
-export class ReturnStatement implements LogicNode{
-    type:NodeType=NodeType.ReturnStatement;
-    constructor(public value:LogicNode,public location:TokenLocation) {}
+  constructor(
+    public value: LogicNode,
+    public readonly location: TokenLocation,
+  ) {}
 }

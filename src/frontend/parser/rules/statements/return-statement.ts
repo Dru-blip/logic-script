@@ -6,18 +6,18 @@ import { LgSyntaxError } from "../../../errors/syntax.ts";
 import { LgErrorCode } from "../../../errors";
 
 export const returnStatement: LogicParser<ReturnStatement> = (context) => {
-  if (context.functionDeclarationDepth.length === 0) {
-    context.advance();
-    return {
-      isOk: false,
-      error: new LgSyntaxError(
-        context.lexer.filename,
-        context.currentToken.location,
-        "return statement outside of function",
-        LgErrorCode.INVALID_RETURN,
-      ),
-    };
-  }
+  // if (context.functionDeclarationDepth.length === 0) {
+  //   context.advance();
+  //   return {
+  //     isOk: false,
+  //     error: new LgSyntaxError(
+  //       context.lexer.filename,
+  //       context.currentToken.location,
+  //       "return statement outside of function",
+  //       LgErrorCode.INVALID_RETURN,
+  //     ),
+  //   };
+  // }
   context.advance();
 
   const location = context.currentToken.location;

@@ -50,13 +50,14 @@ export const call: LogicParser<CallExpression | LogicNode> = (context) => {
 
       val = new CallExpression(currentToken.location, val!, args.value!);
     } else if (context.check(TokenType.DOT)) {
+      const location = context.currentToken.location;
       context.advance();
       const ident = new Identifier(
         context.currentToken.literal,
         context.currentToken.location,
       );
       context.advance();
-      val = new MemberExpression(val!, ident);
+      val = new MemberExpression(location, val!, ident);
     } else if (context.check(TokenType.LSQRB)) {
       const { currentToken } = context;
       context.advance();

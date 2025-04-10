@@ -1,7 +1,7 @@
 import { Option } from "commander";
 import type { LogicCommand } from "../types";
 import { parse } from "../../frontend/parser";
-import {IRGenerator} from "../../frontend/eval/ir-generator/generator.ts";
+// import {IRGenerator} from "../../frontend/eval/ir-generator/generator.ts";
 
 
 export const runCommand: LogicCommand = {
@@ -17,9 +17,9 @@ export const runCommand: LogicCommand = {
     const parser = parse(content, filePath);
     const ast = parser.parse();
     if (ast.isOk) {
-      const generator=new IRGenerator()
-      const irModule=generator.visitProgram(ast.value!)
-      console.log(irModule)
+      // const generator=new IRGenerator()
+      // const irModule=generator.visitProgram(ast.value!)
+      // console.log(irModule)
     }
   },
   options: [

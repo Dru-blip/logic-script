@@ -108,7 +108,7 @@ export class Lexer {
     literal: string,
     location: { line: number; col: number; offset: number },
   ) {
-    return new Token(this.filename, literal, type, location);
+    return new Token(literal, type, { ...location, filename: this.filename });
   }
 
   /**
@@ -123,7 +123,6 @@ export class Lexer {
         this.currentChar === "\r"
       ) {
       } else if (this.currentChar === "\n") {
-        // console.log(this.position)
       } else {
         break;
       }

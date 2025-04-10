@@ -1,68 +1,72 @@
-<Program> ::= <StatementList>;
+Program ::= StatementList
 
-<StatementList> ::= (<Statement>)*;
+StatementList ::= (Statement)*
 
-<Statement> ::= <VariableDeclaration>
-              | <FunctionDeclaration>
-              | <StructDeclaration>
-              | <ReturnStatement>
-              | <ImportStatement>
-              | <IterationStatement>
-              | <ConditionalStatement>
-              | "break" | "continue"
-              | <ExpressionStatement>;
+Statement ::= VariableDeclaration
+           | FunctionDeclaration
+           | StructDeclaration
+           | ReturnStatement
+           | ImportStatement
+           | IterationStatement
+           | ConditionalStatement
+           | "break"
+           | "continue"
+           | ExpressionStatement
 
-<ExpressionStatement> ::= <Expression> ";";
+ExpressionStatement ::= Expression NEWLINE
 
-<VariableDeclaration> ::= "let" <Identifier> ("=" <Expression>)? ";";
+VariableDeclaration ::= "let" Identifier ("=" Expression)? NEWLINE
 
-<ReturnStatement> ::= "return" <Expression> ";";
-<ImportStatement> ::= "import" <StringLiteral> ";";
+ReturnStatement ::= "return" Expression NEWLINE
+ImportStatement ::= "import" StringLiteral NEWLINE
 
-<IterationStatement> ::= "for" <Identifier> "in" <Iterable> "{" <StatementList> "}";
-<Iterable> ::= <Expression> (".." <Expression>)?;
+IterationStatement ::= "for" Identifier "in" Iterable "{" StatementList "}"
+Iterable ::= Expression (".." Expression)?
 
-<ConditionalStatement> ::= "if" <Expression> "{" <StatementList> "}"
-                         ("elif" <Expression> "{" <StatementList> "}")*
-                         ("else" "{" <StatementList> "}")?;
+ConditionalStatement ::= "if" Expression "{" StatementList "}"
+                       ("elif" Expression "{" StatementList "}")*
+                       ("else" "{" StatementList "}")?
 
-<FunctionDeclaration> ::= "fn" <Identifier> "(" <ParameterList> ")" "{" <StatementList> "}";
-<ParameterList> ::= <Identifier> ("," <Identifier>)*;
+FunctionDeclaration ::= "fn" Identifier "(" ParameterList? ")" "{" StatementList "}"
+ParameterList ::= Identifier ("," Identifier)*
 
-<StructDeclaration> ::= "struct" <Identifier> "{" <StructBody> "}" ";";
-<StructBody> ::= (<StructMember>)*;
-<StructMember> ::= <FunctionDeclaration> | <VariableDeclaration>;
+StructDeclaration ::= "struct" Identifier "{" StructBody "}"
+StructBody ::= (StructMember)*
+StructMember ::= FunctionDeclaration | VariableDeclaration
 
-<Expression> ::= <AssignmentExpression>
-<AssignmentExpression> ::= ( <Call> "." )? <Identifier> (<ObjectCreation>)| ("=" <RangeExpression> )";";
-<RangeExpression> ::= <LogicOr> (".." <LogicOr>)?
-<LogicOr> ::= <LogicAnd> ( "or" <LogicAnd> )*
-<LogicAnd> ::= <EqualityExpression> ( "and" <EqualityExpression> )*
-<EqualityExpression> ::= <ComparisonExpression> ( ("==" | "!=") <ComparisonExpression> )*;
-<ComparisonExpression> ::= <AdditiveExpression> ( (">" | ">=" | "<" | "<=") <AdditiveExpression> )*;
-<AdditiveExpression> ::= <MultiplicativeExpression> ( ("+" | "-") <MultiplicativeExpression> )*;
-<MultiplicativeExpression> ::= <UnaryExpression> ( ("*" | "/") <UnaryExpression> )*;
-<UnaryExpression> ::= ( "+" | "-" | "!" ) <UnaryExpression> | <Call>;
-<Call>           ::= <PrimaryExpression> ( "(" arguments? ")" | "." <Identifier> | "[" <Expression> "]" )* ;
+Expression ::= AssignmentExpression
 
-<PrimaryExpression> ::= <Literal>
-                      | <Identifier>
-                      | "(" <Expression> ")"
+AssignmentExpression ::= (Call ".")? Identifier (ObjectCreation | ("=" RangeExpression))
 
-<ArrayAccess> ::= <Identifier> "[" <Expression> "]";
-<ObjectCreation> ::= <Identifier> "{" <PropertyAssignments> "}";
-<PropertyAssignments> ::= <Property> ("," <Property>)*;
-<Property> ::= <Identifier> "=" <Expression>;
+RangeExpression ::= LogicOr (".." LogicOr)?
+LogicOr ::= LogicAnd ("or" LogicAnd)*
+LogicAnd ::= EqualityExpression ("and" EqualityExpression)*
+EqualityExpression ::= ComparisonExpression (("==" | "!=") ComparisonExpression)*
+ComparisonExpression ::= AdditiveExpression ((">" | ">=" | "<" | "<=") AdditiveExpression)*
+AdditiveExpression ::= MultiplicativeExpression (("+" | "-") MultiplicativeExpression)*
+MultiplicativeExpression ::= UnaryExpression (("*" | "/") UnaryExpression)*
+UnaryExpression ::= ("+" | "-" | "!") UnaryExpression | Call
 
-<ArrayLiteral> ::= "[" <ElementList> "]";
-<ElementList> ::= <Expression> ("," <Expression>)*;
+Call ::= PrimaryExpression ( "(" Arguments? ")" | "." Identifier | "[" Expression "]" )*
 
-<Literal> ::= <NumberLiteral> | <StringLiteral> | <BooleanLiteral> | <ArrayLiteral> | <ObjectCreation>;
-<NumberLiteral> ::= <Digit>+;
-<BooleanLiteral> ::= "true" | "false";
-<StringLiteral> ::= "\"" <Characters> "\"";
+PrimaryExpression ::= Literal
+                    | Identifier
+                    | "(" Expression ")"
 
-<Identifier> ::= <Letter> (<AlphaNumeric>)*;
-<AlphaNumeric> ::= <Letter> | <Digit> | "_";
-<Letter> ::= "a" | "b" | ... | "z" | "A" | "B" | ... | "Z";
-<Digit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
+ArrayAccess ::= Identifier "[" Expression "]"
+ObjectCreation ::= Identifier "{" PropertyAssignments? "}"
+PropertyAssignments ::= Property ("," Property)*
+Property ::= Identifier "=" Expression
+
+ArrayLiteral ::= "[" ElementList? "]"
+ElementList ::= Expression ("," Expression)*
+
+Literal ::= NumberLiteral | StringLiteral | BooleanLiteral | ArrayLiteral | ObjectCreation
+NumberLiteral ::= Digit+
+BooleanLiteral ::= "true" | "false"
+StringLiteral ::= "\"" Characters "\""
+
+Identifier ::= Letter (AlphaNumeric)*
+AlphaNumeric ::= Letter | Digit | "_"
+Letter ::= "a" | "b" | ... | "z" | "A" | "B" | ... | "Z"
+Digit ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"

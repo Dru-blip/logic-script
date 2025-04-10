@@ -9,7 +9,7 @@ export const breakContinue: LogicParser<BreakStatement | ContinueStatement> = (
 ) => {
   let node: BreakStatement | ContinueStatement;
   if (context.check(TokenType.CONTINUE)) {
-    node = new ContinueStatement();
+    node = new ContinueStatement(context.currentToken.location);
   } else {
     node = new BreakStatement();
   }

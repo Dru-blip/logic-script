@@ -11,6 +11,7 @@ export const program: LogicParser<Program> = (context) => {
     if (stmt.isOk) {
       statements.push(stmt.value!);
     } else {
+      // console.log(stmt.error?.location)
       context.errors.push(<LgSyntaxError>stmt.error);
       break;
     }

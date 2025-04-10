@@ -1,5 +1,3 @@
-// import type { LogicLiteral } from "../../../parser/ast";
-import type { PrimitiveType } from "../../../../types";
 import type { LogicLiteral } from "../../../parser/ast";
 import type { CompilerContext } from "../../context";
 import { Opcode } from "../../opcodes";
@@ -28,7 +26,7 @@ const literalTypeHandlers: Record<string, LiteralTypeHandler> = {
 };
 
 export const literal: CompilerFunction<
-  LogicLiteral<string | number | boolean, PrimitiveType>
+  LogicLiteral<string | number | boolean>
 > = (node, context: CompilerContext) => {
   const { unit } = context;
 

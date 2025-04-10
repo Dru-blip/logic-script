@@ -42,21 +42,22 @@ export abstract class LogicError {
 
     printError(source: string, hints: Map<string, string>) {
         const {filename, location, message, code, expected, unexpected} = this;
+
         const sourceLines = source.split("\n");
-        const errorLine = sourceLines[location.line] || "";
+        const errorLine = sourceLines[location.line-1] || "";
         const hint = hints.get(code) || "Check for errors.";
 
-        const fileInfo = chalk.blue(`${filename}:${location.line + 1}:${location.col + 1}`);
+        const fileInfo = chalk.blue(`${filename}:${location.line}:${location.col}`);
 
         const details = expected ?? "" + unexpected ?? ""
         console.log(`${chalk.red(`${this.type}[${code}]:`)} ${message}`);
         console.log(` --> ${fileInfo}`);
         console.log(`${" ".repeat(2)} |`);
-        console.log(`${String(location.line + 1)} ${" "}| ${errorLine}`);
-        console.log(
-            `${" ".repeat(2)} | ${" ".repeat(location.col)}${chalk.red("^")} ${chalk.dim(details || "")}`
-        );
-        console.log(`\n  ${chalk.green("= help:")} ${chalk.yellow(hint)}`);
+        console.log(`${String(location.line)} ${" "}| ${errorLine}`);
+        // console.log(
+        //     `${" ".repeat(2)} | ${" ".repeat(location.col)}${chalk.red("^")} ${chalk.dim(details || "")}`
+        // );
+        // console.log(`\n  ${chalk.green("= help:")} ${chalk.yellow(hint)}`);
         console.log();
     }
 }
