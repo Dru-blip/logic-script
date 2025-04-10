@@ -23,11 +23,10 @@ export const expressionStatement: LogicParser<
     return expr;
   }
 
-  if (!context.check(TokenType.SEMICOLON)) {
-    return LgSyntaxError.missingSemicolon(context);
-  }
+  // if (!context.check(TokenType.SEMICOLON)) {
+  //   return LgSyntaxError.missingSemicolon(context);
+  // }
 
-  context.advance();
   return {
     isOk: true,
     value: new ExpressionStatement(<LogicNode>expr.value),

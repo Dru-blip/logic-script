@@ -16,10 +16,10 @@ const structProperty: LogicParser<StructProperty> = (context) => {
   const ident = new Identifier(currentToken.literal, currentToken.location);
   context.advance();
 
-  if (!context.check(TokenType.SEMICOLON)) {
-    return LgSyntaxError.missingSemicolon(context);
-  }
-  context.advance();
+  // if (!context.check(TokenType.SEMICOLON)) {
+  //   return LgSyntaxError.missingSemicolon(context);
+  // }
+  // context.advance();
 
   return {
     isOk: true,

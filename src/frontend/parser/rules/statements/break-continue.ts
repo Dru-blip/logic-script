@@ -2,7 +2,6 @@ import type { LogicParser } from "../../../../types";
 import { BreakStatement } from "../../ast/statements/break.ts";
 import { ContinueStatement } from "../../ast/statements/continue.ts";
 import { TokenType } from "../../../lexer";
-import { LgSyntaxError } from "../../../errors/syntax.ts";
 
 export const breakContinue: LogicParser<BreakStatement | ContinueStatement> = (
   context,
@@ -16,10 +15,10 @@ export const breakContinue: LogicParser<BreakStatement | ContinueStatement> = (
 
   context.advance();
 
-  if (!context.check(TokenType.SEMICOLON)) {
-    return LgSyntaxError.missingSemicolon(context);
-  }
-  context.advance();
+  // if (!context.check(TokenType.SEMICOLON)) {
+  //   return LgSyntaxError.missingSemicolon(context);
+  // }
+  // context.advance();
 
   return {
     isOk: true,

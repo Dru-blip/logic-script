@@ -31,11 +31,11 @@ export const variableDeclaration: LogicParser<VariableDeclaration> = (
     expr = result.value;
   }
 
-  if (!context.check(TokenType.SEMICOLON)) {
-    return LgSyntaxError.unexpected(context, "';'");
-  }
-
-  context.advance();
+  // if (!context.check(TokenType.SEMICOLON)) {
+  //   return LgSyntaxError.unexpected(context, "';'");
+  // }
+  //
+  // context.advance();
 
   return {
     isOk: true,
