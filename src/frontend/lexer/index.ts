@@ -108,7 +108,7 @@ export class Lexer {
     literal: string,
     location: { line: number; col: number; offset: number },
   ) {
-    return new Token(literal, type, location);
+    return new Token(this.filename, literal, type, location);
   }
 
   /**

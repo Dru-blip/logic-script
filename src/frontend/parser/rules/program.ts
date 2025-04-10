@@ -1,9 +1,8 @@
 import { statement } from ".";
 import type { LogicParser } from "../../../types";
-import type { LogicError } from "../../errors";
 import { TokenType } from "../../lexer";
 import { Program } from "../ast";
-import type {LgSyntaxError} from "../../errors/syntax.ts";
+import type { LgSyntaxError } from "../../errors/syntax.ts";
 
 export const program: LogicParser<Program> = (context) => {
   const statements = [];

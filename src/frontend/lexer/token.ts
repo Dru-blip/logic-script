@@ -66,6 +66,7 @@ export enum TokenType {
 
 export class Token {
     constructor(
+        filename:string,
         public literal: string,
         public type: TokenType,
         public location: TokenLocation,
