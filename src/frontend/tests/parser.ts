@@ -1,7 +1,7 @@
 import {Lexer} from "../lexer";
 import {parse} from "../parser";
 import {readFileSync} from "node:fs";
-import {Interpreter} from "../eval/interpreter.ts";
+// import {Interpreter} from "../eval/interpreter.ts";
 
 const fileName =
     "/home/gojo/Desktop/workspaces/logic script/sandbox/hello/src/main.lgs";
@@ -23,5 +23,5 @@ const parser = parse(
 
 const ast = parser.parse();
 
-const interpreter = new Interpreter();
-interpreter.visit(ast.value!)
+// const interpreter = new Interpreter();
+// interpreter.visit(ast.value!)

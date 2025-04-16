@@ -1,11 +1,11 @@
 import { parseTOML } from "confbox";
-import { compile } from "../../frontend/compiler";
+import { compile } from "../../frontend/pvm-compiler";
 import type { LogicCommand } from "../types";
 import { readdir, mkdir } from "node:fs/promises";
 import { existsSync, rmdirSync } from "node:fs";
 import type { LogicConfig } from "../../types";
-import { CompilerContext } from "../../frontend/compiler/context";
-import { Transformer } from "../../frontend/compiler/transformer";
+import { CompilerContext } from "../../frontend/pvm-compiler/context";
+import { Transformer } from "../../frontend/pvm-compiler/transformer";
 
 /**
  * Checks if a file or directory exists.

@@ -51,7 +51,7 @@ export class Transformer {
     header[12] = size[1];
 
     // stack size
-    const stackSize = Transformer.splitIntoTwoBytes(32);
+    const stackSize = Transformer.splitIntoTwoBytes(2048);
     console.log(stackSize);
     header[13] = stackSize[0];
     header[14] = stackSize[1];

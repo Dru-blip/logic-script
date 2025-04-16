@@ -1,37 +1,40 @@
-import type { FileSink } from "bun";
-import type { LogicConfig } from "../../types";
-import { parse } from "../parser";
-import { CompilerContext } from "./context";
-import type { Program } from "../parser/ast";
-import { compileNode } from "./functions";
+import { LogicLiteral, type LogicNode, Program } from "../parser/ast";
+import { Module } from "./module.ts";
+import { ExpressionStatement } from "../parser/ast/statements/expression.ts";
+import { OpCode } from "./opcode.ts";
 
-/**
- * Compiles a source file into an intermediate representation.
- *
- * @param {string} filePath - The path to the source file.
- * @param {CompilerContext} context - The compiler context for tracking state.
- * @returns {Promise<{ run: () => void }>} An object with a `run` function to execute the compiled code.
- * @throws {Error} If the file does not exist or parsing fails.
- */
-export const compile = async (
-  filePath: string,
-  context: CompilerContext,
-): Promise<{ run: () => void }> => {
-  const file = Bun.file(filePath);
-  if (!file.exists()) throw new Error(`File ${filePath} does not exist`);
+export class Compiler {
+  public module: Module;
 
-  const source = await file.text();
-  const par = parse(source, filePath);
-  const ast = par.parse();
-  if (!ast.isOk) {
-    // console.log(ast.error);
-    process.exit(1);
+  constructor(public program: Program) {
+    this.module = new Module();
   }
 
-  return {
-    /**
-     * Executes the compiled code from the AST.
-     */
-    run: () => compileNode(ast.value!, context),
-  };
-};
+  public compile(): void {
+    this.compileStatements(this.program.statements);
+  }
+
+  public compileStatements(statements: LogicNode[]) {
+    for (const node of statements) {
+      this.compileStatement(node);
+    }
+  }
+
+  public compileStatement(statement: LogicNode) {
+    if (statement instanceof ExpressionStatement) {
+      this.compileExpression(statement.expr);
+    }
+  }
+
+  public compileExpression(expression: LogicNode) {
+    if (expression instanceof LogicLiteral) {
+      this.compileLiteral(expression);
+    }
+  }
+
+  public compileLiteral(expression: LogicLiteral) {
+    this.module.intructions.push(OpCode.LOAD);
+    const index = this.module.constants.add(expression.value);
+    this.module.intructions.push(index);
+  }
+}
